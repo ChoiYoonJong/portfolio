@@ -2360,8 +2360,10 @@
       stripped = stripped.replace(artistName, '')
         .replace(/[?？!！.,，\s]/g, '')
         .replace(/(작가|화가|화백|전시|정보|소개|알려줘|알려주세요|보여줘|누구야|누구예요|뭐야|뭐예요|이야기|해줘)/g, '')
+        .replace(/^(은|는|이|가|을|를|도|만|의|에|와|과|랑|요|야)+|(은|는|이|가|을|를|도|만|의|에|와|과|랑|요|야)+$/g, '')
         .trim();
-      if(stripped.length > 0){
+      // 조사 하나만 덜렁 남는 경우(예: "고흐가 누구야?" → "가")는 실질적인 후속 질문이 아니므로 제외
+      if(stripped.length >= 2){
         if(currentIdToken){
           askCurator(q).then(function(result){
             if(result.unauthorized){
