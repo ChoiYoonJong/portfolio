@@ -148,7 +148,7 @@ app.post('/api/curator', requireAuth, async (req, res) => {
     '\n\n답변 마지막 줄에 추천하는 전시 id들을 "IDS: id1,id2" 형식으로 한 줄 추가하세요 (추천이 없으면 "IDS:" 만 적으세요).';
 
   try {
-    const geminiRes = await fetch(
+    let geminiRes = await fetch(
       'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + GEMINI_API_KEY,
       {
         method: 'POST',
@@ -159,10 +159,28 @@ app.post('/api/curator', requireAuth, async (req, res) => {
         })
       }
     );
+    if (geminiRes.status === 503) {
+      // 구글 쪽 모델 일시 과부하(UNAVAILABLE). 짧게 한 번만 재시도.
+      await new Promise(function (r) { setTimeout(r, 600); });
+      geminiRes = await fetch(
+        'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + GEMINI_API_KEY,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.4, maxOutputTokens: 500 }
+          })
+        }
+      );
+    }
     if (!geminiRes.ok) {
       const errText = await geminiRes.text();
       console.error('Gemini error', geminiRes.status, errText);
-      return res.status(502).json({ error: 'AI 응답을 가져오지 못했어요.' });
+      const msg = geminiRes.status === 503
+        ? 'AI가 지금 많이 몰려서 답을 못 가져왔어요. 잠시 후 다시 시도해주실래요?'
+        : 'AI 응답을 가져오지 못했어요.';
+      return res.status(502).json({ error: msg });
     }
     const data = await geminiRes.json();
     const candidate = (data.candidates && data.candidates[0]) || null;
