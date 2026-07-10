@@ -139,7 +139,9 @@ app.post('/api/curator', requireAuth, async (req, res) => {
     : '';
 
   const prompt = '당신은 "미술이 있는 날들"이라는 전시 안내 사이트의 큐레이터입니다. 아래는 지금 사이트에 실제로 등록된 전시 목록입니다. ' +
-    '반드시 이 목록 안에서만 추천하고, 목록에 없는 전시를 지어내지 마세요. 목록에 맞는 게 없으면 솔직히 없다고 답하세요. ' +
+    '반드시 이 목록 안에서만 추천하고, 목록에 없는 전시를 지어내지 마세요. ' +
+    '사용자가 물어본 작가나 작품이 이 목록에 없다면, 절대 당신이 알고 있는 외부 지식으로 그 작가·작품을 설명하거나 추측하지 마세요. ' +
+    '그런 경우엔 "해당 작가/작품은 지금 등록된 전시 목록에 없어요."처럼 한두 문장으로만 짧게 답하고, 목록 항목을 나열하거나 장황하게 설명하지 마세요. ' +
     '미술/전시와 무관한 질문에는 정중히 미술 이야기만 도와줄 수 있다고 답하세요. 친근하고 따뜻한 존댓말로, 2~4문장 이내로 짧게 답하세요.\n\n' +
     '[전시 목록]\n' + context + historyLine +
     '\n\n[사용자 질문]\n' + query +
@@ -153,7 +155,7 @@ app.post('/api/curator', requireAuth, async (req, res) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.4, maxOutputTokens: 300 }
+          generationConfig: { temperature: 0.4, maxOutputTokens: 500 }
         })
       }
     );
@@ -163,7 +165,13 @@ app.post('/api/curator', requireAuth, async (req, res) => {
       return res.status(502).json({ error: 'AI 응답을 가져오지 못했어요.' });
     }
     const data = await geminiRes.json();
-    const parts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
+    const candidate = (data.candidates && data.candidates[0]) || null;
+    const finishReason = candidate && candidate.finishReason;
+    if (finishReason && finishReason !== 'STOP') {
+      console.error('Gemini finished abnormally', finishReason);
+      return res.json({ answer: '죄송해요, 답변 분량이 초과되어 내용을 정리하지 못했어요. 조금 더 짧게 다시 물어봐주실래요?', ids: [] });
+    }
+    const parts = (candidate && candidate.content && candidate.content.parts) || [];
     const text = parts.map(function (p) { return p.text || ''; }).join('');
     const idsMatch = text.match(/IDS:\s*(.*)$/m);
     const ids = idsMatch ? idsMatch[1].split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
