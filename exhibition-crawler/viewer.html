@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>전시 백업 뷰어</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f5f2;
+    --card-bg: #ffffff;
+    --text: #1c1b19;
+    --muted: #6b6558;
+    --border: #e7e3da;
+    --accent: #b3541e;
+    --ongoing: #2f6f4f;
+    --upcoming: #2b5b8c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171614;
+      --card-bg: #221f1c;
+      --text: #f1ede4;
+      --muted: #a89f8f;
+      --border: #34302a;
+      --accent: #e08a4d;
+      --ongoing: #5fbf8f;
+      --upcoming: #6fa8dc;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px 24px 64px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  }
+  header {
+    max-width: 1200px;
+    margin: 0 auto 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  h1 { font-size: 22px; margin: 0; }
+  #meta { color: var(--muted); font-size: 13px; }
+  #meta .dot { opacity: .5; margin: 0 6px; }
+  #statusLine {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  #grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn .4s ease both;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .poster {
+    aspect-ratio: 3 / 4;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .badge {
+    align-self: flex-start;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    color: #fff;
+    font-weight: 600;
+  }
+  .badge.ongoing { background: var(--ongoing); }
+  .badge.upcoming { background: var(--upcoming); }
+  .title { font-size: 16px; font-weight: 700; line-height: 1.35; margin: 2px 0; }
+  .venue { font-size: 13px; color: var(--accent); font-weight: 600; }
+  .period { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .desc {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-top: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  #empty, #error {
+    max-width: 1200px;
+    margin: 60px auto;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    display: none;
+  }
+  #error { color: #c0553f; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🖼️ 전시 백업 뷰어</h1>
+  <div id="meta">불러오는 중...</div>
+</header>
+<div id="statusLine"></div>
+<div id="grid"></div>
+<div id="empty">표시할 전시 데이터가 없어요.</div>
+<div id="error"></div>
+
+<script>
+(function () {
+  // latest.json은 crawler.py가 실행될 때마다 덮어쓰는 "항상 최신" 백업 파일.
+  // file:// 로 열면 브라우저 CORS 정책 때문에 fetch가 막히므로,
+  // 이 폴더에서 `python -m http.server` 같은 로컬 서버를 띄워 열어야 함.
+  var DATA_URL = 'backup/latest.json';
+  var POLL_MS = 15000;
+  var lastGeneratedAt = null;
+
+  var gridEl = document.getElementById('grid');
+  var metaEl = document.getElementById('meta');
+  var statusEl = document.getElementById('statusLine');
+  var emptyEl = document.getElementById('empty');
+  var errorEl = document.getElementById('error');
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function badgeClass(status) {
+    return status === '예정' ? 'upcoming' : 'ongoing';
+  }
+
+  function render(payload) {
+    var items = payload.items || [];
+    gridEl.innerHTML = '';
+    emptyEl.style.display = items.length ? 'none' : 'block';
+
+    items.forEach(function (item) {
+      var card = document.createElement('div');
+      card.className = 'card';
+
+      var posterHtml = item.poster_url
+        ? '<img src="' + escapeHtml(item.poster_url) + '" alt="" loading="lazy" ' +
+          'onerror="this.closest(\'.poster\').style.display=\'none\'" />'
+        : '';
+
+      card.innerHTML =
+        '<div class="poster">' + posterHtml + '</div>' +
+        '<div class="body">' +
+          '<span class="badge ' + badgeClass(item.status) + '">' + escapeHtml(item.status || '') + '</span>' +
+          '<div class="title">' + escapeHtml(item.title) + '</div>' +
+          '<div class="venue">' + escapeHtml(item.venue) + '</div>' +
+          '<div class="period">' + escapeHtml(item.period_text) + '</div>' +
+          (item.description ? '<div class="desc">' + escapeHtml(item.description) + '</div>' : '') +
+        '</div>';
+      gridEl.appendChild(card);
+    });
+
+    metaEl.textContent = (payload.source || '') + ' · 총 ' + items.length + '건';
+    var d = new Date(payload.generated_at);
+    statusEl.textContent = '마지막 업데이트: ' + (isNaN(d) ? payload.generated_at : d.toLocaleString('ko-KR'));
+    errorEl.style.display = 'none';
+  }
+
+  function poll() {
+    fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('backup/latest.json 을 불러오지 못했어요 (' + res.status + ')');
+        return res.json();
+      })
+      .then(function (payload) {
+        // 데이터가 실제로 바뀐 경우에만 다시 그려서 불필요한 깜빡임을 줄인다.
+        if (payload.generated_at !== lastGeneratedAt) {
+          lastGeneratedAt = payload.generated_at;
+          render(payload);
+        }
+      })
+      .catch(function (err) {
+        errorEl.textContent = '⚠️ ' + err.message + ' — crawler.py를 실행했는지, 이 폴더를 로컬 서버로 열었는지 확인해주세요.';
+        errorEl.style.display = 'block';
+        metaEl.textContent = '불러오기 실패';
+      });
+  }
+
+  poll();
+  setInterval(poll, POLL_MS);
+})();
+</script>
+
+</body>
+</html>
