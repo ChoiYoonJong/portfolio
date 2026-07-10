@@ -2114,7 +2114,11 @@
     }).then(function(r){
       if(r.status === 401){ return { unauthorized:true }; }
       if(r.status === 429){ return { limited:true }; }
-      if(!r.ok){ return { failed:true }; }
+      if(!r.ok){
+        return r.json().catch(function(){ return null; }).then(function(body){
+          return { failed:true, errorMsg: body && body.error };
+        });
+      }
       return r.json();
     }).catch(function(){ return { failed:true }; });
   }
@@ -2437,7 +2441,7 @@
             return;
           }
           if(result.failed || !result.answer){
-            addBotMsg('AI 큐레이터 서버에 연결하지 못했어요. 잠시 후 다시 시도해주실래요?');
+            addBotMsg(result.errorMsg ? ('AI 큐레이터 오류: ' + result.errorMsg) : 'AI 큐레이터 서버에 연결하지 못했어요. 잠시 후 다시 시도해주실래요?');
             return;
           }
           var recs = (result.ids || []).map(function(id){ return EXBYID[id]; }).filter(Boolean);
