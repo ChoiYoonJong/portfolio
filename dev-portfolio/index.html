@@ -1,0 +1,587 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>최윤종 — Backend Developer</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{
+    --bg: #12151c;
+    --bg-panel: #181c25;
+    --bg-panel-alt: #1e232e;
+    --bg-inset: #0e1015;
+    --border: #2a3140;
+    --border-soft: #232838;
+    --text: #e7e5df;
+    --text-muted: #8892a6;
+    --text-faint: #545c6e;
+    --accent: #e0a458;
+    --accent-strong: #f0b96f;
+    --accent-soft: rgba(224,164,88,0.13);
+    --type-blue: #7aa2f7;
+    --type-green: #6fcf97;
+    --shadow: 0 20px 60px -20px rgba(0,0,0,0.55);
+    --sans: "Pretendard Variable", "Pretendard", -apple-system, "Apple SD Gothic Neo", "Segoe UI", "Malgun Gothic", sans-serif;
+    --mono: "Cascadia Code", "Cascadia Mono", "D2Coding", Consolas, "SFMono-Regular", ui-monospace, monospace;
+  }
+  :root[data-theme="light"]{
+    --bg: #f7f6f2;
+    --bg-panel: #ffffff;
+    --bg-panel-alt: #f0eee7;
+    --bg-inset: #ebe9e2;
+    --border: #ddd8ce;
+    --border-soft: #e6e2d9;
+    --text: #23241f;
+    --text-muted: #5b5c54;
+    --text-faint: #8a8b81;
+    --accent: #a6641c;
+    --accent-strong: #8a5215;
+    --accent-soft: rgba(166,100,28,0.10);
+    --type-blue: #35519c;
+    --type-green: #2f7d4f;
+    --shadow: 0 20px 50px -25px rgba(60,50,30,0.25);
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg: #f7f6f2;
+      --bg-panel: #ffffff;
+      --bg-panel-alt: #f0eee7;
+      --bg-inset: #ebe9e2;
+      --border: #ddd8ce;
+      --border-soft: #e6e2d9;
+      --text: #23241f;
+      --text-muted: #5b5c54;
+      --text-faint: #8a8b81;
+      --accent: #a6641c;
+      --accent-strong: #8a5215;
+      --accent-soft: rgba(166,100,28,0.10);
+      --type-blue: #35519c;
+      --type-green: #2f7d4f;
+      --shadow: 0 20px 50px -25px rgba(60,50,30,0.25);
+    }
+  }
+
+  *, *::before, *::after{ box-sizing: border-box; }
+  html{ background: var(--bg); }
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a{ color: inherit; }
+  ::selection{ background: var(--accent-soft); color: var(--accent-strong); }
+
+  .mono{ font-family: var(--mono); }
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+
+  /* ---------- App shell ---------- */
+  .shell{
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  .tabbar{
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px);
+  }
+  .tabbar-inner{
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabbar-inner::-webkit-scrollbar{ display:none; }
+  .menu-btn{
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex: none;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .menu-btn svg{ width: 18px; height: 18px; }
+
+  .tab{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 16px;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    flex: none;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .tab .dot{ width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .55; flex: none; }
+  .tab:hover{ color: var(--text); }
+  .tab.active{ color: var(--accent); border-bottom-color: var(--accent); }
+  .tab.active .dot{ background: var(--accent); opacity: 1; }
+
+  .layout{
+    display: grid;
+    grid-template-columns: 240px minmax(0,1fr);
+    gap: 0;
+    align-items: start;
+  }
+
+  /* ---------- Sidebar / explorer ---------- */
+  .explorer{
+    position: sticky;
+    top: 49px;
+    height: calc(100vh - 49px);
+    overflow-y: auto;
+    padding: 22px 14px 40px;
+    border-right: 1px solid var(--border);
+  }
+  .explorer-title{
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    padding: 4px 10px 10px;
+  }
+  .tree{ list-style: none; margin: 0; padding: 0; font-family: var(--mono); font-size: 0.83rem; }
+  .tree li{ margin: 1px 0; }
+  .tree a{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: background .12s ease, color .12s ease;
+  }
+  .tree a:hover{ background: var(--bg-panel-alt); color: var(--text); }
+  .tree a.active{ background: var(--accent-soft); color: var(--accent); }
+  .tree .file-ico{ opacity: .7; }
+  .tree .branch{ padding-left: 22px; border-left: 1px dashed var(--border); margin-left: 20px; }
+  .tree .branch a{ font-size: 0.78rem; color: var(--text-faint); padding-top: 4px; padding-bottom: 4px; }
+  .tree .branch a:hover{ color: var(--text-muted); }
+  .tree .divider{ height: 1px; background: var(--border-soft); margin: 12px 8px; }
+
+  .explorer-status{
+    margin-top: 18px;
+    padding: 12px 12px;
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    background: var(--bg-panel-alt);
+  }
+  .explorer-status .label{ font-family: var(--mono); font-size: 0.68rem; color: var(--text-faint); letter-spacing: .05em; text-transform: uppercase; }
+  .explorer-status .val{ font-family: var(--mono); font-size: 0.78rem; color: var(--type-green); margin-top: 4px; display:flex; align-items:center; gap:6px; }
+  .explorer-status .val::before{ content:""; width:6px; height:6px; border-radius:50%; background: var(--type-green); }
+
+  /* ---------- Main content ---------- */
+  main{ min-width: 0; }
+  .pane{ padding: 64px 40px 84px; border-right: none; }
+  section{ scroll-margin-top: 64px; }
+  section + section{ border-top: 1px solid var(--border-soft); padding-top: 72px; margin-top: 72px; }
+
+  .reveal{ opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+  .reveal.in{ opacity: 1; transform: none; }
+
+  h1,h2,h3{ font-family: var(--sans); text-wrap: balance; margin: 0; }
+  .section-head{ display:flex; align-items:baseline; gap:12px; margin-bottom: 26px; }
+  .section-num{ font-family: var(--mono); color: var(--text-faint); font-size: .85rem; }
+  h2.section-title{ font-size: 1.5rem; font-weight: 700; }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding-top: 22px; }
+  .hero-tag{ display:inline-flex; align-items:center; gap:8px; padding:5px 10px; border:1px solid var(--border); border-radius:999px; font-family:var(--mono); font-size:.72rem; color:var(--text-muted); margin-bottom:22px; }
+  .hero-tag .dot{ width:6px;height:6px;border-radius:50%; background: var(--type-green); }
+  h1.name{ font-size: clamp(2.3rem, 5vw, 3.4rem); font-weight: 800; line-height: 1.12; letter-spacing: -0.01em; }
+  h1.name .nick{ color: var(--accent); }
+  .role{ font-family: var(--mono); font-size: 1.05rem; color: var(--text-muted); margin-top: 14px; }
+  .role .caret{ display:inline-block; width:9px; height:1.1em; background:var(--accent); margin-left:2px; vertical-align:-2px; animation: blink 1.1s steps(1) infinite; }
+  @media (prefers-reduced-motion: reduce){ .role .caret{ animation: none; opacity: .8; } }
+  @keyframes blink{ 50%{ opacity: 0; } }
+
+  .lede{ max-width: 62ch; color: var(--text-muted); font-size: 1.02rem; margin-top: 22px; }
+
+  .cta-row{ display:flex; flex-wrap:wrap; gap: 12px; margin-top: 30px; }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding: 11px 18px; border-radius: 7px; text-decoration:none;
+    font-family: var(--mono); font-size: .85rem; font-weight: 600;
+    border: 1px solid var(--border); transition: transform .12s ease, border-color .12s ease, background .12s ease;
+  }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn.primary{ background: var(--accent); color: #14151a; border-color: var(--accent); }
+  .btn.primary:hover{ background: var(--accent-strong); }
+  .btn.ghost{ color: var(--text); }
+  .btn.ghost:hover{ border-color: var(--text-faint); background: var(--bg-panel-alt); }
+
+  .stat-row{ display:flex; gap: 34px; margin-top: 46px; flex-wrap: wrap; }
+  .stat b{ display:block; font-size: 1.5rem; font-weight: 800; }
+  .stat span{ font-family: var(--mono); font-size: .74rem; color: var(--text-faint); letter-spacing: .04em; }
+
+  /* ---------- About / code block ---------- */
+  .code-card{
+    background: var(--bg-inset);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .code-card .cc-head{
+    display:flex; align-items:center; gap:8px;
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    font-family: var(--mono); font-size: .74rem; color: var(--text-faint);
+  }
+  .cc-head .traffic{ display:flex; gap:6px; margin-right:4px; }
+  .cc-head .traffic i{ width:10px; height:10px; border-radius:50%; background: var(--border); display:block; }
+  .code-body{ display:flex; font-family: var(--mono); font-size: .88rem; line-height: 1.85; }
+  .gutter{ padding: 18px 14px; text-align:right; color: var(--text-faint); background: var(--bg-panel-alt); user-select:none; border-right: 1px solid var(--border-soft); }
+  .code-lines{ padding: 18px 20px; color: var(--text-muted); white-space: pre-wrap; }
+  .code-lines .kw{ color: var(--type-blue); }
+  .code-lines .str{ color: var(--type-green); }
+  .code-lines .cm{ color: var(--text-faint); }
+  .code-lines .fn{ color: var(--accent); }
+
+  .about-grid{ display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 28px; align-items:start; }
+  .fact-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px; }
+  .fact-list li{ display:flex; gap:12px; padding: 14px; border:1px solid var(--border-soft); border-radius:9px; background: var(--bg-panel); }
+  .fact-list .k{ font-family: var(--mono); font-size:.72rem; color: var(--text-faint); text-transform:uppercase; letter-spacing:.05em; min-width: 74px; }
+  .fact-list .v{ font-size: .92rem; color: var(--text); }
+
+  /* ---------- Skills / json panel ---------- */
+  .json-card{
+    background: var(--bg-inset); border:1px solid var(--border); border-radius: 10px;
+    font-family: var(--mono); font-size: .88rem; padding: 24px 26px; box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+  .json-line{ white-space: pre; }
+  .jk{ color: var(--type-blue); }
+  .jp{ color: var(--text-faint); }
+  .chips{ display:inline-flex; flex-wrap:wrap; gap:8px; margin: 2px 0 10px 20px; }
+  .chip{
+    display:inline-flex; align-items:center; padding: 4px 10px; border-radius:5px;
+    background: var(--accent-soft); color: var(--accent); font-size:.8rem; border:1px solid transparent;
+  }
+
+  /* ---------- Project ---------- */
+  .project-card{
+    border:1px solid var(--border); border-radius: 12px; background: var(--bg-panel);
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .project-top{ padding: 30px 32px 0; }
+  .project-title{ font-size: 1.6rem; font-weight: 800; }
+  .project-sub{ color: var(--text-muted); margin-top: 8px; font-size: .98rem; }
+  .meta-row{ display:flex; flex-wrap:wrap; gap: 10px 26px; margin-top: 20px; padding-bottom: 24px; border-bottom: 1px solid var(--border-soft); }
+  .meta-item{ font-family: var(--mono); font-size: .78rem; color: var(--text-faint); }
+  .meta-item b{ color: var(--text-muted); font-weight: 600; }
+
+  .project-body{ padding: 28px 32px 32px; display:grid; gap: 30px; }
+  .p-desc{ color: var(--text-muted); max-width: 68ch; }
+
+  .feature-list{ list-style:none; margin:0; padding:0; display:grid; gap:10px; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 720px){ .feature-list{ grid-template-columns: 1fr; } }
+  .feature-list li{ display:flex; gap:10px; align-items:flex-start; font-size:.92rem; color: var(--text); }
+  .feature-list li::before{ content:"›"; color: var(--accent); font-family: var(--mono); font-weight:700; }
+
+  .diagram{
+    display:flex; align-items:stretch; gap: 0; overflow-x:auto; padding: 6px 2px 14px;
+  }
+  .dnode{
+    flex: none; min-width: 128px; padding: 12px 14px; border:1px solid var(--border);
+    border-radius: 8px; background: var(--bg-inset); text-align:center;
+  }
+  .dnode .t{ font-family: var(--mono); font-size:.75rem; color: var(--text-faint); text-transform:uppercase; letter-spacing:.04em; }
+  .dnode .n{ font-family: var(--mono); font-size:.85rem; color: var(--accent); margin-top:4px; font-weight:600; }
+  .darrow{ flex: none; width: 34px; display:flex; align-items:center; justify-content:center; color: var(--text-faint); font-family: var(--mono); }
+
+  .stack-tags{ display:flex; flex-wrap:wrap; gap:8px; }
+  .stack-tags .chip{ background: var(--bg-panel-alt); color: var(--text-muted); border-color: var(--border-soft); }
+
+  .project-links{ display:flex; gap:12px; flex-wrap:wrap; }
+
+  /* ---------- Contact / terminal ---------- */
+  .terminal{
+    border:1px solid var(--border); border-radius: 10px; background: var(--bg-inset);
+    box-shadow: var(--shadow); overflow:hidden;
+  }
+  .term-head{ display:flex; align-items:center; gap:8px; padding:10px 14px; border-bottom:1px solid var(--border); font-family:var(--mono); font-size:.74rem; color:var(--text-faint); }
+  .term-head .traffic{ display:flex; gap:6px; margin-right:6px; }
+  .term-head .traffic i{ width:10px;height:10px;border-radius:50%; background:var(--border); display:block; }
+  .term-body{ padding: 22px 24px 26px; font-family: var(--mono); font-size: .92rem; line-height: 2; }
+  .term-body .prompt{ color: var(--type-green); }
+  .term-body .path{ color: var(--type-blue); }
+  .term-body a{ color: var(--accent); text-decoration: none; border-bottom:1px dotted var(--accent); }
+  .term-body a:hover{ color: var(--accent-strong); }
+  .term-out{ color: var(--text-muted); }
+
+  footer.foot{ padding: 30px 40px 50px; font-family: var(--mono); font-size: .74rem; color: var(--text-faint); }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 900px){
+    .menu-btn{ display:flex; }
+    .layout{ grid-template-columns: 1fr; }
+    .explorer{
+      position: fixed; left: 0; top: 49px; bottom: 0; width: 260px;
+      background: var(--bg-panel); z-index: 50; transform: translateX(-100%);
+      transition: transform .2s ease; box-shadow: var(--shadow);
+    }
+    .explorer.open{ transform: translateX(0); }
+    .scrim{ display:none; position: fixed; inset: 49px 0 0 0; background: rgba(0,0,0,.4); z-index: 45; }
+    .scrim.open{ display:block; }
+    .pane{ padding: 44px 20px 64px; }
+    .about-grid{ grid-template-columns: 1fr; }
+    .shell{ padding: 0 16px; }
+  }
+</style>
+
+<div class="tabbar">
+  <div class="tabbar-inner shell" style="padding:0;">
+    <button class="menu-btn" id="menuBtn" aria-label="탐색기 열기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a class="tab active" data-tab="about" href="#about"><span class="dot"></span>About.md</a>
+    <a class="tab" data-tab="skills" href="#skills"><span class="dot"></span>Skills.json</a>
+    <a class="tab" data-tab="project" href="#project"><span class="dot"></span>IsedolFansite.java</a>
+    <a class="tab" data-tab="contact" href="#contact"><span class="dot"></span>Contact.sh</a>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<div class="shell">
+<div class="layout">
+
+  <aside class="explorer" id="explorer">
+    <div class="explorer-title">jspPro / Explorer</div>
+    <ul class="tree">
+      <li><a href="#about" data-tree="about"><span class="file-ico">📘</span>About.md</a></li>
+      <li><a href="#skills" data-tree="skills"><span class="file-ico">🧩</span>Skills.json</a></li>
+      <li><a href="#project" data-tree="project"><span class="file-ico">☕</span>IsedolFansite.java</a></li>
+      <li class="branch">
+        <a href="#project">com.uni.member.controller</a>
+        <a href="#project">com.uni.notice.controller</a>
+        <a href="#project">com.uni.profile.controller</a>
+        <a href="#project">com.uni.common.filter</a>
+      </li>
+      <li><a href="#contact" data-tree="contact"><span class="file-ico">📡</span>Contact.sh</a></li>
+    </ul>
+    <div class="divider"></div>
+    <div class="explorer-status">
+      <div class="label">Build</div>
+      <div class="val">compiled without errors</div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="pane">
+
+      <section class="hero" id="hero">
+        <div class="hero-tag"><span class="dot"></span>지금 이 화면도 직접 코드로 짰습니다</div>
+        <h1 class="name">최윤종<span class="nick"> · 초이</span></h1>
+        <div class="role">Backend Developer <span style="color:var(--text-faint)">/</span> Java · JSP · Servlet<span class="caret"></span></div>
+        <p class="lede">요청 하나가 화면을 거쳐 DB에 닿았다가 다시 돌아오기까지, 그 흐름 전체를 설계하고 만드는 걸 좋아합니다. Controller–Service–DAO로 책임을 나누고, Filter로 인코딩·암호화 같은 공통 처리를 분리하는 방식에 익숙합니다.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="https://github.com/ChoiYoonJong" target="_blank" rel="noopener">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+            GitHub
+          </a>
+          <a class="btn ghost" href="mailto:jongchoi881109@gmail.com">
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="4" width="16" height="12" rx="1.5"/><path d="M3 5.5l7 5 7-5"/></svg>
+            이메일 보내기
+          </a>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><b>6</b><span>서블릿 도메인 (member · notice · profile ·…)</span></div>
+          <div class="stat"><b>2</b><span>공통 필터 (Encoding · Encrypt)</span></div>
+          <div class="stat"><b>MVC2</b><span>Controller–Service–DAO 계층 분리</span></div>
+        </div>
+      </section>
+
+      <section id="about">
+        <div class="section-head"><span class="section-num mono">01</span><h2 class="section-title">About</h2></div>
+        <div class="about-grid">
+          <div class="code-card reveal">
+            <div class="cc-head"><div class="traffic"><i></i><i></i><i></i></div>About.md</div>
+            <div class="code-body">
+              <div class="gutter">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8</div>
+              <div class="code-lines"><span class="cm">/**</span>
+<span class="cm"> * 이름  : 최윤종 (Choi Yoon Jong) — 닉네임 초이</span>
+<span class="cm"> * 관심사: 서버-DB 연동 구조, 계층형 아키텍처, 공통 관심사 분리(Filter)</span>
+<span class="cm"> * 태도  : 화면 뒤에서 실제로 동작하는 흐름까지 끝까지 확인하고 완성한다</span>
+<span class="cm"> */</span>
+<span class="kw">public</span> <span class="kw">class</span> <span class="fn">Developer</span> {
+  <span class="kw">String</span> focus = <span class="str">"Java / JSP / Servlet 기반 백엔드"</span>;
+}</div>
+            </div>
+          </div>
+          <ul class="fact-list reveal">
+            <li><span class="k">Base</span><span class="v">Java · JSP/Servlet 중심의 웹 백엔드</span></li>
+            <li><span class="k">Env</span><span class="v">Eclipse + Apache Tomcat 9 + Oracle DB</span></li>
+            <li><span class="k">Pattern</span><span class="v">MVC2 (Controller–Service–DAO–VO)</span></li>
+            <li><span class="k">Contact</span><span class="v">jongchoi881109@gmail.com</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="skills">
+        <div class="section-head"><span class="section-num mono">02</span><h2 class="section-title">Skills</h2></div>
+        <div class="json-card reveal">
+<div class="json-line">{</div>
+<div class="json-line">  <span class="jk">"language"</span><span class="jp">:</span></div>
+<div class="chips"><span class="chip">Java</span></div>
+<div class="json-line">  <span class="jk">"web"</span><span class="jp">:</span></div>
+<div class="chips"><span class="chip">JSP</span><span class="chip">Servlet</span><span class="chip">JSTL</span><span class="chip">HTML/CSS</span><span class="chip">JavaScript</span><span class="chip">jQuery</span><span class="chip">Bootstrap</span></div>
+<div class="json-line">  <span class="jk">"database"</span><span class="jp">:</span></div>
+<div class="chips"><span class="chip">Oracle DB</span><span class="chip">JDBC</span></div>
+<div class="json-line">  <span class="jk">"tools"</span><span class="jp">:</span></div>
+<div class="chips"><span class="chip">Eclipse</span><span class="chip">Tomcat 9</span><span class="chip">Git / GitHub</span></div>
+<div class="json-line">}</div>
+        </div>
+      </section>
+
+      <section id="project">
+        <div class="section-head"><span class="section-num mono">03</span><h2 class="section-title">Project</h2></div>
+
+        <div class="project-card reveal">
+          <div class="project-top">
+            <div class="project-title">이세돌 팬사이트 (Isedol Fansite)</div>
+            <div class="project-sub">JSP/Servlet 기반 회원·게시판 CRUD 웹 애플리케이션 — 버추얼 아이돌 그룹 소개 & 커뮤니티 사이트</div>
+            <div class="meta-row">
+              <div class="meta-item"><b>역할</b> 백엔드 설계 및 구현</div>
+              <div class="meta-item"><b>패턴</b> MVC2 (Controller–Service–DAO–VO)</div>
+              <div class="meta-item"><b>DB</b> Oracle · JDBC (쿼리 .properties 외부화)</div>
+              <div class="meta-item"><b>인증</b> 세션 기반 로그인 + 비밀번호 암호화 필터</div>
+            </div>
+          </div>
+
+          <div class="project-body">
+            <p class="p-desc">6인조 버추얼 아이돌 그룹을 소재로 한 팬 커뮤니티 웹사이트입니다. 회원가입/로그인 등 계정 기능과 공지사항 게시판 CRUD, 멤버별 소개 페이지로 구성했고, 요청 처리 전 구간에 인코딩 필터를, 계정 관련 요청에는 암호화 필터를 별도로 적용해 공통 관심사를 컨트롤러 밖으로 분리했습니다.</p>
+
+            <ul class="feature-list">
+              <li>회원가입 / 로그인 / 로그아웃 / 마이페이지 / 비밀번호 변경 / 회원 탈퇴</li>
+              <li>공지사항 게시판 CRUD (목록·상세·등록·수정·삭제)</li>
+              <li>멤버 6인 개별 소개 페이지 — 서블릿 라우팅으로 분리</li>
+              <li>EncodingFilter로 전 구간 UTF-8 인코딩 일괄 처리</li>
+              <li>EncryptFilter로 로그인·가입·비밀번호 변경 시 암호화 적용</li>
+              <li>SQL 쿼리를 .properties 파일로 외부화해 코드와 분리</li>
+            </ul>
+
+            <div>
+              <div class="eyebrow" style="margin-bottom:10px;">REQUEST FLOW</div>
+              <div class="diagram">
+                <div class="dnode"><div class="t">Client</div><div class="n">Browser</div></div>
+                <div class="darrow">→</div>
+                <div class="dnode"><div class="t">Filter</div><div class="n">Encoding · Encrypt</div></div>
+                <div class="darrow">→</div>
+                <div class="dnode"><div class="t">Controller</div><div class="n">*.do Servlet</div></div>
+                <div class="darrow">→</div>
+                <div class="dnode"><div class="t">Service</div><div class="n">Business Logic</div></div>
+                <div class="darrow">→</div>
+                <div class="dnode"><div class="t">DAO</div><div class="n">JDBCTemplate</div></div>
+                <div class="darrow">→</div>
+                <div class="dnode"><div class="t">Database</div><div class="n">Oracle DB</div></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="eyebrow" style="margin-bottom:10px;">STACK</div>
+              <div class="stack-tags">
+                <span class="chip">Java</span><span class="chip">JSP</span><span class="chip">Servlet</span><span class="chip">JSTL</span>
+                <span class="chip">Oracle DB</span><span class="chip">JDBC</span><span class="chip">Tomcat 9</span><span class="chip">Eclipse</span>
+              </div>
+            </div>
+
+            <div class="project-links">
+              <a class="btn ghost" href="https://github.com/ChoiYoonJong/portfolio2" target="_blank" rel="noopener">GitHub 저장소 →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="section-head"><span class="section-num mono">04</span><h2 class="section-title">Contact</h2></div>
+        <div class="terminal reveal">
+          <div class="term-head"><div class="traffic"><i></i><i></i><i></i></div>zsh — contact.sh</div>
+          <div class="term-body">
+            <div><span class="prompt">choi@dev</span> <span class="path">~</span> $ whoami</div>
+            <div class="term-out">최윤종 (Choi Yoon Jong) · Backend Developer</div>
+            <div style="margin-top:8px;"><span class="prompt">choi@dev</span> <span class="path">~</span> $ cat contact.txt</div>
+            <div class="term-out">email &nbsp;: <a href="mailto:jongchoi881109@gmail.com">jongchoi881109@gmail.com</a></div>
+            <div class="term-out">github : <a href="https://github.com/ChoiYoonJong" target="_blank" rel="noopener">github.com/ChoiYoonJong</a></div>
+            <div style="margin-top:8px;"><span class="prompt">choi@dev</span> <span class="path">~</span> $ <span class="role" style="display:inline;font-size:inherit;margin:0;color:var(--text-faint)"><span class="caret" style="margin-left:0;"></span></span></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="foot">© 2026 Choi Yoon Jong. Built line by line, no framework required.</footer>
+  </main>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var tabs = document.querySelectorAll('.tab');
+  var treeLinks = document.querySelectorAll('.tree a[data-tree]');
+  var sections = ['hero','about','skills','project','contact'].map(function(id){ return document.getElementById(id); }).filter(Boolean);
+
+  function setActive(id){
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab === id); });
+    treeLinks.forEach(function(t){ t.classList.toggle('active', t.dataset.tree === id); });
+  }
+
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var id = e.target.id === 'hero' ? 'about' : e.target.id;
+          setActive(id);
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+    sections.forEach(function(s){ io.observe(s); });
+
+    var reveals = document.querySelectorAll('.reveal');
+    var rio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(function(el){ rio.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+
+  var menuBtn = document.getElementById('menuBtn');
+  var explorer = document.getElementById('explorer');
+  var scrim = document.getElementById('scrim');
+  function closeMenu(){ explorer.classList.remove('open'); scrim.classList.remove('open'); }
+  menuBtn && menuBtn.addEventListener('click', function(){
+    explorer.classList.toggle('open'); scrim.classList.toggle('open');
+  });
+  scrim && scrim.addEventListener('click', closeMenu);
+  treeLinks.forEach(function(a){ a.addEventListener('click', closeMenu); });
+})();
+</script>

@@ -1,0 +1,1947 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미술이 있는 날들 — 전국 전시 안내</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{
+    --bg: #f6f5f2;
+    --bg-panel: #ffffff;
+    --bg-panel-alt: #f1f0eb;
+    --border: #e2e0d9;
+    --border-soft: #ebe9e3;
+    --text: #24221d;
+    --text-muted: #6d6a62;
+    --text-faint: #9d998e;
+    --accent: #bd5b40;
+    --accent-strong: #9c4630;
+    --accent-soft: rgba(189,91,64,0.10);
+    --seoul: #c97b5f;
+    --daegu: #5b9c8d;
+    --daejeon: #cc9a4a;
+    --gwangju: #a878a3;
+    --jeju: #4f9bb0;
+    --busan: #7d8fce;
+    --gyeonggi: #6b8fa3;
+    --jeonbuk: #7a8f52;
+    --ulsan: #a8532e;
+    --incheon: #5b7aa8;
+    --gangwon: #5c9c6f;
+    --gyeongnam: #b05a7a;
+    --gyeongbuk: #8a6bb0;
+    --chungnam: #a89a4a;
+    --chungbuk: #4aa89a;
+    --sejong: #8a7c5c;
+    --ok: #5c8a5f;
+    --warn: #c07a3a;
+    --soon: #4d7bb0;
+    --skin: #e7cba9;
+    --shadow: 0 10px 24px -14px rgba(30,28,22,0.16);
+    --shadow-lg: 0 22px 46px -20px rgba(30,28,22,0.22);
+    --r-sm: 8px;
+    --r-md: 14px;
+    --r-lg: 18px;
+    --sans: -apple-system, "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+    --serif: Georgia, "Iowan Old Style", "Times New Roman", ui-serif, serif;
+  }
+  :root[data-theme="dark"]{
+    --bg: #1c1712;
+    --bg-panel: #24201a;
+    --bg-panel-alt: #2a251d;
+    --border: #3d342a;
+    --border-soft: #332b22;
+    --text: #f1e9da;
+    --text-muted: #b4a892;
+    --text-faint: #7c7160;
+    --accent: #e29470;
+    --accent-strong: #f0ab8a;
+    --accent-soft: rgba(226,148,112,0.16);
+    --seoul: #e29470; --daegu: #7ec4b3; --daejeon: #e0bd77; --gwangju: #c9a0c4;
+    --jeju: #7ec8dd; --busan: #a3b0e6; --gyeonggi: #8fb4c7; --jeonbuk: #a3ba7c; --ulsan: #d78563;
+    --incheon: #8fabd8; --gangwon: #8fce9f; --gyeongnam: #d896ae; --gyeongbuk: #b7a0dc;
+    --chungnam: #d3c47e; --chungbuk: #7dd0bf; --sejong: #c2b190;
+    --ok: #8fc192; --warn: #e0a468; --soon: #8fb2e0;
+    --skin: #c9a37a;
+    --shadow: 0 10px 24px -14px rgba(0,0,0,0.45);
+    --shadow-lg: 0 22px 46px -20px rgba(0,0,0,0.55);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #1c1712; --bg-panel: #24201a; --bg-panel-alt: #2a251d;
+      --border: #3d342a; --border-soft: #332b22;
+      --text: #f1e9da; --text-muted: #b4a892; --text-faint: #7c7160;
+      --accent: #e29470; --accent-strong: #f0ab8a; --accent-soft: rgba(226,148,112,0.16);
+      --seoul: #e29470; --daegu: #7ec4b3; --daejeon: #e0bd77; --gwangju: #c9a0c4;
+      --jeju: #7ec8dd; --busan: #a3b0e6; --gyeonggi: #8fb4c7; --jeonbuk: #a3ba7c; --ulsan: #d78563;
+      --incheon: #8fabd8; --gangwon: #8fce9f; --gyeongnam: #d896ae; --gyeongbuk: #b7a0dc;
+      --chungnam: #d3c47e; --chungbuk: #7dd0bf; --sejong: #c2b190;
+      --ok: #8fc192; --warn: #e0a468; --soon: #8fb2e0;
+      --skin: #c9a37a;
+      --shadow: 0 10px 24px -14px rgba(0,0,0,0.45);
+      --shadow-lg: 0 22px 46px -20px rgba(0,0,0,0.55);
+    }
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ background:var(--bg); }
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--sans); font-size:15.5px; line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{ font-family:inherit; }
+  a{ color:inherit; }
+  ::selection{ background:var(--accent-soft); color:var(--accent-strong); }
+  ::-webkit-scrollbar{ width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb{ background:var(--border); border-radius:6px; }
+
+  .shell{ max-width:1180px; margin:0 auto; padding:0 20px; }
+  @media (min-width:720px){ .shell{ padding:0 32px; } }
+  .tabular{ font-variant-numeric:tabular-nums; }
+  .pull{
+    font-family:var(--serif); font-size:1rem; color:var(--accent-strong);
+    line-height:1.5; text-wrap:balance;
+  }
+  .scroller{ display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; }
+  .scroller::-webkit-scrollbar{ display:none; }
+
+  /* ---------- Header ---------- */
+  header.masthead{ padding:52px 0 32px; }
+  .masthead-top{ display:flex; flex-direction:column; gap:8px; }
+  .brand-eyebrow{
+    font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent);
+  }
+  h1.brand{
+    font-size:clamp(2.1rem,8vw,3.7rem); font-weight:800; letter-spacing:-0.03em;
+    line-height:1.08; margin:0; text-wrap:balance;
+  }
+  h1.brand em{ font-style:normal; color:var(--accent); }
+  .today-badge{ font-size:.8rem; color:var(--text-faint); }
+  .lede{ max-width:60ch; color:var(--text-muted); margin-top:16px; font-size:.98rem; }
+
+  /* ---------- Featured ---------- */
+  .featured{ padding:30px 0 8px; }
+  .featured-card{
+    display:flex; flex-direction:column;
+    background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--r-lg);
+    overflow:hidden; box-shadow:var(--shadow-lg);
+  }
+  .featured-tile{
+    position:relative; height:150px;
+    background:
+      radial-gradient(120% 130% at 20% 15%, color-mix(in srgb, var(--seoul) 55%, white 25%), transparent 62%),
+      linear-gradient(150deg, color-mix(in srgb, var(--seoul) 42%, white 58%), color-mix(in srgb, var(--seoul) 70%, white 15%));
+  }
+  .featured-tile .mark{
+    position:absolute; right:10px; bottom:-10px; font-family:var(--serif); font-weight:700;
+    font-size:6rem; color:rgba(44,36,23,0.14); line-height:1; user-select:none;
+  }
+  .featured-tile .pin{
+    position:absolute; top:14px; left:14px; font-size:.74rem; font-weight:700;
+    color:rgba(44,36,23,0.68); background:rgba(255,255,255,0.6); padding:4px 10px; border-radius:var(--r-sm);
+  }
+  .featured-body{ padding:22px 20px 24px; display:flex; flex-direction:column; gap:10px; }
+  .featured-title{ font-size:1.4rem; font-weight:800; text-wrap:balance; }
+  .featured-mood{
+    align-self:flex-start; font-size:.74rem; color:var(--accent-strong); background:var(--accent-soft);
+    padding:4px 10px; border-radius:var(--r-sm); font-weight:600;
+  }
+  .featured-meta{ font-size:.82rem; color:var(--text-faint); }
+  .featured-desc{ color:var(--text-muted); font-size:.92rem; }
+  .cta-btn{
+    align-self:flex-start; margin-top:4px; display:inline-flex; align-items:center; gap:6px;
+    padding:11px 18px; border-radius:var(--r-sm); background:var(--accent); color:var(--bg-panel);
+    text-decoration:none; font-weight:700; font-size:.86rem; border:none; cursor:pointer;
+    transition:background .15s ease, transform .12s ease;
+  }
+  .cta-btn:hover{ background:var(--accent-strong); transform:translateY(-1px); }
+
+  @media (min-width:720px){
+    .featured-card{ flex-direction:row; }
+    .featured-tile{ width:280px; height:auto; flex:none; }
+    .featured-body{ padding:30px 34px; flex:1; }
+    .featured-title{ font-size:1.65rem; }
+  }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    position:sticky; top:0; z-index:30; padding:18px 0 14px; margin-top:40px; display:flex; flex-direction:column; gap:12px;
+    background:color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  }
+  .filter-row{ display:flex; align-items:center; gap:10px; }
+  .filter-label{ font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); flex:none; }
+  .rtab{
+    font-size:.82rem; font-weight:600; padding:8px 14px; border-radius:var(--r-sm);
+    border:1px solid transparent; background:var(--bg-panel-alt); color:var(--text-muted);
+    cursor:pointer; transition:all .15s ease; flex:none; white-space:nowrap;
+  }
+  .rtab:hover{ background:var(--border-soft); color:var(--text); }
+  .rtab.active{ background:var(--accent); color:var(--bg-panel); border-color:var(--accent); font-weight:700; }
+  .legend{ display:flex; gap:12px; flex-wrap:wrap; font-size:.74rem; color:var(--text-faint); }
+  .legend span{ display:inline-flex; align-items:center; gap:5px; }
+  .legend i{ width:7px; height:7px; border-radius:50%; display:inline-block; }
+
+  .attitude-heading{ font-family:var(--serif); font-size:.98rem; color:var(--accent-strong); margin:2px 0 2px; }
+  .atab{
+    font-size:.82rem; font-weight:600; padding:9px 16px; border-radius:20px;
+    border:1px solid #e8e0d2; background:#fcfaf7; color:#7d6f63;
+    cursor:pointer; transition:all .15s ease; flex:none; white-space:nowrap;
+  }
+  .atab:hover{ border-color:#7d6f63; }
+  .atab.active{ background:#7d6f63; color:#fcfaf7; border-color:#7d6f63; font-weight:700; }
+  :root[data-theme="dark"] .atab, :root[data-theme="dark"] .attitude-heading{ }
+  :root[data-theme="dark"] .atab{ background:#332c24; color:#e2d9c9; border-color:#4a4038; }
+  :root[data-theme="dark"] .atab.active{ background:#c9a37a; color:#241d15; border-color:#c9a37a; }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .atab{ background:#332c24; color:#e2d9c9; border-color:#4a4038; }
+    :root:not([data-theme="light"]) .atab.active{ background:#c9a37a; color:#241d15; border-color:#c9a37a; }
+  }
+
+  @media (min-width:720px){
+    .scroller{ flex-wrap:wrap; overflow:visible; }
+  }
+
+  /* ---------- Grid ---------- */
+  .grid{ padding:26px 0 24px; display:grid; grid-template-columns:1fr; gap:20px; }
+  @media (min-width:640px){ .grid{ grid-template-columns:repeat(2,1fr); gap:22px; } }
+  @media (min-width:980px){ .grid{ grid-template-columns:repeat(3,1fr); gap:26px; } }
+
+  .card{
+    background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--r-lg);
+    overflow:hidden; display:flex; flex-direction:column; box-shadow:var(--shadow);
+    opacity:0; transform:translateY(10px); transition:opacity .5s ease, transform .25s ease, border-color .2s ease, box-shadow .25s ease;
+  }
+  .card.in{ opacity:1; transform:none; }
+  .card[hidden]{ display:none; }
+  @media (hover:hover){
+    .card:hover{ border-color:var(--border); box-shadow:var(--shadow-lg); transform:translateY(-4px); }
+  }
+
+  .tile{ position:relative; height:104px; overflow:hidden; }
+  .tile .mark{
+    position:absolute; right:6px; bottom:-16px; font-family:var(--serif); font-weight:700;
+    font-size:4.8rem; color:rgba(44,36,23,0.16); line-height:1; user-select:none;
+  }
+  .tile .region-pin{
+    position:absolute; top:10px; left:12px; font-size:.7rem; font-weight:700;
+    color:rgba(44,36,23,0.7); background:rgba(255,255,255,0.62); padding:3px 9px; border-radius:var(--r-sm);
+  }
+  .status-chip{
+    position:absolute; top:9px; right:9px; font-size:.66rem; font-weight:700;
+    padding:4px 8px; border-radius:var(--r-sm); color:#211b12; display:flex; align-items:center; gap:5px;
+    background:rgba(255,255,255,0.9);
+  }
+  .status-chip i{ width:6px; height:6px; border-radius:50%; }
+
+  .card-body{ padding:20px 20px 22px; display:flex; flex-direction:column; gap:8px; flex:1; }
+  .tag-row{ display:flex; gap:6px; flex-wrap:wrap; }
+  .mood-tag{
+    font-size:.7rem; font-weight:700; color:var(--accent-strong);
+    background:var(--accent-soft); padding:4px 9px; border-radius:var(--r-sm); text-wrap:balance;
+  }
+  .genre-tag{
+    font-size:.7rem; font-weight:600; color:var(--text-muted);
+    background:var(--bg-panel-alt); border:1px solid var(--border-soft);
+    padding:3px 9px; border-radius:var(--r-sm);
+  }
+  .card-title{ font-size:1.08rem; font-weight:800; letter-spacing:-0.01em; line-height:1.34; text-wrap:balance; margin-top:3px; }
+  .card-hook{ font-family:var(--serif); font-size:.9rem; color:var(--text); line-height:1.5; text-wrap:balance; }
+  .card-venue{ font-size:.76rem; color:var(--text-faint); font-weight:600; }
+  .card-period{ font-size:.76rem; color:var(--text-faint); }
+  .card-desc{ font-size:.86rem; color:var(--text-muted); flex:1; }
+  .card-foot{ display:flex; justify-content:flex-end; align-items:center; margin-top:2px; }
+  .card-link{
+    font-size:.8rem; font-weight:700; color:var(--accent); background:none; border:none; padding:6px 0;
+    cursor:pointer; border-bottom:1px solid transparent;
+  }
+  .card-link:hover{ border-color:var(--accent); }
+
+  .tile.seoul{ background:linear-gradient(150deg, color-mix(in srgb, var(--seoul) 40%, white 60%), color-mix(in srgb, var(--seoul) 68%, white 18%)); }
+  .tile.daegu{ background:linear-gradient(150deg, color-mix(in srgb, var(--daegu) 40%, white 60%), color-mix(in srgb, var(--daegu) 68%, white 18%)); }
+  .tile.daejeon{ background:linear-gradient(150deg, color-mix(in srgb, var(--daejeon) 40%, white 60%), color-mix(in srgb, var(--daejeon) 68%, white 18%)); }
+  .tile.gwangju{ background:linear-gradient(150deg, color-mix(in srgb, var(--gwangju) 40%, white 60%), color-mix(in srgb, var(--gwangju) 68%, white 18%)); }
+  .tile.jeju{ background:linear-gradient(150deg, color-mix(in srgb, var(--jeju) 40%, white 60%), color-mix(in srgb, var(--jeju) 68%, white 18%)); }
+  .tile.busan{ background:linear-gradient(150deg, color-mix(in srgb, var(--busan) 40%, white 60%), color-mix(in srgb, var(--busan) 68%, white 18%)); }
+  .tile.gyeonggi{ background:linear-gradient(150deg, color-mix(in srgb, var(--gyeonggi) 40%, white 60%), color-mix(in srgb, var(--gyeonggi) 68%, white 18%)); }
+  .tile.jeonbuk{ background:linear-gradient(150deg, color-mix(in srgb, var(--jeonbuk) 40%, white 60%), color-mix(in srgb, var(--jeonbuk) 68%, white 18%)); }
+  .tile.ulsan{ background:linear-gradient(150deg, color-mix(in srgb, var(--ulsan) 40%, white 60%), color-mix(in srgb, var(--ulsan) 68%, white 18%)); }
+  .tile.incheon{ background:linear-gradient(150deg, color-mix(in srgb, var(--incheon) 40%, white 60%), color-mix(in srgb, var(--incheon) 68%, white 18%)); }
+  .tile.gangwon{ background:linear-gradient(150deg, color-mix(in srgb, var(--gangwon) 40%, white 60%), color-mix(in srgb, var(--gangwon) 68%, white 18%)); }
+  .tile.gyeongnam{ background:linear-gradient(150deg, color-mix(in srgb, var(--gyeongnam) 40%, white 60%), color-mix(in srgb, var(--gyeongnam) 68%, white 18%)); }
+  .tile.gyeongbuk{ background:linear-gradient(150deg, color-mix(in srgb, var(--gyeongbuk) 40%, white 60%), color-mix(in srgb, var(--gyeongbuk) 68%, white 18%)); }
+  .tile.chungnam{ background:linear-gradient(150deg, color-mix(in srgb, var(--chungnam) 40%, white 60%), color-mix(in srgb, var(--chungnam) 68%, white 18%)); }
+  .tile.chungbuk{ background:linear-gradient(150deg, color-mix(in srgb, var(--chungbuk) 40%, white 60%), color-mix(in srgb, var(--chungbuk) 68%, white 18%)); }
+  .tile.sejong{ background:linear-gradient(150deg, color-mix(in srgb, var(--sejong) 40%, white 60%), color-mix(in srgb, var(--sejong) 68%, white 18%)); }
+
+  .status-ongoing i{ background:var(--ok); }
+  .status-closing i{ background:var(--warn); }
+  .status-upcoming i{ background:var(--soon); }
+
+  /* ---------- Footer ---------- */
+  footer.foot{ padding:48px 0 48px; border-top:1px solid var(--border-soft); margin-top:44px; }
+  .foot-grid{ display:flex; flex-direction:column; gap:14px; }
+  .foot-note{ color:var(--text-faint); font-size:.8rem; }
+  .foot-sign{ font-family:var(--serif); font-size:.98rem; color:var(--accent-strong); }
+  @media (min-width:720px){
+    .foot-grid{ flex-direction:row; justify-content:space-between; align-items:flex-end; }
+    .foot-note{ max-width:52ch; }
+  }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(20,15,8,0.5); backdrop-filter:blur(2px);
+    display:flex; align-items:flex-end; justify-content:center; z-index:100;
+    opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+  .modal-overlay.open{ opacity:1; pointer-events:auto; }
+  .modal-panel{
+    background:var(--bg-panel); width:100%; max-width:640px; max-height:88vh; overflow-y:auto;
+    border-radius:20px 20px 0 0; box-shadow:var(--shadow-lg);
+    transform:translateY(24px); transition:transform .25s ease;
+    padding:20px 18px 28px;
+  }
+  .modal-overlay.open .modal-panel{ transform:translateY(0); }
+  @media (min-width:720px){
+    .modal-overlay{ align-items:center; }
+    .modal-panel{ border-radius:var(--r-lg); padding:30px 32px 32px; }
+  }
+  .modal-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:4px; }
+  .modal-eyebrow{ font-size:.72rem; color:var(--text-faint); }
+  .modal-title{ font-size:1.3rem; font-weight:800; margin-top:4px; text-wrap:balance; }
+  .modal-meta{ font-size:.8rem; color:var(--text-faint); margin-top:4px; }
+  .modal-close{
+    flex:none; width:32px; height:32px; border-radius:50%; border:1px solid var(--border);
+    background:var(--bg-panel-alt); color:var(--text-muted); cursor:pointer; font-size:1rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .modal-close:hover{ border-color:var(--accent); color:var(--accent); }
+  .modal-note{ margin-top:16px; color:var(--text-muted); font-size:.92rem; }
+  .modal-section-label{ font-size:.7rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--text-faint); margin-top:20px; margin-bottom:10px; }
+
+  .artist-grid{ display:grid; grid-template-columns:1fr; gap:10px; }
+  @media (min-width:520px){ .artist-grid{ grid-template-columns:1fr 1fr; } }
+  .artist-card{ display:flex; gap:12px; padding:12px; border:1px solid var(--border-soft); border-radius:var(--r-md); background:var(--bg-panel-alt); }
+  .artist-info{ min-width:0; }
+  .artist-name{ font-weight:800; font-size:.92rem; }
+  .artist-years{ font-size:.72rem; color:var(--text-faint); }
+  .artist-blurb{ font-size:.8rem; color:var(--text-muted); margin-top:4px; line-height:1.5; }
+  .artist-works{ margin-top:6px; font-size:.76rem; color:var(--accent-strong); }
+  .artist-works b{ font-weight:700; color:var(--text-faint); font-weight:600; margin-right:4px; }
+
+  .avatar{ position:relative; width:52px; height:52px; border-radius:50%; flex:none; overflow:hidden; border:2px solid var(--accent); background:var(--skin); }
+  .avatar .hair{ position:absolute; left:-3px; right:-3px; top:-3px; border-radius:50% 50% 40% 40% / 65% 65% 25% 25%; }
+  .avatar .beard{ position:absolute; left:10%; right:10%; bottom:-3px; border-radius:50% 50% 45% 45%; }
+  .avatar .mustache{ position:absolute; left:26%; right:26%; top:57%; height:9%; border-radius:50%; }
+  .avatar .glasses{ position:absolute; left:14%; right:14%; top:42%; height:17%; border:2px solid rgba(30,22,12,0.55); border-radius:45%; background:rgba(255,255,255,0.14); }
+  .avatar .stripe{ position:absolute; left:0; right:0; bottom:0; height:24%; background:repeating-linear-gradient(0deg, rgba(30,22,12,0.35) 0 3px, transparent 3px 6px); }
+
+  .modal-link{ display:inline-flex; align-items:center; gap:6px; margin-top:22px; font-size:.84rem; font-weight:700; color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; }
+  .modal-link:hover{ border-color:var(--accent); }
+
+  .info-block{ margin-top:18px; border-top:1px solid var(--border-soft); padding-top:14px; display:flex; flex-direction:column; gap:14px; }
+  .info-row{ display:flex; flex-direction:column; gap:4px; }
+  .info-k{ font-size:.68rem; font-weight:700; color:var(--accent); letter-spacing:.06em; text-transform:uppercase; }
+  .info-v{ font-size:.86rem; color:var(--text-muted); line-height:1.55; }
+  @media (min-width:520px){
+    .info-row{ display:grid; grid-template-columns:96px 1fr; gap:12px; align-items:start; }
+    .info-k{ padding-top:2px; }
+  }
+  .info-map{ display:inline-flex; margin-top:4px; font-size:.8rem; font-weight:700; color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; }
+  .info-map:hover{ border-color:var(--accent); }
+
+  /* ---------- Chat curator ---------- */
+  .chat-fab{
+    position:fixed; right:18px; bottom:18px; z-index:90;
+    width:54px; height:54px; border-radius:50%; border:none;
+    background:var(--accent); color:var(--bg-panel); box-shadow:var(--shadow-lg);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    transition:transform .15s ease;
+  }
+  .chat-fab:hover{ transform:translateY(-2px); }
+  .chat-fab svg{ width:23px; height:23px; }
+
+  .chat-panel{
+    position:fixed; right:16px; bottom:16px; z-index:95;
+    width:min(380px, calc(100vw - 24px)); height:min(600px, calc(100vh - 96px));
+    background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--r-lg);
+    box-shadow:var(--shadow-lg); display:flex; flex-direction:column; overflow:hidden;
+    transform:translateY(16px) scale(.98); opacity:0; pointer-events:none;
+    transition:transform .2s ease, opacity .2s ease;
+  }
+  .chat-panel.open{ transform:none; opacity:1; pointer-events:auto; }
+  @media (max-width:480px){
+    .chat-panel{ right:8px; left:8px; bottom:8px; width:auto; height:min(72vh, 560px); }
+  }
+
+  .chat-head{ display:flex; justify-content:space-between; align-items:flex-start; padding:16px 16px 12px; border-bottom:1px solid var(--border-soft); flex:none; }
+  .chat-head-eyebrow{ font-size:.68rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:.06em; }
+  .chat-head-title{ font-size:.96rem; font-weight:800; margin-top:2px; }
+
+  .chat-messages{ flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+  .msg{ max-width:88%; padding:10px 14px; border-radius:17px; font-size:.85rem; line-height:1.55; }
+  .msg.bot{ align-self:flex-start; background:var(--bg-panel-alt); color:var(--text); border-bottom-left-radius:5px; }
+  .msg.user{ align-self:flex-end; background:var(--accent); color:var(--bg-panel); border-bottom-right-radius:5px; }
+  .msg-recs{ display:flex; flex-direction:column; gap:8px; margin-top:2px; max-width:92%; align-self:flex-start; }
+  .msg-rec{ border:1px solid var(--border-soft); border-radius:10px; padding:10px 12px; background:var(--bg-panel); }
+  .msg-rec .t{ font-weight:800; font-size:.85rem; }
+  .msg-rec .m{ font-size:.72rem; color:var(--text-faint); margin-top:3px; }
+  .msg-rec .s{ font-size:.68rem; font-weight:700; color:var(--accent-strong); margin-top:3px; }
+  .msg-rec button{ margin-top:7px; font-size:.76rem; font-weight:700; color:var(--accent); background:none; border:none; padding:0; cursor:pointer; }
+
+  .chat-quick{ display:flex; gap:6px; flex-wrap:wrap; padding:0 16px 10px; flex:none; }
+  .chat-quick button{ font-size:.74rem; padding:6px 11px; border-radius:var(--r-sm); border:1px solid var(--border); background:var(--bg-panel-alt); color:var(--text-muted); cursor:pointer; }
+  .chat-quick button:hover{ border-color:var(--accent); color:var(--text); }
+
+  .chat-input-row{ display:flex; gap:8px; padding:12px; border-top:1px solid var(--border-soft); flex:none; }
+  .chat-input{ flex:1; min-width:0; border:1px solid var(--border); border-radius:var(--r-sm); padding:10px 12px; font-size:.85rem; background:var(--bg); color:var(--text); }
+  .chat-input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+  .chat-send{ width:38px; height:38px; border-radius:var(--r-sm); border:none; background:var(--accent); color:var(--bg-panel); cursor:pointer; font-size:1rem; flex:none; }
+  .chat-send:hover{ background:var(--accent-strong); }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ transition:none; }
+    .modal-overlay, .modal-panel, .chat-panel{ transition:none; }
+  }
+</style>
+
+<header class="masthead">
+  <div class="shell">
+    <div class="masthead-top">
+      <div class="brand-eyebrow">Days with Art</div>
+      <h1 class="brand">미술이 있는 <em>날들</em></h1>
+      <div class="today-badge" id="todayBadge">오늘도, 어딘가에서 전시가 열리고 있어요</div>
+    </div>
+    <p class="lede">미술관은 오래 어렵고 조용하고 먼 곳이었어요. 그런데 어느 날, 그림 한 점 앞에 이유 없이 오래 서 있었던 날이 있었습니다. 이 페이지는 그 기억에서 시작했어요 — 지금 전국에서 열리고 있는, 그리고 곧 열릴 전시 중에서 괜히 마음이 가는 것들만 골라봤어요.</p>
+  </div>
+</header>
+
+<section class="featured">
+  <div class="shell">
+    <div class="featured-card">
+      <div class="featured-tile">
+        <div class="pin">서울 · 국립중앙박물관</div>
+        <div class="mark">밥</div>
+      </div>
+      <div class="featured-body">
+        <span class="featured-mood">이유 없이 배고픈 저녁에</span>
+        <div class="featured-title">우리들의 밥상</div>
+        <p class="pull">"우리가 매일 무심코 마주하는 밥 한 그릇, 그 안에 이렇게 많은 이야기가 담겨 있었다니."</p>
+        <div class="featured-meta tabular">2026.07.01 – 10.25</div>
+        <p class="featured-desc">K-푸드가 지금의 모습이 되기까지의 여정을 예술의 언어로 풀어낸 특별전. 어려운 배경지식이 없어도, 그냥 반가운 마음 하나로 들어갈 수 있어요.</p>
+        <button class="cta-btn" data-id="bapsang">더 궁금하면 여기서 ↗</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="controls">
+  <div class="shell" style="display:flex; flex-direction:column; gap:10px;">
+    <div class="filter-row">
+      <span class="filter-label">지역</span>
+    </div>
+    <div class="scroller region-tabs" id="regionTabs">
+      <button class="rtab active" data-region="all">전체 45</button>
+      <button class="rtab" data-region="서울">서울</button>
+      <button class="rtab" data-region="경기">경기</button>
+      <button class="rtab" data-region="인천">인천</button>
+      <button class="rtab" data-region="대구">대구</button>
+      <button class="rtab" data-region="대전">대전</button>
+      <button class="rtab" data-region="광주">광주</button>
+      <button class="rtab" data-region="전북">전북</button>
+      <button class="rtab" data-region="울산">울산</button>
+      <button class="rtab" data-region="제주">제주</button>
+      <button class="rtab" data-region="부산">부산</button>
+      <button class="rtab" data-region="강원">강원</button>
+      <button class="rtab" data-region="경남">경남</button>
+      <button class="rtab" data-region="경북">경북</button>
+      <button class="rtab" data-region="충남">충남</button>
+      <button class="rtab" data-region="충북">충북</button>
+      <button class="rtab" data-region="세종">세종</button>
+    </div>
+    <div class="attitude-heading">오늘, 어떤 마음으로 전시를 마주할까요?</div>
+    <div class="scroller attitude-tabs" id="attitudeTabs">
+      <button class="atab active" data-attitude="all">모든 전시</button>
+      <button class="atab" data-attitude="가벼운 산책" title="사진 찍기 좋고 부담 없는 전시">가벼운 산책</button>
+      <button class="atab" data-attitude="깊은 몰입" title="작품 하나하나를 진지하게 마주하는 전시">깊은 몰입</button>
+      <button class="atab" data-attitude="배움이 있는" title="역사, 교육적 가치가 높은 전시">배움이 있는</button>
+      <button class="atab" data-attitude="영감이 필요한" title="새로운 시각과 창의적인 영감을 주는 전시">영감이 필요한</button>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--ok)"></i>진행 중</span>
+      <span><i style="background:var(--warn)"></i>종료 임박</span>
+      <span><i style="background:var(--soon)"></i>오픈 예정</span>
+    </div>
+  </div>
+</section>
+
+<main class="shell">
+  <div class="grid" id="grid">
+
+    <article class="card" data-region="서울" data-genre="인상주의" data-attitude="배움이 있는" data-start="2026-05-28" data-end="2026-08-23">
+      <div class="tile seoul"><div class="region-pin">서울</div><div class="mark">인</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">미술책에서만 보던 이름을 실제로 보고 싶을 때</span><span class="genre-tag">인상주의</span></div>
+        <div class="card-title">인상주의를 넘어</div>
+        <p class="card-hook">르누아르에서 피카소까지, 한 걸음마다 시대가 바뀌는 전시.</p>
+        <div class="card-venue">세종문화회관 미술관</div>
+        <div class="card-period tabular">2026.05.28 – 08.23</div>
+        <p class="card-desc">르누아르·드가·고흐·마티스·피카소 — 디트로이트미술관 소장품으로 만나는 다섯 거장.</p>
+        <div class="card-foot"><button class="card-link" data-id="impressionism">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="서울" data-genre="현대미술" data-attitude="가벼운 산책" data-start="2026-04-24" data-end="2026-08-30">
+      <div class="tile seoul"><div class="region-pin">서울</div><div class="mark">보</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">웃으면서 미술관을 나오고 싶은 날</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">페르난도 보테로: 형태의 미학</div>
+        <p class="card-hook">빵빵하게 부풀린 형태 안에 담긴, 유쾌한 반란.</p>
+        <div class="card-venue">예술의전당 한가람디자인미술관</div>
+        <div class="card-period tabular">2026.04.24 – 08.30</div>
+        <p class="card-desc">콜롬비아 출신 거장 보테로의 회화·드로잉·조각 112점, 60년의 궤적. 11년 만의 국내 전시.</p>
+        <div class="card-foot"><button class="card-link" data-id="botero">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="서울" data-genre="조각·설치" data-attitude="깊은 몰입" data-start="2026-07-29" data-end="2026-11-15">
+      <div class="tile seoul"><div class="region-pin">서울</div><div class="mark">조</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">천천히, 오래 서서 보고 싶은 날</span><span class="genre-tag">조각·설치</span></div>
+        <div class="card-title">조숙진 개인전</div>
+        <p class="card-hook">부드러운 재료로 단단한 질문을 던져온 조각가의 40년.</p>
+        <div class="card-venue">서울시립미술관 남서울미술관</div>
+        <div class="card-period tabular">2026.07.29 – 11.15</div>
+        <p class="card-desc">미국으로 건너가 국제적으로 활동해온 조각가 조숙진의 연례 개인전.</p>
+        <div class="card-foot"><button class="card-link" data-id="josukjin">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="서울" data-genre="조각·설치" data-attitude="영감이 필요한" data-start="2026-05-05" data-end="2026-11-29">
+      <div class="tile seoul"><div class="region-pin">서울</div><div class="mark">환</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">낯선 걸 보고 싶은 날</span><span class="genre-tag">조각·설치</span></div>
+        <div class="card-title">환경, 예술이 되다</div>
+        <p class="card-hook">몸으로, 감각으로 세상을 실험한 여자들의 이야기.</p>
+        <div class="card-venue">리움미술관 아동교육문화센터</div>
+        <div class="card-period tabular">2026.05.05 – 11.29</div>
+        <p class="card-desc">1956–1976년, 전 세계 1세대 여성 설치미술가들의 선구적인 실험을 조명하는 그룹전.</p>
+        <div class="card-foot"><button class="card-link" data-id="hwangyeong">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="서울" data-genre="조각·설치" data-attitude="영감이 필요한" data-start="2026-01-01">
+      <div class="tile seoul"><div class="region-pin">서울</div><div class="mark">구</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">오감을 깨우고 싶은 날</span><span class="genre-tag">조각·설치</span></div>
+        <div class="card-title">구정아 개인전</div>
+        <p class="card-hook">눈보다 코가 먼저 반응하는, 향기로 채운 전시.</p>
+        <div class="card-venue">리움미술관 · 로비 & M2 전시장</div>
+        <div class="card-period">2026년 진행 중 · 종료일 미정</div>
+        <p class="card-desc">베니스 비엔날레 한국관을 향과 냄새로 채웠던 구정아의 국내 최대 규모 개인전.</p>
+        <div class="card-foot"><button class="card-link" data-id="gujeonga">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="서울" data-genre="복합" data-attitude="가벼운 산책" data-start="2025-06-28" data-end="2026-09-20">
+      <div class="tile seoul"><div class="region-pin">서울</div><div class="mark">취</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">내 취향을 정리하고 싶은 주말</span><span class="genre-tag">복합</span></div>
+        <div class="card-title">취향가옥 2</div>
+        <p class="card-hook">내 방 어딘가에도 미술이 있었다는 걸 알려주는 전시.</p>
+        <div class="card-venue">디뮤지엄 (D MUSEUM)</div>
+        <div class="card-period tabular">2025.06.28 – 2026.09.20</div>
+        <p class="card-desc">Art in Life, Life in Art — 일상 속 예술과 예술 속 일상을 나란히 놓아본 기획전.</p>
+        <div class="card-foot"><button class="card-link" data-id="chwihyang">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="서울" data-genre="현대미술" data-attitude="배움이 있는" data-start="2026-04-01" data-end="2026-08-02">
+      <div class="tile seoul"><div class="region-pin">서울</div><div class="mark">A</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">유명 작가들을 한 번에 훑고 싶을 때</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">APMA, CHAPTER FIVE</div>
+        <p class="card-hook">백남준부터 이우환까지, 한 지붕 아래 만나는 이름들.</p>
+        <div class="card-venue">아모레퍼시픽미술관</div>
+        <div class="card-period tabular">2026.04.01 – 08.02</div>
+        <p class="card-desc">키키 스미스, 백남준, 이불, 양혜규, 이우환 등 국내외 40여 작가의 소장품 특별전.</p>
+        <div class="card-foot"><button class="card-link" data-id="apma">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="서울" data-genre="공예·역사" data-attitude="배움이 있는" data-start="2026-06-16" data-end="2026-09-06">
+      <div class="tile seoul"><div class="region-pin">서울</div><div class="mark">태</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">여름휴가 대신, 잠깐 떠나고 싶은 날</span><span class="genre-tag">공예·역사</span></div>
+        <div class="card-title">어메이징 타일랜드</div>
+        <p class="card-hook">국내 최초로 건너온, 낯설고 화려한 태국의 색.</p>
+        <div class="card-venue">국립중앙박물관</div>
+        <div class="card-period tabular">2026.06.16 – 09.06</div>
+        <p class="card-desc">태국미술명품전. 국내에서 처음 만나는 태국 미술의 정수.</p>
+        <div class="card-foot"><button class="card-link" data-id="thailand">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="대구" data-genre="회화" data-attitude="배움이 있는" data-start="2026-02-10" data-end="2026-08-09">
+      <div class="tile daegu"><div class="region-pin">대구</div><div class="mark">신</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">이 동네의 지금을 보고 싶은 날</span><span class="genre-tag">회화</span></div>
+        <div class="card-title">신소장품 보고전</div>
+        <p class="card-hook">미술관이 올해 새로 들인 그림들, 가장 먼저 만나보기.</p>
+        <div class="card-venue">대구미술관 · 6전시실</div>
+        <div class="card-period tabular">2026.02.10 – 08.09</div>
+        <p class="card-desc">2025년 한 해 수집한 21명 작가 71점 중 28점을 선별 공개.</p>
+        <div class="card-foot"><button class="card-link" data-id="sinsojang">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="대구" data-genre="한국화·서예" data-attitude="배움이 있는" data-start="2026-03-01">
+      <div class="tile daegu"><div class="region-pin">대구</div><div class="mark">서</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">한국화가 낯설게 느껴졌다면</span><span class="genre-tag">한국화·서예</span></div>
+        <div class="card-title">서화무진: 시서화의 마술사들</div>
+        <p class="card-hook">붓 하나로 시와 그림과 글씨를 오간 사람들.</p>
+        <div class="card-venue">대구미술관 · 1·2·3전시실 + 어미홀</div>
+        <div class="card-period">2026년 봄 개막 · 종료일 미정</div>
+        <p class="card-desc">개관 15주년 기념 대규모전. 한국화의 흐름을 80여 작가 100여 점으로 조망합니다.</p>
+        <div class="card-foot"><button class="card-link" data-id="seohwamujin">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="대전" data-genre="조각·설치" data-attitude="깊은 몰입" data-start="2026-04-01" data-end="2026-07-12">
+      <div class="tile daejeon"><div class="region-pin">대전</div><div class="mark">최</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">이번 주말이 마지막 기회</span><span class="genre-tag">조각·설치</span></div>
+        <div class="card-title">최종태의 질문</div>
+        <p class="card-hook">평생 같은 질문을 조각해온 사람의, 놓치기 아까운 답.</p>
+        <div class="card-venue">대전시립미술관 대전창작센터</div>
+        <div class="card-period tabular">2026.04.01 – 07.12</div>
+        <p class="card-desc">최종태 전시관 개관을 기념하는 전시.</p>
+        <div class="card-foot"><button class="card-link" data-id="choijongtae">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="대전" data-genre="복합" data-attitude="가벼운 산책" data-start="2026-03-03" data-end="2026-08-17">
+      <div class="tile daejeon"><div class="region-pin">대전</div><div class="mark">숲</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">아이의 마음으로 걷고 싶은 날</span><span class="genre-tag">복합</span></div>
+        <div class="card-title">깊고 깊은 숲으로</div>
+        <p class="card-hook">수장고라는 공간 자체가, 하나의 숲이 되는 순간.</p>
+        <div class="card-venue">대전시립미술관 열린수장고</div>
+        <div class="card-period tabular">2026.03.03 – 08.17</div>
+        <p class="card-desc">도로시의 원더링 — 소장품을 기반으로 한 기획전.</p>
+        <div class="card-foot"><button class="card-link" data-id="gipeunsup">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="광주" data-genre="현대미술" data-attitude="영감이 필요한" data-start="2026-06-18" data-end="2026-07-19">
+      <div class="tile gwangju"><div class="region-pin">광주</div><div class="mark">U</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">효율과 먼 것들이 그리운 날</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">Useless But Beautiful</div>
+        <p class="card-hook">쓸모없어서 더 아름다운 것들에 대하여.</p>
+        <div class="card-venue">국립아시아문화전당(ACC) · 양나희</div>
+        <div class="card-period tabular">2026.06.18 – 07.19</div>
+        <p class="card-desc">ACC 뉴스트(NEWST) 공모 선정 작가 양나희의 개인전.</p>
+        <div class="card-foot"><button class="card-link" data-id="useless">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="광주" data-genre="현대미술" data-attitude="깊은 몰입" data-start="2026-07-30" data-end="2026-08-30">
+      <div class="tile gwangju"><div class="region-pin">광주</div><div class="mark">밤</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">괜히 마음이 헛헛한 밤</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">남겨진 밤</div>
+        <p class="card-hook">지나간 밤들이 남기고 간 잔상을 따라가는 시간.</p>
+        <div class="card-venue">국립아시아문화전당(ACC) · 서영기</div>
+        <div class="card-period tabular">2026.07.30 – 08.30</div>
+        <p class="card-desc">A Night Left Behind — ACC 뉴스트 공모 선정 작가 서영기의 개인전.</p>
+        <div class="card-foot"><button class="card-link" data-id="namgyeojinbam">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="제주" data-genre="미디어아트" data-attitude="가벼운 산책" data-start="2026-04-08">
+      <div class="tile jeju"><div class="region-pin">제주</div><div class="mark">별</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">말없이 압도되고 싶은 날</span><span class="genre-tag">미디어아트</span></div>
+        <div class="card-title">빛의 벙커 — 반 고흐, 별이 빛나는 밤</div>
+        <p class="card-hook">그림이 음악이 되어, 별이 빛나는 밤 속으로 걸어 들어가는 순간.</p>
+        <div class="card-venue">빛의 벙커 (제주 서귀포)</div>
+        <div class="card-period">2026.04.08 – 전시 종료 시까지 · 미디어아트</div>
+        <p class="card-desc">반 고흐의 대표작을 360도 몰입형 미디어아트로 재해석한 메인 전시(32분)와, 고갱의 화려한 색채를 담은 특별전 '고갱, 섬의 부름'(10분)을 함께 상영.</p>
+        <div class="card-foot"><button class="card-link" data-id="bitbunker">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="부산" data-genre="미디어아트" data-attitude="가벼운 산책" data-start="2026-02-13">
+      <div class="tile busan"><div class="region-pin">부산</div><div class="mark">달</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">사진 찍고 싶은, 몽환적인 날</span><span class="genre-tag">미디어아트</span></div>
+        <div class="card-title">아르떼뮤지엄 — ETERNAL NATURE</div>
+        <p class="card-hook">거대한 자연이 통째로 나를 감싸는 기분.</p>
+        <div class="card-venue">아르떼뮤지엄 부산 (제주·여수·강릉도 동시 운영)</div>
+        <div class="card-period">상시 운영 · 시즌 한정 '달토끼 특별전' 진행 중</div>
+        <p class="card-desc">꽃 폭포, 해변, 별 하늘 같은 자연이 공간 전체를 휘감는 몰입형 미디어아트.</p>
+        <div class="card-foot"><button class="card-link" data-id="artemuseum">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="제주" data-genre="미디어아트" data-attitude="가벼운 산책" data-start="2026-01-01">
+      <div class="tile jeju"><div class="region-pin">제주</div><div class="mark">고</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">화가의 삶 속으로 걸어 들어가고 싶은 날</span><span class="genre-tag">미디어아트</span></div>
+        <div class="card-title">고흐의 정원</div>
+        <p class="card-hook">그림이 아니라, 반 고흐라는 사람 안으로 들어가는 여행.</p>
+        <div class="card-venue">고흐의 정원 (제주 서귀포)</div>
+        <div class="card-period">상시 운영 · 체험형 디지털 전시</div>
+        <p class="card-desc">보기만 하던 전시에서 벗어나, 반 고흐의 작품을 보고 듣고 만지는 체험형 디지털 정원. 작품이 아니라 '반 고흐라는 사람'이 이야기의 중심이에요.</p>
+        <div class="card-foot"><button class="card-link" data-id="goghgarden">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="울산" data-genre="현대미술" data-attitude="깊은 몰입" data-start="2026-07-02" data-end="2026-10-05">
+      <div class="tile ulsan"><div class="region-pin">울산</div><div class="mark">환</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">사진인지 그림인지 헷갈리고 싶은 날</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">2026 국제 하이퍼-리얼리즘: 가장 완벽한 환영</div>
+        <p class="card-hook">숨 쉬는 것 같은 조각과, 사진보다 더 사진 같은 그림.</p>
+        <div class="card-venue">울산시립미술관 1전시실</div>
+        <div class="card-period tabular">2026.07.02 – 10.05</div>
+        <p class="card-desc">극사실주의 작가 13인의 회화·조각 100여 점. 살아 숨 쉬는 듯한 인체를 조각하는 샘 징크스, 극사실 초상 조각가 카즈 히로 등 세계적 거장들이 대거 참여합니다.</p>
+        <div class="card-foot"><button class="card-link" data-id="hyperrealism">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="경기" data-genre="현대미술" data-attitude="영감이 필요한" data-start="2026-07-16" data-end="2026-09-27">
+      <div class="tile gyeonggi"><div class="region-pin">경기</div><div class="mark">여</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">신진 작가를 가장 먼저 발견하고 싶을 때</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">우리의 여름에게</div>
+        <p class="card-hook">아직 이름이 낯선, 그래서 더 먼저 만나고 싶은 작가들.</p>
+        <div class="card-venue">경기도미술관 (안산)</div>
+        <div class="card-period tabular">2026.07.16 – 09.27</div>
+        <p class="card-desc">개관 20주년을 맞은 경기도미술관의 청년작가전. 지금 이 시대를 자기만의 언어로 진단하는 신진 예술가들을 발굴해 조명합니다.</p>
+        <div class="card-foot"><button class="card-link" data-id="ourSummer">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="전북" data-genre="공예·역사" data-attitude="배움이 있는" data-start="2026-07-01" data-end="2026-10-31">
+      <div class="tile jeonbuk"><div class="region-pin">전북</div><div class="mark">도</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">피카소를 다른 각도에서 보고 싶을 때</span><span class="genre-tag">공예·역사</span></div>
+        <div class="card-title">피카소 도예 (가제)</div>
+        <p class="card-hook">캔버스를 내려놓고 흙을 빚은, 피카소의 또 다른 손.</p>
+        <div class="card-venue">전북도립미술관 (완주)</div>
+        <div class="card-period">2026년 7월 개막 · 10월까지</div>
+        <p class="card-desc">입체주의 창시자로만 알려진 피카소가 도자기로 벌인 조형 실험. 국립현대미술관 지역동행 순회전으로, 지방에서도 만날 수 있는 귀한 기회예요.</p>
+        <div class="card-foot"><button class="card-link" data-id="picassoCeramics">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="서울" data-genre="현대미술" data-attitude="영감이 필요한" data-start="2026-07-24" data-end="2026-12-06">
+      <div class="tile seoul"><div class="region-pin">서울</div><div class="mark">올</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">한국 동시대미술의 최전선이 궁금할 때</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">올해의 작가상 2026</div>
+        <p class="card-hook">매년, 지금 가장 주목해야 할 작가 넷을 고른다.</p>
+        <div class="card-venue">국립현대미술관 서울</div>
+        <div class="card-period tabular">2026.07.24 – 12.06</div>
+        <p class="card-desc">이해민선·홍진훤·이정우·전현선, 네 작가의 신작을 만나는 국립현대미술관·SBS문화재단 공동 주최 대표 미술상 전시.</p>
+        <div class="card-foot"><button class="card-link" data-id="yearArtist2026">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="경기" data-genre="조각·설치" data-attitude="영감이 필요한" data-start="2026-07-21" data-end="2026-11-01">
+      <div class="tile gyeonggi"><div class="region-pin">경기</div><div class="mark">피</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">낯선 생명체 앞에서 마음이 말랑해지는 날</span><span class="genre-tag">조각·설치</span></div>
+        <div class="card-title">패트리샤 피치니니: 낯설지만 따뜻한 (가제)</div>
+        <p class="card-hook">인간과 기술이 뒤섞여 태어난, 이상하게 다정한 존재들.</p>
+        <div class="card-venue">수원시립미술관 행궁 본관</div>
+        <div class="card-period tabular">2026.07.21 – 11.01</div>
+        <p class="card-desc">호주 작가 피치니니의 국내 첫 미술관 개인전. 돌봄과 공존을 묻는 낯선 생명체 조각들을 만난다.</p>
+        <div class="card-foot"><button class="card-link" data-id="piccinini">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="경기" data-genre="미디어아트" data-attitude="영감이 필요한" data-start="2026-07-16" data-end="2027-02-14">
+      <div class="tile gyeonggi"><div class="region-pin">경기</div><div class="mark">별</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">TV들이 별자리처럼 늘어선 걸 보고 싶은 날</span><span class="genre-tag">미디어아트</span></div>
+        <div class="card-title">별, 괘 — 백남준미디어아트페스티벌</div>
+        <p class="card-hook">서거 20주기, 백남준이 남긴 우주가 다시 켜진다.</p>
+        <div class="card-venue">백남준아트센터</div>
+        <div class="card-period tabular">2026.07.16 – 2027.02.14</div>
+        <p class="card-desc">백남준의 우주론·행성 연작과, 그에 화답하는 동시대 작가들의 작품을 함께 조명하는 대규모 페스티벌.</p>
+        <div class="card-foot"><button class="card-link" data-id="njpStar">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="인천" data-genre="미디어아트" data-attitude="가벼운 산책" data-start="2026-09-01" data-end="2027-02-10">
+      <div class="tile incheon"><div class="region-pin">인천</div><div class="mark">새</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">공항 가는 길에 잠깐 다른 세계로 새고 싶은 날</span><span class="genre-tag">미디어아트</span></div>
+        <div class="card-title">New Nature</div>
+        <p class="card-hook">기술이 상상한, 자연 다음의 자연.</p>
+        <div class="card-venue">파라다이스시티 아트스페이스</div>
+        <div class="card-period tabular">2026.09.01 – 2027.02.10</div>
+        <p class="card-desc">일본·영국 아티스트 듀오 A.A.무라카미의 한국 첫 개인전. 감각을 압도하는 몰입형 설치.</p>
+        <div class="card-foot"><button class="card-link" data-id="newNature">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="대구" data-genre="현대미술" data-attitude="배움이 있는" data-start="2026-07-03" data-end="2026-10-25">
+      <div class="tile daegu"><div class="region-pin">대구</div><div class="mark">W</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">예술도 결국 비즈니스라는 말에 웃음이 나는 날</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">앤디 워홀: 예술을 팔다</div>
+        <p class="card-hook">수프 캔을 그린 남자가, 사실은 가장 영리한 전략가였다면.</p>
+        <div class="card-venue">대구문화예술회관미술관</div>
+        <div class="card-period tabular">2026.07.03 – 10.25</div>
+        <p class="card-desc">팝아트의 거장 앤디 워홀을 '예술가'가 아니라 '비즈니스 전략가'라는 각도에서 조명하는 대규모 기획전.</p>
+        <div class="card-foot"><button class="card-link" data-id="warhol">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="대전" data-genre="한국화·서예" data-attitude="배움이 있는" data-start="2026-01-16" data-end="2026-12-25">
+      <div class="tile daejeon"><div class="region-pin">대전</div><div class="mark">노</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">먹과 글씨가 그림이 되는 순간을 보고 싶은 날</span><span class="genre-tag">한국화·서예</span></div>
+        <div class="card-title">시대와 함께한 예술가, 이응노</div>
+        <p class="card-hook">문자에서 시작해 군상으로 번져간, 한 화가의 평생.</p>
+        <div class="card-venue">이응노미술관</div>
+        <div class="card-period tabular">2026.01.16 – 12.25</div>
+        <p class="card-desc">이응노의 신소장품·기증작을 통해 그의 예술 흐름을 조망하는 2026년 상설전.</p>
+        <div class="card-foot"><button class="card-link" data-id="leeungno">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="광주" data-genre="회화" data-attitude="배움이 있는" data-start="2026-05-08" data-end="2026-09-27">
+      <div class="tile gwangju"><div class="region-pin">광주</div><div class="mark">요</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">풍경 속에 감춰진 역사를 마주하고 싶은 날</span><span class="genre-tag">회화</span></div>
+        <div class="card-title">2026 민주인권평화전: 강요배, 시간을 품다</div>
+        <p class="card-hook">제주의 바람과 색으로, 잊지 않으려 그린 그림들.</p>
+        <div class="card-venue">광주시립미술관 본관</div>
+        <div class="card-period tabular">2026.05.08 – 09.27</div>
+        <p class="card-desc">근현대사의 기억을 화폭에 담아온 강요배 화백의 회화를 통해 시간과 역사, 풍경의 관계를 조명.</p>
+        <div class="card-foot"><button class="card-link" data-id="gangyobae">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="전북" data-genre="회화" data-attitude="배움이 있는" data-start="2026-05-21" data-end="2026-08-23">
+      <div class="tile jeonbuk"><div class="region-pin">전북</div><div class="mark">유</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">이름은 낯설어도 그림은 낯익은 발견을 하고 싶은 날</span><span class="genre-tag">회화</span></div>
+        <div class="card-title">당신이 보지 못한 유럽 명화전</div>
+        <p class="card-hook">국내에 잘 알려지지 않은, 파리가 사랑한 그림들.</p>
+        <div class="card-venue">JB문화공간 (군산)</div>
+        <div class="card-period tabular">2026.05.21 – 08.23</div>
+        <p class="card-desc">파리 근대미술을 중심으로, 아직 우리에게 낯선 유럽 명화를 소개하는 무료 전시.</p>
+        <div class="card-foot"><button class="card-link" data-id="europeMasters">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="울산" data-genre="공예·역사" data-attitude="배움이 있는" data-start="2026-05-05" data-end="2026-07-26">
+      <div class="tile ulsan"><div class="region-pin">울산</div><div class="mark">혼</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">부모님 세대의 결혼사진이 궁금해지는 날</span><span class="genre-tag">공예·역사</span></div>
+        <div class="card-title">울산 결혼백서</div>
+        <p class="card-hook">산업도시가 되어가며, 혼례의 모습도 함께 바뀌었다.</p>
+        <div class="card-venue">울산박물관</div>
+        <div class="card-period tabular">2026.05.05 – 07.26</div>
+        <p class="card-desc">울산의 산업화·도시화가 바꿔놓은 결혼 풍속을 소장 자료로 돌아보는 무료 특별전.</p>
+        <div class="card-foot"><button class="card-link" data-id="ulsanWedding">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="울산" data-genre="회화" data-attitude="깊은 몰입" data-start="2026-07-04" data-end="2026-08-30">
+      <div class="tile ulsan"><div class="region-pin">울산</div><div class="mark">슬</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">동해 바닷가 갤러리에서 그림 두 편을 보고 싶은 날</span><span class="genre-tag">회화</span></div>
+        <div class="card-title">머무는 몸, 나아가는 맘 / 검은 회화: 슬도</div>
+        <p class="card-hook">몸의 감각과 검은 회화, 슬도에서 만나는 두 개의 시선.</p>
+        <div class="card-venue">슬도아트 (갤러리 아 · 갤러리 도·트)</div>
+        <div class="card-period tabular">2026.07.04 – 08.30</div>
+        <p class="card-desc">김해진 개인전과 백수연 개인전을 함께 선보이는 복합문화공간의 이인 회화전.</p>
+        <div class="card-foot"><button class="card-link" data-id="seuldoart">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="제주" data-genre="회화" data-attitude="깊은 몰입" data-start="2026-06-30" data-end="2026-10-18">
+      <div class="tile jeju"><div class="region-pin">제주</div><div class="mark">방</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">물방울 하나에 마음이 오래 머무는 날</span><span class="genre-tag">회화</span></div>
+        <div class="card-title">파리의 화가 김창열</div>
+        <p class="card-hook">파리에서 평생, 물방울 하나만 그려온 사람.</p>
+        <div class="card-venue">제주도립 김창열미술관</div>
+        <div class="card-period tabular">2026.06.30 – 10.18</div>
+        <p class="card-desc">개관 10주년 기념 특별기획전. 김창열의 파리 이주 초기부터 말년까지를 작품·사진·다큐멘터리로 조명.</p>
+        <div class="card-foot"><button class="card-link" data-id="kimtschangyeul">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="부산" data-genre="현대미술" data-attitude="영감이 필요한" data-start="2026-04-23" data-end="2026-08-30">
+      <div class="tile busan"><div class="region-pin">부산</div><div class="mark">씨</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">작은 씨앗 하나가 초상화처럼 보이는 날</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">Seed Stories</div>
+        <p class="card-hook">현미경 렌즈로 들여다본, 씨앗이라는 작은 우주.</p>
+        <div class="card-venue">고은사진미술관</div>
+        <div class="card-period tabular">2026.04.23 – 08.30</div>
+        <p class="card-desc">한불수교 140주년 기념. 프랑스 사진가가 전 세계 씨앗을 초상처럼 담은 87점의 사진전.</p>
+        <div class="card-foot"><button class="card-link" data-id="seedStories">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="부산" data-genre="복합" data-attitude="가벼운 산책" data-start="2026-03-21" data-end="2026-07-19">
+      <div class="tile busan"><div class="region-pin">부산</div><div class="mark">코</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">그림책을 다시 펼치고 싶은, 어른의 동심</span><span class="genre-tag">복합</span></div>
+        <div class="card-title">코뿔소와 유니콘</div>
+        <p class="card-hook">글 없는 그림책이, 각자 다른 이야기가 되는 순간.</p>
+        <div class="card-venue">부산현대미술관</div>
+        <div class="card-period tabular">2026.03.21 – 07.19</div>
+        <p class="card-desc">옛이야기와 신화를 동시대적으로 재해석한 그림책·회화·영상 작품 50여 점.</p>
+        <div class="card-foot"><button class="card-link" data-id="rhinoUnicorn">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="강원" data-genre="조각·설치" data-attitude="깊은 몰입" data-start="2026-04-07" data-end="2026-12-06">
+      <div class="tile gangwon"><div class="region-pin">강원</div><div class="mark">숯</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">타고 남은 것에서 오히려 단단함을 느끼고 싶은 날</span><span class="genre-tag">조각·설치</span></div>
+        <div class="card-title">이배: En attendant, 기다리며</div>
+        <p class="card-hook">숯 하나로, 여섯 개의 공간을 채운 사람.</p>
+        <div class="card-venue">뮤지엄산 청조갤러리</div>
+        <div class="card-period tabular">2026.04.07 – 12.06</div>
+        <p class="card-desc">뮤지엄산 개관 이래 첫 한국 작가 개인전. '숯의 작가' 이배의 물성과 정신성을 담은 대규모 개인전.</p>
+        <div class="card-foot"><button class="card-link" data-id="leebaeMuseumSan">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="강원" data-genre="조각·설치" data-attitude="가벼운 산책" data-start="2010-01-01">
+      <div class="tile gangwon"><div class="region-pin">강원</div><div class="mark">하</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">동해 바다를 배경으로 조각 사이를 걷고 싶은 날</span><span class="genre-tag">조각·설치</span></div>
+        <div class="card-title">하슬라아트월드</div>
+        <p class="card-hook">파도 소리를 들으며 걷는, 야외 조각 미술관.</p>
+        <div class="card-venue">하슬라아트월드 (강릉)</div>
+        <div class="card-period">상시 운영 · 야외조각공원 + 현대미술관</div>
+        <p class="card-desc">조각공원과 현대미술관, 피노키오박물관이 어우러진 강릉의 복합 예술공간. 상설 소장품·야외 조각이 중심이에요.</p>
+        <div class="card-foot"><button class="card-link" data-id="haslla">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="경남" data-genre="복합" data-attitude="영감이 필요한" data-start="2026-05-01" data-end="2026-08-25">
+      <div class="tile gyeongnam"><div class="region-pin">경남</div><div class="mark">미</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">한 자리에서 여러 매체를 몰아보고 싶은 날</span><span class="genre-tag">복합</span></div>
+        <div class="card-title">이미지의 미래들 — 서사하는 기억, 채색화를 넘어</div>
+        <p class="card-hook">채색화 너머, 회화·조각·설치·미디어가 뒤섞인 이미지들.</p>
+        <div class="card-venue">진주시립이성자미술관 외 2개소</div>
+        <div class="card-period tabular">2026.05 – 08.25</div>
+        <p class="card-desc">진주 3개 장소에 걸쳐 열리는 대규모 특별기획전. 35명의 작가가 그리는 이미지의 미래.</p>
+        <div class="card-foot"><button class="card-link" data-id="imageOfFutures">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="경남" data-genre="조각·설치" data-attitude="깊은 몰입" data-start="2026-02-24" data-end="2027-08-29">
+      <div class="tile gyeongnam"><div class="region-pin">경남</div><div class="mark">원</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">완성작보다 그 전 단계가 더 궁금한 날</span><span class="genre-tag">조각·설치</span></div>
+        <div class="card-title">The Origin — 석고 원형展</div>
+        <p class="card-hook">조각이 되기 전, 석고 안에 머문 시간들.</p>
+        <div class="card-venue">창원시립마산문신미술관</div>
+        <div class="card-period tabular">2026.02.24 – 2027.08.29</div>
+        <p class="card-desc">조각가 문신의 최종 작품 이전 단계, '석고 원형'을 독립된 예술로 재조명하는 장기 기획전.</p>
+        <div class="card-foot"><button class="card-link" data-id="moonshinOrigin">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="경북" data-genre="조각·설치" data-attitude="영감이 필요한" data-start="2026-06-04" data-end="2026-09-06">
+      <div class="tile gyeongbuk"><div class="region-pin">경북</div><div class="mark">콜</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">건물 하나가 통째로 질문이 되는 걸 보고 싶은 날</span><span class="genre-tag">조각·설치</span></div>
+        <div class="card-title">네이단 콜리: 마음이 그려낸 풍경</div>
+        <p class="card-hook">믿음과 상상 사이, 텍스트로 지어올린 건축.</p>
+        <div class="card-venue">포항시립미술관</div>
+        <div class="card-period tabular">2026.06.04 – 09.06</div>
+        <p class="card-desc">터너상 최종 후보 출신 설치미술가 네이단 콜리의 아시아 첫 대규모 개인전.</p>
+        <div class="card-foot"><button class="card-link" data-id="nathanColey">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="경북" data-genre="현대미술" data-attitude="배움이 있는" data-start="2026-05-11" data-end="2026-09-15">
+      <div class="tile gyeongbuk"><div class="region-pin">경북</div><div class="mark">고</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">본 적 없는 심해의 울림을 상상하고 싶은 날</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">움직이는 섬, 고래</div>
+        <p class="card-hook">한국에 한 명뿐인 고래 사진가가 담은, 거대한 침묵.</p>
+        <div class="card-venue">경주솔거미술관</div>
+        <div class="card-period tabular">2026.05.11 – 09.15</div>
+        <p class="card-desc">국내 유일의 고래 전문 사진가 장남원이 담은 심해 고래의 생태와 울림을 담은 사진전.</p>
+        <div class="card-foot"><button class="card-link" data-id="whaleIsland">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="충남" data-genre="현대미술" data-attitude="배움이 있는" data-start="2026-07-01" data-end="2026-08-23">
+      <div class="tile chungnam"><div class="region-pin">충남</div><div class="mark">균</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">충청도에도 실험적인 미술이 있었다는 걸 알고 싶은 날</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">균열: 충남의 아방가르드</div>
+        <p class="card-hook">서울 바깥에서도, 파격은 조용히 자라고 있었다.</p>
+        <div class="card-venue">천안시립미술관 제1전시실</div>
+        <div class="card-period tabular">2026.07.01 – 08.23</div>
+        <p class="card-desc">충남미술관(준비 중)·이응노의집과 함께한 협력전. 충남 실험미술·아방가르드의 흐름을 재조명하는 무료 전시.</p>
+        <div class="card-foot"><button class="card-link" data-id="chungnamAvantgarde">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="충남" data-genre="공예·역사" data-attitude="배움이 있는" data-start="2026-07-01" data-end="2026-08-23">
+      <div class="tile chungnam"><div class="region-pin">충남</div><div class="mark">뿌</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">전통 공예가 지금 이 시대와 만나는 방식이 궁금한 날</span><span class="genre-tag">공예·역사</span></div>
+        <div class="card-title">더 마스터피스 오브 코리안 크래프트: 뿌리와 열매</div>
+        <p class="card-hook">뿌리에서 열매까지, 손끝으로 이어온 시간.</p>
+        <div class="card-venue">천안시립미술관 제2전시실</div>
+        <div class="card-period tabular">2026.07.01 – 08.23</div>
+        <p class="card-desc">찾아가는 공예 명작전. 올해의 공예상 수상작가를 포함한 16인의 전통-동시대 공예 순회전.</p>
+        <div class="card-foot"><button class="card-link" data-id="koreanCraftMasterpiece">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="충북" data-genre="회화" data-attitude="깊은 몰입" data-start="2026-04-24" data-end="2026-09-27">
+      <div class="tile chungbuk"><div class="region-pin">충북</div><div class="mark">빛</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">빛도 그림이 될 수 있다는 걸 믿고 싶은 날</span><span class="genre-tag">회화</span></div>
+        <div class="card-title">방혜자 — 천지에 마음의 빛 뿌리며 간다</div>
+        <p class="card-hook">한국과 프랑스를 오가며, 평생 빛을 그린 사람.</p>
+        <div class="card-venue">국립현대미술관 청주</div>
+        <div class="card-period tabular">2026.04.24 – 09.27</div>
+        <p class="card-desc">'빛의 화가' 방혜자의 60년 화업을 조각·회화·드로잉 100여 점으로 조망하는 대규모 회고전.</p>
+        <div class="card-foot"><button class="card-link" data-id="banghyeja">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="충북" data-genre="한국화·서예" data-attitude="배움이 있는" data-start="2026-07-08" data-end="2026-09-06">
+      <div class="tile chungbuk"><div class="region-pin">충북</div><div class="mark">책</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">옛 그림 속 사물들이 다시 말을 거는 날</span><span class="genre-tag">한국화·서예</span></div>
+        <div class="card-title">新 책가도: 사물의 세계</div>
+        <p class="card-hook">책과 사물이 쌓여, 그 사람을 대신 말해주던 그림.</p>
+        <div class="card-venue">청주시립미술관 오창전시관</div>
+        <div class="card-period tabular">2026.07.08 – 09.06</div>
+        <p class="card-desc">전통 책가도를 현대적으로 재해석한 박송희·최재혁·소소영 3인의 회화·입체 33점.</p>
+        <div class="card-foot"><button class="card-link" data-id="chaekgado">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="세종" data-genre="복합" data-attitude="가벼운 산책" data-start="2026-07-03" data-end="2026-12-31">
+      <div class="tile sejong"><div class="region-pin">세종</div><div class="mark">정</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">그림을 눈이 아니라 발로 걷고 싶은 날</span><span class="genre-tag">복합</span></div>
+        <div class="card-title">앙리 마티스가 그린 오색 정원</div>
+        <p class="card-hook">캔버스 대신 정원에, 마티스의 색을 심었다.</p>
+        <div class="card-venue">국립세종수목원</div>
+        <div class="card-period tabular">2026.07.03 – 12.31</div>
+        <p class="card-desc">마티스의 강렬한 색채 감각을 실제 정원 조경으로 구현한 미술×원예 융합 기획전.</p>
+        <div class="card-foot"><button class="card-link" data-id="matisseGarden">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="shell foot-grid">
+    <p class="foot-note">전시 정보는 2026년 7월 조사 시점의 각 기관 공식 페이지를 기준으로 정리했습니다. 일정은 기관 사정에 따라 바뀔 수 있으니, 방문 전 공식 페이지에서 다시 한번 확인해주세요.</p>
+    <div class="foot-sign">오늘, 어디든 전시 하나쯤 —</div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-panel" id="modalPanel" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <div>
+        <div class="modal-eyebrow" id="mEyebrow"></div>
+        <div class="modal-title" id="mTitle"></div>
+        <div class="modal-meta" id="mMeta"></div>
+      </div>
+      <button class="modal-close" id="modalClose" aria-label="닫기">✕</button>
+    </div>
+    <div id="mBody"></div>
+    <a class="modal-link" id="mLink" href="#" target="_blank" rel="noopener">공식 정보 페이지 →</a>
+  </div>
+</div>
+
+<button class="chat-fab" id="chatFab" aria-label="큐레이터에게 물어보기">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+</button>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <div>
+      <div class="chat-head-eyebrow">미술이 있는 날들</div>
+      <div class="chat-head-title">큐레이터에게 물어보기</div>
+    </div>
+    <button class="modal-close" id="chatClose" aria-label="닫기">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-quick" id="chatQuick"></div>
+  <form class="chat-input-row" id="chatForm">
+    <input type="text" id="chatInput" class="chat-input" placeholder="예: 웃고 싶은 날, 제주 여행 코스" autocomplete="off">
+    <button type="submit" class="chat-send" aria-label="보내기">→</button>
+  </form>
+</div>
+
+<script>
+(function(){
+  function look(o){ return o; }
+  var A = {
+    renoir: { name:'피에르 오귀스트 르누아르', years:'1841–1919 · 프랑스', blurb:'인상주의 특유의 따뜻한 색감으로 사람들의 행복한 한때를 그린 화가.', works:['물랭 드 라 갈레트의 무도회 (1876)','뱃놀이 일행의 오찬 (1881)'],
+      note:'\'물랭 드 라 갈레트의 무도회\'는 몽마르트르 무도회장 풍경인데, 나뭇잎 사이로 비치는 햇빛 얼룩이 사람들 얼굴과 옷 위에 그대로 흩뿌려져 있어요.',
+      lk:{hairH:12,hairC:'#cfc8ba',beardH:42,beardC:'#cfc8ba'} },
+    degas: { name:'에드가 드가', years:'1834–1917 · 프랑스', blurb:'발레 무용수와 도시의 순간을 즐겨 그린 화가, 과감한 구도가 특징.', works:['발레 수업 (1874)','압생트 한 잔 (1876)'],
+      note:'\'발레 수업\'은 화려한 무대가 아니라 연습실의 지친 순간을 그렸어요. 드가는 공연보다 그 뒤의 노동을 더 즐겨 그렸대요.',
+      lk:{hairH:30,hairC:'#3a2c20',mustache:'#3a2c20'} },
+    vangogh: { name:'빈센트 반 고흐', years:'1853–1890 · 네덜란드', blurb:'강렬한 색채와 소용돌이치는 붓터치로 감정을 그린 후기인상주의 화가.', works:['별이 빛나는 밤 (1889)','해바라기 (1888)'],
+      note:'\'별이 빛나는 밤\'은 고흐가 생레미 요양원에서 창밖으로 본 밤하늘이에요. 소용돌이치는 붓터치 때문에 하늘 전체가 살아 움직이는 것처럼 보여요.',
+      lk:{hairH:34,hairC:'#b5623a',beardH:38,beardC:'#b5623a'} },
+    matisse: { name:'앙리 마티스', years:'1869–1954 · 프랑스', blurb:'강렬한 색과 단순한 형태로 \'야수파\'를 이끈 화가.', works:['춤 (1910)','붉은 방 (1908)'],
+      note:'\'춤\'은 다섯 사람이 손을 잡고 원을 그리며 도는 그림이에요. 색은 딱 세 가지(파랑·초록·주황)만 썼는데도 움직임이 그대로 느껴져요.',
+      lk:{hairH:6,hairC:'#e8e3d8',beardH:32,beardC:'#e8e3d8',glasses:true} },
+    picasso: { name:'파블로 피카소', years:'1881–1973 · 스페인', blurb:'입체주의를 창시하며 20세기 미술의 규칙을 다시 쓴 화가.', works:['게르니카 (1937)','아비뇽의 처녀들 (1907)'],
+      note:'\'게르니카\'는 스페인 내전 때 폭격당한 마을을 그린 대형 벽화예요. 색을 다 빼고 흑백·회색으로만 그려서 비극이 더 날카롭게 느껴져요.',
+      lk:{hairH:10,hairC:'#2a231c',stripe:true} },
+    botero: { name:'페르난도 보테로', years:'1932–2023 · 콜롬비아', blurb:'인물과 사물을 풍만하게 부풀려 그리는 \'보테리즘\'의 창시자.', works:['모나리자, 12세 (1959)','투우사 연작'],
+      note:'\'모나리자, 12세\'는 다빈치의 그 미소를 보테로 특유의 풍만한 형태로 다시 그린 그림이에요. 웃음이 나면서도 묘하게 진지해요.',
+      lk:{hairH:26,hairC:'#3a2c20',mustache:'#3a2c20'} },
+    baiknamjune: { name:'백남준', years:'1932–2006 · 한국·미국', blurb:'TV 모니터를 조각 재료처럼 다룬 비디오아트의 창시자.', works:['TV 부처 (1974)','다다익선 (1988)'],
+      note:'\'다다익선\'은 TV 모니터 1,003대를 탑처럼 쌓아 올린 작품이에요. 국립현대미술관 과천관 로비에서 실제로 볼 수 있어요.',
+      lk:{hairH:26,hairC:'#4a4640',glasses:true} },
+    leebul: { name:'이불', years:'1964– · 한국', blurb:'신체와 기술, 유토피아를 함께 다루는 조각·설치 작가.', works:['사이보그 연작','몬스터 연작'],
+      lk:{hairH:40,hairC:'#2a231c'} },
+    yanghaegue: { name:'양혜규', years:'1971– · 한국', blurb:'블라인드와 방울 같은 산업 재료로 감각적인 설치를 만드는 작가.', works:['블라인드 연작','방울 설치 연작'],
+      lk:{hairH:28,hairC:'#2a231c',glasses:true} },
+    leewufan: { name:'이우환', years:'1936– · 한국·일본', blurb:'\'모노하\'를 이끈 화가·조각가, 여백과 관계를 탐구.', works:['선으로부터 연작','조응(관계항) 연작'],
+      lk:{hairH:24,hairC:'#a89e8f'} },
+    kikismith: { name:'키키 스미스', years:'1954– · 미국', blurb:'몸과 자연, 신화를 소재로 한 조각·판화 작가.', works:['신체 연작','동화·신화 소재 연작'],
+      lk:{hairH:36,hairC:'#b8b0a2'} },
+    cezanne: { name:'폴 세잔', years:'1839–1906 · 프랑스', blurb:'인상주의와 입체주의를 잇는 다리, \'근대 회화의 아버지\'.', works:['생트빅투아르 산 연작','사과와 오렌지'],
+      note:'세잔은 평생 고향 근처의 생트빅투아르 산을 80번 넘게 그렸어요. 같은 산인데도 볼 때마다 색과 형태가 조금씩 달라요.',
+      lk:{hairH:14,hairC:'#a89e8f',beardH:40,beardC:'#a89e8f'} },
+    gauguin: { name:'폴 고갱', years:'1848–1903 · 프랑스', blurb:'강렬한 원색과 이국적 소재로 상징주의를 이끈 후기인상주의 화가.', works:['타히티의 여인들 (1891)','우리는 어디서 왔는가... (1897)'],
+      note:'고갱은 주식 중개인으로 일하다 뒤늦게 화가의 길로 들어섰어요. 반 고흐와 아를에서 두 달간 함께 작업했고, 이후 편지를 주고받으며 서로에게 영향을 남겼어요.',
+      lk:{hairH:16,hairC:'#4a4640',mustache:'#4a4640'} },
+    kandinsky: { name:'바실리 칸딘스키', years:'1866–1944 · 러시아', blurb:'색과 형태만으로 감정을 그린 추상미술의 선구자.', works:['구성 VII (1913)','즉흥 연작'],
+      note:'칸딘스키는 음악을 듣고 그 느낌을 색과 선으로 옮겨 그렸어요. \'구성\', \'즉흥\' 같은 제목도 음악 용어에서 따온 거예요.',
+      lk:{hairH:16,hairC:'#2a231c',mustache:'#2a231c',glasses:true} },
+    josukjin: { name:'조숙진', years:'미국을 중심으로 활동', blurb:'초기 부조 시리즈부터 뉴욕 시기 설치·퍼포먼스·드로잉까지 넘나든 조각가.', works:['이번 전시: 초기 부조 ~ 뉴욕 시기 설치·드로잉'],
+      lk:{hairH:24,hairC:'#4a4640'} },
+    gujeonga: { name:'구정아', years:'국내외에서 활동', blurb:'베니스 비엔날레 한국관을 향과 냄새로 채운 것으로 잘 알려진 설치 작가.', works:['이번 전시: 향·냄새를 소재로 한 공간 설치'],
+      lk:{hairH:30,hairC:'#2a231c'} },
+    choijongtae: { name:'최종태', years:'대전 중심 활동', blurb:'반세기 넘게 조각과 드로잉으로 인간 존재를 탐구해온 조각가.', works:['이번 전시: 대전시립미술관 최종태 전시관 개관 기념 조각·드로잉'],
+      lk:{hairH:10,hairC:'#a89e8f',beardH:20,beardC:'#a89e8f'} },
+    yangnahee: { name:'양나희', years:'ACC 뉴스트 선정 작가', blurb:'쓸모의 경계를 다루는 작업을 이어가는 작가.', works:['이번 전시: Useless But Beautiful 신작'],
+      lk:{hairH:34,hairC:'#3a2c20'} },
+    seoyounggi: { name:'서영기', years:'ACC 뉴스트 선정 작가', blurb:'기억과 잔상을 소재로 작업하는 작가.', works:['이번 전시: 남겨진 밤 신작'],
+      lk:{hairH:22,hairC:'#2a231c'} },
+    samjinks: { name:'샘 징크스', years:'호주 · 현재 활동', blurb:'실리콘과 레진으로 숨 쉬는 듯한 인체를 조각하는 하이퍼리얼리즘 조각가.', works:['Untitled (Kneeling Woman)','Woman and Child'],
+      lk:{hairH:20,hairC:'#4a4640'} },
+    robineley: { name:'로빈 일리', years:'현재 활동', blurb:'비닐에 감싸인 인물을 그려 시각의 왜곡을 다루는 하이퍼리얼리즘 화가.', works:['Latency 연작'],
+      lk:{hairH:24,hairC:'#8a6a45'} },
+    kazuhirotsuji: { name:'카즈 히로', years:'일본계 · 현재 활동', blurb:'아카데미상을 수상한 특수분장 아티스트이자 극사실 초상 조각가.', works:['초상 조각 연작 (Bust Portraits)'],
+      lk:{hairH:18,hairC:'#2a231c',glasses:true} },
+    koyounghoon: { name:'고영훈', years:'한국 · 현재 활동', blurb:'돌처럼 보이는 책을 그려온 한국 극사실주의 회화의 대표 작가.', works:['돌책(Stone Book) 연작'],
+      lk:{hairH:22,hairC:'#3a2c20'} },
+    piccinini: { name:'패트리샤 피치니니', years:'1965– · 호주', blurb:'인간과 생명공학이 만들어낸 낯선 존재를 통해 돌봄과 공존을 이야기하는 조각가.', works:['이번 전시: 국내 첫 미술관 개인전 신작·대표작'],
+      lk:{hairH:30,hairC:'#8a6a45'} },
+    warhol: { name:'앤디 워홀', years:'1928–1987 · 미국', blurb:'대량생산 이미지로 팝아트를 이끈 20세기 미술의 아이콘.', works:['캠벨 수프 캔 (1962)','마릴린 먼로 연작 (1967)'],
+      lk:{hairH:20,hairC:'#c9c2b0',glasses:true} },
+    leeungno: { name:'이응노', years:'1904–1989 · 한국·프랑스', blurb:'문자추상과 군상 연작으로 동양 필묵을 현대적으로 확장한 화가.', works:['군상 연작','문자추상 연작'],
+      lk:{hairH:8,hairC:'#a89e8f'} },
+    gangyobae: { name:'강요배', years:'1952– · 한국(제주)', blurb:'제주 4·3과 근현대사의 기억을 풍경과 색으로 그려온 화가.', works:['동백꽃 지다 연작','제주 풍경 연작'],
+      lk:{hairH:14,hairC:'#4a4640'} },
+    haejin: { name:'김해진', years:'현재 활동', blurb:'몸의 감각과 머묾을 소재로 작업하는 화가.', works:['이번 전시: 머무는 몸, 나아가는 맘 신작'],
+      lk:{hairH:34,hairC:'#3a2c20'} },
+    suyeon: { name:'백수연', years:'현재 활동', blurb:'검은 화면 위 빛의 흔적을 탐구하는 회화 작가.', works:['이번 전시: 검은 회화 - 슬도 연작'],
+      lk:{hairH:36,hairC:'#2a231c'} },
+    kimtschangyeul: { name:'김창열', years:'1929–2021 · 한국·프랑스', blurb:'평생 물방울 하나만을 그려온 \'물방울 화가\'.', works:['회귀 연작','물방울 연작'],
+      lk:{hairH:6,hairC:'#cfc8ba'} },
+    ardouin: { name:'티에리 아르두엥', years:'프랑스 · 현재 활동', blurb:'현미경 촬영 기법으로 씨앗을 초상처럼 담아내는 사진가.', works:['Seed Stories 연작'],
+      lk:{hairH:24,hairC:'#8a6a45'} },
+    leebae: { name:'이배', years:'1956– · 한국', blurb:'숯을 소재로 물성과 정신성을 탐구해온 \'숯의 작가\'.', works:['이슈 연작(숯)','붓질 연작'],
+      lk:{hairH:12,hairC:'#a89e8f'} },
+    moonshin: { name:'문신', years:'1923–1995 · 한국', blurb:'대칭과 균형의 형태로 독자적 조형언어를 완성한 조각가.', works:['우주를 향하여 연작','석고 원형 연작'],
+      lk:{hairH:10,hairC:'#cfc8ba'} },
+    nathanColey: { name:'네이단 콜리', years:'1967– · 영국', blurb:'건축·언어·공동체를 소재로 대형 설치를 만드는 작가, 터너상 최종 후보 출신.', works:['You Must Believe... 연작'],
+      lk:{hairH:16,hairC:'#4a4640'} },
+    jangnamwon: { name:'장남원', years:'한국 · 현재 활동', blurb:'국내 유일의 고래 전문 사진가로, 심해 고래의 생태를 기록해온 작가.', works:['움직이는 섬, 고래 연작'],
+      lk:{hairH:22,hairC:'#3a2c20'} },
+    banghyeja: { name:'방혜자', years:'1934–2021 · 한국·프랑스', blurb:'\'빛의 화가\'로 불린, 한지와 안료로 빛을 그린 화가.', works:['빛 연작','기 연작'],
+      lk:{hairH:10,hairC:'#cfc8ba'} }
+  };
+
+  var EX = {
+    bapsang: { title:'우리들의 밥상', venue:'국립중앙박물관 특별전시실', period:'2026.07.01 – 10.25', url:'https://www.museum.go.kr/MUSEUM/contents/M0202010000.do?menuId=current&schM=view&act=current&exhiSpThemId=3529713&listType=list',
+      addr:'서울 용산구 서빙고로 137', price:'상설전은 무료지만 이 특별전은 별도 유료 전시예요. 정확한 금액은 공식 페이지에서 확인해주세요.', discount:'특별한 할인 정보는 확인되지 않았어요.',
+      note:'K-푸드가 지금의 모습이 되기까지의 여정을 예술의 언어로 풀어낸 특별전. 특정 작가보다 우리 식문화의 변천을 다양한 유물과 자료로 조명합니다.' },
+    impressionism: { title:'인상주의를 넘어', venue:'세종문화회관 미술관', period:'2026.05.28 – 08.23', url:'https://www.opengallery.co.kr/exhibition/5287/',
+      addr:'서울 종로구 세종대로 175', price:'성인 23,000원 (청소년·아동 요금은 공식 페이지에서 확인)', discount:'인터파크 NOL티켓에서 얼리버드 특가로 판매돼요. 장애인·국가보훈대상자는 50%, 3자녀 이상 다둥이가정은 50%·2자녀는 30% 할인돼요.',
+      artists:['renoir','degas','vangogh','matisse','picasso'] },
+    botero: { title:'페르난도 보테로: 형태의 미학', venue:'예술의전당 한가람디자인미술관', period:'2026.04.24 – 08.30', url:'https://www.sac.or.kr/site/main/show/show_view?SN=76470',
+      addr:'서울 서초구 남부순환로 2406', price:'정가 정보가 확실치 않아요. 인터파크·예술의전당 공식 페이지에서 확인해주세요.', discount:'오픈 초반 얼리버드 40~50% 할인 판매 이력이 있어요(현재도 유효한지는 확인 필요). 인터파크·네이버예약·티켓링크·29CM에서 판매돼요.',
+      artists:['botero'] },
+    josukjin: { title:'조숙진 개인전', venue:'서울시립미술관 남서울미술관', period:'2026.07.29 – 11.15', url:'https://www.d-art.co.kr/news/articleView.html?idxno=4571',
+      addr:'서울 관악구 남부순환로 2076', price:'무료 관람이에요.', discount:'무료라 별도 할인은 없어요.',
+      artists:['josukjin'] },
+    hwangyeong: { title:'환경, 예술이 되다', venue:'리움미술관 아동교육문화센터', period:'2026.05.05 – 11.29', url:'https://www.d-art.co.kr/news/articleView.html?idxno=4547',
+      addr:'서울 용산구 이태원로55길 60-16', price:'상설전 기준 성인 10,000원 · 할인 5,000원이고, 이 기획전은 별도 책정이에요. 정확한 금액은 공식 페이지 확인을 추천해요.', discount:'매월 마지막 수요일 \'문화가 있는 날\'엔 50% 할인돼요. 대학(원)생·24세 이하·65세 이상·장애인 할인도 있어요.',
+      note:'1956–1976년, 전 세계 1세대 여성 설치미술가들의 선구적인 실험을 조명하는 그룹전. 여러 작가의 작업을 함께 소개합니다.' },
+    gujeonga: { title:'구정아 개인전', venue:'리움미술관 · 로비 & M2 전시장', period:'2026년 진행 중 · 종료일 미정', url:'https://www.leeumhoam.org/leeum/exhibition/94',
+      addr:'서울 용산구 이태원로55길 60-16', price:'상설전 기준 성인 10,000원 · 할인 5,000원이고, 이 전시는 별도 책정이에요. 정확한 금액은 공식 페이지 확인을 추천해요.', discount:'매월 마지막 수요일 \'문화가 있는 날\'엔 50% 할인돼요. 대학(원)생·24세 이하·65세 이상·장애인 할인도 있어요.',
+      artists:['gujeonga'] },
+    chwihyang: { title:'취향가옥 2', venue:'디뮤지엄 (D MUSEUM)', period:'2025.06.28 – 2026.09.20', url:'https://daelimmuseum.org/dmuseum/onViewTab5.do',
+      addr:'서울 성동구 왕십리로 83-21', price:'성인 12,000원 · 청소년 6,000원', discount:'온라인 회원가·단체·경로·장애인 할인이 적용돼요. 슈퍼얼리버드 특가가 종종 열려요(예매처 확인 필요).',
+      note:'Art in Life, Life in Art — 일상 속 예술과 예술 속 일상을 나란히 놓아본 기획전. 여러 작가·브랜드의 작업을 라이프스타일 관점에서 소개합니다.' },
+    apma: { title:'APMA, CHAPTER FIVE', venue:'아모레퍼시픽미술관', period:'2026.04.01 – 08.02', url:'https://www.apgroup.com/int/ko/news/2026-03-31-3.html',
+      addr:'서울 용산구 한강대로 100', price:'정확한 금액이 확인되지 않았어요. 사전예약제로 운영되니 예약과 요금을 함께 확인해주세요.', discount:'특별한 할인 정보는 확인되지 않았어요.',
+      artists:['baiknamjune','leebul','yanghaegue','leewufan','kikismith'] },
+    thailand: { title:'어메이징 타일랜드', venue:'국립중앙박물관', period:'2026.06.16 – 09.06', url:'https://www.museum.go.kr/MUSEUM/contents/M0202010000.do?menuId=current',
+      addr:'서울 용산구 서빙고로 137', price:'상설전은 무료지만 이 특별전은 별도 유료 전시예요. 정확한 금액은 공식 페이지에서 확인해주세요.', discount:'특별한 할인 정보는 확인되지 않았어요.',
+      note:'국내 최초로 선보이는 태국미술명품전. 특정 개인 작가보다 태국 미술사 전반의 명품을 소개합니다.' },
+    sinsojang: { title:'신소장품 보고전', venue:'대구미술관 · 6전시실', period:'2026.02.10 – 08.09', url:'https://www.jungannews.com/news/article.html?no=689161',
+      addr:'대구 수성구 미술관로 40', price:'정확한 금액이 확인되지 않았어요. 대구미술관 공식 페이지에서 확인해주세요.', discount:'정보가 확인되지 않았어요.',
+      note:'2025년 한 해 수집한 21명 작가 71점 중 28점을 선별 공개. 대구 근대미술부터 1980년대 신형상미술, 해외 작가까지 세 갈래로 구성됩니다.' },
+    seohwamujin: { title:'서화무진: 시서화의 마술사들', venue:'대구미술관', period:'2026년 봄 개막 · 종료일 미정', url:'https://www.naewoeilbo.com/news/articleView.html?idxno=2288316',
+      addr:'대구 수성구 미술관로 40', price:'정확한 금액이 확인되지 않았어요. 대구미술관 공식 페이지에서 확인해주세요.', discount:'정보가 확인되지 않았어요.',
+      note:'개관 15주년 기념 대규모전. 20세기 중반부터 지금까지 한국화의 흐름을 80여 작가 100여 점으로 조망합니다.' },
+    choijongtae: { title:'최종태의 질문', venue:'대전시립미술관 대전창작센터', period:'2026.04.01 – 07.12', url:'https://www.daejeon.go.kr/dma/DmaExhibView.do?exYear=&exType=02&menuSeq=6084&exSeq=106325&pageIndex=1',
+      addr:'대전 중구 대종로 470', price:'성인 500원 · 청소년/어린이 300원 · 65세 이상·6세 이하·장애인 무료', discount:'요금 자체가 저렴해서 별도 할인은 없어요.',
+      artists:['choijongtae'] },
+    gipeunsup: { title:'깊고 깊은 숲으로', venue:'대전시립미술관 열린수장고', period:'2026.03.03 – 08.17', url:'https://daejeon.go.kr/dma/DmaExhibList.do?exType=04&menuSeq=6086',
+      addr:'대전 중구 대종로 470', price:'무료 관람이에요.', discount:'무료라 별도 할인은 없어요.',
+      note:'도로시의 원더링 — 소장품을 기반으로 한 기획전. 여러 소장 작가의 작품을 한 공간에서 만납니다.' },
+    useless: { title:'Useless But Beautiful', venue:'국립아시아문화전당(ACC)', period:'2026.06.18 – 07.19', url:'https://www.acc.go.kr/main/contents.do?PID=0203',
+      addr:'광주 동구 문화전당로 38', price:'전시별로 다를 수 있어요. ACC 콜센터(1899-5566) 또는 공식 페이지에서 확인해주세요.', discount:'정보가 확인되지 않았어요.',
+      artists:['yangnahee'] },
+    namgyeojinbam: { title:'남겨진 밤', venue:'국립아시아문화전당(ACC)', period:'2026.07.30 – 08.30', url:'https://www.acc.go.kr/main/contents.do?PID=0203',
+      addr:'광주 동구 문화전당로 38', price:'전시별로 다를 수 있어요. ACC 콜센터(1899-5566) 또는 공식 페이지에서 확인해주세요.', discount:'정보가 확인되지 않았어요.',
+      artists:['seoyounggi'] },
+    bitbunker: { title:'빛의 벙커 — 반 고흐, 별이 빛나는 밤', venue:'빛의 벙커 (제주 서귀포)', period:'2026.04.08 – 전시 종료 시까지', url:'https://www.deslumieres.co.kr/bunker/visit/exibition',
+      addr:'제주 서귀포시 성산읍 서성일로1168번길 89-17 A동', price:'성인 19,000원 · 중고생 14,000원 · 초등학생 11,000원 · 36개월 미만 무료 (2026년 전시 개편에 따라 최신 요금은 공식 페이지에서 재확인해주세요)', discount:'온라인 예매 시 성인 13,000원대까지 할인되는 경우가 있어요. 항공권 제시 10% 할인 등 제휴 할인도 다양해요(예매처마다 달라요).',
+      artists:['vangogh','gauguin'],
+      note:'메인 프로그램 \'반 고흐, 별이 빛나는 밤\'(약 32분)은 프로방스의 빛부터 아를, 생레미, 오베르 시기까지 10개 시퀀스로 구성되고, 이어지는 \'고갱, 섬의 부름\'(약 10분)은 고갱의 원색과 이국적 소재를 조명해요.' },
+    artemuseum: { title:'아르떼뮤지엄 — ETERNAL NATURE', venue:'아르떼뮤지엄 부산 (제주·여수·강릉 동시 운영)', period:'상시 운영 · 미디어아트', url:'https://kr.artemuseum.com/BUSAN',
+      addr:'아르떼뮤지엄 부산', price:'주중 22,000원 · 주말 25,000원', discount:'부산시민은 신분증 제시로 3,000원 즉시 할인돼요. 아동(2019~2021년생)·경로·군인·유공자·장애인 할인, 2022년 이후 출생아는 보호자 1인당 2명까지 무료예요.',
+      note:'자연을 소재로 한 몰입형 미디어아트 시리즈. 특정 원작 화가 없이 자체 제작 영상으로 구성됩니다.' },
+    goghgarden: { title:'고흐의 정원', venue:'고흐의 정원 (제주 서귀포)', period:'상시 운영 · 체험형 디지털 전시', url:'https://goghgarden.kr/',
+      addr:'제주 서귀포시 삼달신풍로 126-5', price:'성인 12,000원 · 청소년 10,000원 · 어린이 8,000원 (예매처마다 표기가 조금씩 달라요)', discount:'마이리얼트립·KKday·Klook 같은 여행 플랫폼에서 할인 예매할 수 있어요(구매일로부터 30일 유효, 단체·중복할인 불가).',
+      artists:['vangogh'] },
+    hyperrealism: { title:'2026 국제 하이퍼-리얼리즘: 가장 완벽한 환영', venue:'울산시립미술관 1전시실', period:'2026.07.02 – 10.05', url:'https://www.ulsan.go.kr/s/uam/bbs/list.ulsan?bbsId=BBS_0000000000000174&categoryCode1=1&mId=001003001000000000',
+      addr:'울산 중구 미술관길 72', price:'성인 1,000원 · 대학생/군인/예술인 700원 · 울산시민 500원', discount:'매월 마지막 주 수요일 \'문화가 있는 날\'은 전체 무료예요. 19세 미만·65세 이상·장애인·유공자·다자녀는 상시 무료고요.',
+      artists:['samjinks','robineley','kazuhirotsuji','koyounghoon'] },
+    ourSummer: { title:'우리의 여름에게', venue:'경기도미술관 (안산)', period:'2026.07.16 – 09.27', url:'https://gmoma.ggcf.kr/exhibitions',
+      addr:'경기 안산시 단원구 동산로 268', price:'자료마다 다르게 나와 있어요(무료라는 자료와 성인 700원이라는 자료가 함께 있어요). 공식 페이지에서 다시 확인해주세요.', discount:'정보가 확인되지 않았어요.',
+      note:'경기도미술관 개관 20주년 기념 청년작가전. 아직 널리 알려지지 않은 신진 작가들의 작업을 여럿 소개하는 그룹전입니다.' },
+    picassoCeramics: { title:'피카소 도예 (가제)', venue:'전북도립미술관 (완주)', period:'2026년 7월 개막 · 10월까지', url:'https://www.jma.go.kr/',
+      addr:'전북 완주군 구이면 모악산길 111-6', price:'무료 관람이에요.', discount:'무료라 별도 할인은 없어요.',
+      artists:['picasso'] },
+    yearArtist2026: { title:'올해의 작가상 2026', venue:'국립현대미술관 서울', period:'2026.07.24 – 12.06', url:'https://biz.heraldcorp.com/article/10657971',
+      addr:'서울 종로구 삼청로 30', price:'정확한 금액이 확인되지 않았어요. 국립현대미술관 서울관 통합 관람권 기준을 공식 페이지에서 확인해주세요.', discount:'특별한 할인 정보는 확인되지 않았어요.',
+      artists:[] , note:'국립현대미술관·SBS문화재단 공동 주최. 이해민선·홍진훤·이정우·전현선 4인이 각 5천만원의 창작지원금을 받아 신작을 선보이는 한국 대표 미술상 전시예요.'},
+    piccinini: { title:'패트리샤 피치니니: 낯설지만 따뜻한 (가제)', venue:'수원시립미술관 행궁 본관', period:'2026.07.21 – 11.01', url:'https://www.kyeonggi.com/article/20260126580120',
+      addr:'경기 수원시 팔달구 정조로 833', price:'일반 4,000원 · 청소년/군인 2,000원 · 어린이 1,000원 · 7세 미만·65세 이상 무료', discount:'수원시민 25%, 자원봉사카드 소지자 50%, 3자녀 이상 다자녀가정 50% 할인돼요. 매월 마지막 주 수요일 \'문화가 있는 날\'엔 무료예요.',
+      artists:['piccinini'] },
+    njpStar: { title:'별, 괘 — 백남준미디어아트페스티벌', venue:'백남준아트센터', period:'2026.07.16 – 2027.02.14', url:'https://njp.ggcf.kr/',
+      addr:'경기 용인시 기흥구 백남준로 10', price:'무료 관람이에요. (특별 연계 프로그램은 별도 요금이 있을 수 있어요)', discount:'상시 무료 운영이라 별도 할인은 없어요.',
+      artists:['baiknamjune'], note:'백남준 서거 20주기 기념 페스티벌. 그의 우주론·행성 연작을 중심으로, 동시대 작가들의 화답 작업을 함께 소개해요.' },
+    newNature: { title:'New Nature', venue:'파라다이스시티 아트스페이스', period:'2026.09.01 – 2027.02.10', url:'https://blog.paradise.co.kr/2722',
+      addr:'인천 중구 영종해안남로321번길 186', price:'정확한 금액이 확인되지 않았어요. 회원가입 시 무료 관람이 기본이나 기획전은 유료로 운영된 사례가 있어 공식 페이지 확인이 필요해요.', discount:'확인된 할인 정보가 없어요.',
+      note:'\'자연 이후의 자연\'을 주제로, 기술과 결합된 감각적 설치 작업을 선보이는 아티스트 듀오 A.A.무라카미의 한국 첫 개인전이에요.' },
+    warhol: { title:'앤디 워홀: 예술을 팔다', venue:'대구문화예술회관미술관', period:'2026.07.03 – 10.25', url:'https://findgnews.com/news/article.html?no=165340',
+      addr:'대구 달서구 공원순환로 201', price:'일반 20,000원 (연령별 세부 요금은 예매처에서 확인해주세요)', discount:'개막 전날(7/2)까지 얼리버드 30% 할인이 있었어요. 현재도 유효한지는 예매처 확인이 필요해요.',
+      artists:['warhol'] },
+    leeungno: { title:'시대와 함께한 예술가, 이응노', venue:'이응노미술관', period:'2026.01.16 – 12.25', url:'https://www.leeungnomuseum.or.kr/',
+      addr:'대전 서구 둔산대로 157', price:'어른 1,000원 · 어린이/청소년 600원 · 노인·유아·장애인·국가유공자 무료', discount:'매월 마지막 주 수요일 \'문화가 있는 날\'엔 무료입장이에요.',
+      artists:['leeungno'] },
+    gangyobae: { title:'2026 민주인권평화전: 강요배, 시간을 품다', venue:'광주시립미술관 본관', period:'2026.05.08 – 09.27', url:'https://www.baronews-k.com/news/articleViewAmp.html?idxno=2581',
+      addr:'광주 북구 하서로 52', price:'광주시립미술관 상설전은 무료이나, 이 전시가 별도 유료 특별전인지는 공식 페이지 확인이 필요해요.', discount:'확인된 할인 정보가 없어요.',
+      artists:['gangyobae'] },
+    europeMasters: { title:'당신이 보지 못한 유럽 명화전', venue:'JB문화공간 (군산)', period:'2026.05.21 – 08.23', url:'https://www.nspna.com/country/?mode=view&newsid=814305',
+      addr:'전북 군산시 대학로 268', price:'무료 관람이에요.', discount:'무료라 별도 할인은 없어요.',
+      note:'파리 근대미술을 중심으로, 국내에 잘 알려지지 않은 유럽 명화들을 소개하는 전시예요. 특정 개인 작가보다 시대·사조 중심으로 구성돼요.' },
+    ulsanWedding: { title:'울산 결혼백서', venue:'울산박물관', period:'2026.05.05 – 07.26', url:'https://www.anewsa.com/detail.php?number=3155732',
+      addr:'울산 남구 두왕로 277', price:'무료 관람이에요. (예약 불필요)', discount:'무료라 별도 할인은 없어요.',
+      note:'울산의 산업화·도시화가 전통 혼례를 어떻게 개인 중심의 현대적 예식으로 바꿔왔는지, 소장 자료로 조명하는 특별전이에요.' },
+    seuldoart: { title:'머무는 몸, 나아가는 맘 / 검은 회화: 슬도', venue:'슬도아트 (갤러리 아 · 갤러리 도·트)', period:'2026.07.04 – 08.30', url:'https://www.iusm.co.kr/news/articleView.html?idxno=1064734',
+      addr:'울산 동구 성끝길 103', price:'무료 관람이에요.', discount:'무료라 별도 할인은 없어요.',
+      artists:['haejin','suyeon'] },
+    kimtschangyeul: { title:'파리의 화가 김창열', venue:'제주도립 김창열미술관', period:'2026.06.30 – 10.18', url:'https://kimtschang-yeul.jeju.go.kr/',
+      addr:'제주 제주시 한림읍 용금로 883-5', price:'정확한 금액이 확인되지 않았어요. 공식 페이지 또는 064-710-4150으로 문의해주세요.', discount:'확인된 할인 정보가 없어요.',
+      artists:['kimtschangyeul'] },
+    seedStories: { title:'Seed Stories', venue:'고은사진미술관', period:'2026.04.23 – 08.30', url:'https://www.goeunmuseum.kr/',
+      addr:'부산 해운대구 해운대로452번길 16', price:'무료 관람이에요.', discount:'무료라 별도 할인은 없어요.',
+      artists:['ardouin'] },
+    rhinoUnicorn: { title:'코뿔소와 유니콘', venue:'부산현대미술관', period:'2026.03.21 – 07.19', url:'https://www.busan.go.kr/moca/exhibition01',
+      addr:'부산 사하구 낙동남로 1191', price:'정확한 금액이 확인되지 않았어요. 공식 페이지(busan.go.kr/moca)에서 확인해주세요.', discount:'확인된 할인 정보가 없어요.',
+      note:'옛이야기와 신화를 동시대적으로 재해석한 그림책·회화·영상 작품을 통해 관람객이 직접 이야기를 구성하도록 유도하는 그룹전이에요.' },
+    leebaeMuseumSan: { title:'이배: En attendant, 기다리며', venue:'뮤지엄산 청조갤러리', period:'2026.04.07 – 12.06', url:'https://www.khan.co.kr/article/202604161031001/',
+      addr:'강원 원주시 지정면 오크밸리2길 260', price:'기본권 성인 23,000원 · 초중고생 15,000원 · 어린이 5,000원. 명상권·제임스터렐권 등은 별도 요금이에요.', discount:'강원도민·65세 이상·장애인 및 동반 1인·국가유공자·군인·예술인패스 소지자 20% 할인, 매월 마지막 주 수요일 \'문화의 날\' 50% 할인돼요.',
+      artists:['leebae'] },
+    haslla: { title:'하슬라아트월드', venue:'하슬라아트월드 (강릉)', period:'상시 운영 · 야외조각공원 + 현대미술관', url:'https://www.museumhaslla.com/',
+      addr:'강원 강릉시 강동면 율곡로 1441', price:'자료마다 표기가 조금씩 달라요(성인 12,000~17,000원대). 정확한 최신 요금은 공식 홈페이지에서 확인해주세요.', discount:'확인된 할인 정보가 없어요.',
+      note:'동해바다를 배경으로 조각공원, 현대미술관, 피노키오박물관이 어우러진 복합예술공간이에요. 특정 기획전보다 상설 소장품과 야외 조각이 중심이에요.' },
+    imageOfFutures: { title:'이미지의 미래들 — 서사하는 기억, 채색화를 넘어', venue:'진주시립이성자미술관 외 2개소', period:'2026.05 – 08.25', url:'https://www.gnmaeil.com/news/articleView.html?idxno=588745',
+      addr:'경남 진주시 에나로128번길 14', price:'2,000원 (성인 기준으로 추정 — 연령별 세부 요금은 공식 페이지 확인이 필요해요)', discount:'만 65세 이상은 경로우대증·신분증 제시로 무료예요.',
+      note:'진주시립이성자미술관·철도문화공원 차량정비고·국립진주박물관 3개소에서 동시에 열리는 대규모 특별기획전. 35명의 작가가 회화·조각·설치·미디어 등 148점을 선보여요.' },
+    moonshinOrigin: { title:'The Origin — 석고 원형展', venue:'창원시립마산문신미술관', period:'2026.02.24 – 2027.08.29', url:'https://changwon.go.kr/moonshin/exhibition/view.php?idx=48&case=N',
+      addr:'경남 창원시 마산합포구 문신길 147', price:'성인 500원 · 어린이/청소년 200원 · 6세 이하·65세 이상 무료', discount:'요금 자체가 저렴해서 별도 할인은 없어요.',
+      artists:['moonshin'] },
+    nathanColey: { title:'네이단 콜리: 마음이 그려낸 풍경', venue:'포항시립미술관', period:'2026.06.04 – 09.06', url:'https://www.theuniontimes.co.kr/2068769',
+      addr:'경북 포항시 북구 환호공원길 10', price:'정확한 금액이 확인되지 않았어요. 상설전은 무료지만 특정 전시는 관람료가 붙는다고 안내돼요 — 공식 페이지 확인이 필요해요.', discount:'확인된 할인 정보가 없어요.',
+      artists:['nathanColey'] },
+    whaleIsland: { title:'움직이는 섬, 고래', venue:'경주솔거미술관', period:'2026.05.11 – 09.15', url:'https://www.dkitnews.com/475165',
+      addr:'경북 경주시 경감로 614', price:'성인 1,000원 · 청소년/군인 700원 · 어린이 500원 (기본요금 기준 — 특별전 별도 요금 가능성이 있어 확인이 필요해요), 유아·장애인·경로 무료', discount:'단체 할인이 있고, 경주시민은 50% 할인돼요.',
+      artists:['jangnamwon'] },
+    chungnamAvantgarde: { title:'균열: 충남의 아방가르드', venue:'천안시립미술관 제1전시실', period:'2026.07.01 – 08.23', url:'http://www.chungcheongtv.com/bbs/board.php?bo_table=news&wr_id=455571',
+      addr:'충남 천안시 동남구 성남면 종합휴양지로 185', price:'무료 관람이에요.', discount:'무료라 별도 할인은 없어요.',
+      note:'충남미술관(준비 중)·천안시립미술관·이응노의집이 공동 기획한 협력전. 김순기, 박영숙, 성능경, 황규태 등 충남 실험미술·아방가르드 계열 작가들의 작업을 재조명해요.' },
+    koreanCraftMasterpiece: { title:'더 마스터피스 오브 코리안 크래프트: 뿌리와 열매', venue:'천안시립미술관 제2전시실', period:'2026.07.01 – 08.23', url:'https://www.newspim.com/news/view/20260703000024',
+      addr:'충남 천안시 동남구 성남면 종합휴양지로 185', price:'무료 관람이에요.', discount:'무료라 별도 할인은 없어요.',
+      note:'문화체육관광부·한국공예디자인문화진흥원이 기획한 \'찾아가는 공예 명작전\'. 이헌정·고보형·하지훈·김준용 등 올해의 공예상 수상작가를 포함한 16인이 참여해요.' },
+    banghyeja: { title:'방혜자 — 천지에 마음의 빛 뿌리며 간다', venue:'국립현대미술관 청주', period:'2026.04.24 – 09.27', url:'https://www.mmca.go.kr/cheongju/viewingInfo/information.do',
+      addr:'충북 청주시 청원구 상당로 314', price:'특별전 2,000원 (20인 이상 단체 1,600원), 수·토 야간개장(18:00–21:00)엔 무료예요.', discount:'아트패스·국립수목원 회원 50% 할인, 24세 이하·65세 이상·장애인 및 동반보호자 1인 무료예요.',
+      artists:['banghyeja'] },
+    chaekgado: { title:'新 책가도: 사물의 세계', venue:'청주시립미술관 오창전시관', period:'2026.07.08 – 09.06', url:'https://www.ccdn.co.kr/news/articleView.html?idxno=1086934',
+      addr:'충북 청주시 청원구 오창읍 오창공원로 102', price:'정확한 금액이 확인되지 않았어요. 본관 기준 개인 1,000원·청주시민 50% 할인이 있으나, 오창전시관 적용 여부는 043-201-2650으로 확인해주세요.', discount:'18세 이하·65세 이상·장애인·국가유공자는 무료예요(본관 기준 추정).',
+      note:'전통 책가도(冊架圖)를 현대적으로 재해석한 박송희·최재혁·소소영 3인의 회화·입체 33점을 선보여요.' },
+    matisseGarden: { title:'앙리 마티스가 그린 오색 정원', venue:'국립세종수목원', period:'2026.07.03 – 12.31', url:'https://www.koagi.or.kr/sjna/index.do',
+      addr:'세종특별자치시 수목원로 136', price:'성인 5,000원 · 청소년 4,000원 · 어린이 3,000원', discount:'20인 이상 단체는 1인당 1,000원씩 할인돼요.',
+      artists:['matisse'], note:'화가 앙리 마티스의 강렬한 색채 감각을 실제 정원 식재와 조경으로 구현한, 미술과 원예를 접목한 특별기획전이에요.' }
+  };
+
+  function avatarHTML(lk){
+    var h = '<div class="avatar">';
+    h += '<div class="hair" style="height:'+lk.hairH+'%;background:'+lk.hairC+'"></div>';
+    if(lk.beardH){ h += '<div class="beard" style="height:'+lk.beardH+'%;background:'+lk.beardC+'"></div>'; }
+    if(lk.mustache){ h += '<div class="mustache" style="background:'+lk.mustache+'"></div>'; }
+    if(lk.glasses){ h += '<div class="glasses"></div>'; }
+    if(lk.stripe){ h += '<div class="stripe"></div>'; }
+    h += '</div>';
+    return h;
+  }
+
+  function artistCard(id){
+    var a = A[id];
+    if(!a) return '';
+    return '<div class="artist-card">' + avatarHTML(a.lk) +
+      '<div class="artist-info">' +
+        '<div class="artist-name">'+a.name+'</div>' +
+        '<div class="artist-years">'+a.years+'</div>' +
+        '<div class="artist-blurb">'+a.blurb+'</div>' +
+        '<div class="artist-works"><b>대표작</b>'+a.works.join(' · ')+'</div>' +
+      '</div></div>';
+  }
+
+  var overlay = document.getElementById('modalOverlay');
+  var panel = document.getElementById('modalPanel');
+  var mEyebrow = document.getElementById('mEyebrow');
+  var mTitle = document.getElementById('mTitle');
+  var mMeta = document.getElementById('mMeta');
+  var mBody = document.getElementById('mBody');
+  var mLink = document.getElementById('mLink');
+
+  function openModal(id){
+    var ex = EX[id];
+    if(!ex) return;
+    mEyebrow.textContent = ex.venue;
+    mTitle.textContent = ex.title;
+    mMeta.textContent = ex.period;
+    var body = '';
+    if(ex.artists && ex.artists.length){
+      body += '<div class="modal-section-label">'+(ex.artists.length>1?'이 전시의 작가들':'이 전시의 작가')+'</div>';
+      body += '<div class="artist-grid">' + ex.artists.map(artistCard).join('') + '</div>';
+    } else if(ex.note){
+      body += '<p class="modal-note">'+ex.note+'</p>';
+    }
+    if(ex.addr || ex.price || ex.discount){
+      body += '<div class="info-block">';
+      if(ex.addr){
+        var mapUrl = 'https://map.kakao.com/link/search/' + encodeURIComponent(ex.addr);
+        body += '<div class="info-row"><div class="info-k">가는 길</div><div class="info-v">'+ex.addr+'<br><a class="info-map" href="'+mapUrl+'" target="_blank" rel="noopener">지도에서 보기 ↗</a></div></div>';
+      }
+      if(ex.price){
+        body += '<div class="info-row"><div class="info-k">관람료</div><div class="info-v">'+ex.price+'</div></div>';
+      }
+      if(ex.discount){
+        body += '<div class="info-row"><div class="info-k">저렴하게 보기</div><div class="info-v">'+ex.discount+'</div></div>';
+      }
+      body += '</div>';
+    }
+    mBody.innerHTML = body;
+    mLink.href = ex.url;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(){
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
+  document.querySelectorAll('[data-id]').forEach(function(btn){
+    btn.addEventListener('click', function(){ openModal(btn.dataset.id); });
+  });
+
+  var MS_DAY = 86400000;
+  function todayMidnight(){ var d = new Date(); d.setHours(0,0,0,0); return d; }
+  function parseDate(s){ var p = s.split('-').map(Number); return new Date(p[0], p[1]-1, p[2]); }
+  function daysBetween(a,b){ return Math.round((b - a) / MS_DAY); }
+
+  var today = todayMidnight();
+  document.getElementById('todayBadge').textContent =
+    (today.getMonth()+1) + '월 ' + today.getDate() + '일 기준';
+
+  document.querySelectorAll('.card').forEach(function(card){
+    var startStr = card.dataset.start;
+    var endStr = card.dataset.end;
+    var chip = card.querySelector('.status-chip');
+    var start = startStr ? parseDate(startStr) : null;
+    var end = endStr ? parseDate(endStr) : null;
+    var cls, label;
+
+    if(start && today < start){
+      cls = 'status-upcoming'; label = '오픈 예정 · D-' + daysBetween(today, start);
+    } else if(end && today > end){
+      cls = 'status-closing'; label = '전시 종료';
+    } else if(end && daysBetween(today, end) <= 14){
+      var dUntilEnd = daysBetween(today, end);
+      cls = 'status-closing'; label = dUntilEnd <= 0 ? '오늘 마지막날' : '종료 임박 · D-' + dUntilEnd;
+    } else {
+      cls = 'status-ongoing'; label = '진행 중';
+    }
+    chip.classList.add(cls);
+    chip.innerHTML = '<i></i>' + label;
+  });
+
+  var rtabs = document.querySelectorAll('.rtab');
+  var atabs = document.querySelectorAll('.atab');
+  var cards = document.querySelectorAll('.card');
+  var activeRegion = 'all';
+  var activeAttitude = 'all';
+
+  function applyFilters(){
+    cards.forEach(function(card){
+      var regionOk = activeRegion === 'all' || card.dataset.region === activeRegion;
+      var attitudeOk = activeAttitude === 'all' || card.dataset.attitude === activeAttitude;
+      card.hidden = !(regionOk && attitudeOk);
+    });
+  }
+
+  rtabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      rtabs.forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+      activeRegion = tab.dataset.region;
+      applyFilters();
+    });
+  });
+
+  atabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      atabs.forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+      activeAttitude = tab.dataset.attitude;
+      applyFilters();
+    });
+  });
+
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    cards.forEach(function(c){ io.observe(c); });
+  } else {
+    cards.forEach(function(c){ c.classList.add('in'); });
+  }
+
+  /* ---------- Curator chat (rule-based, no API) ---------- */
+  var EXLIST = [];
+  var EXBYID = {};
+  cards.forEach(function(card){
+    var linkBtn = card.querySelector('.card-link');
+    if(!linkBtn) return;
+    var id = linkBtn.dataset.id;
+    var chip = card.querySelector('.status-chip');
+    var ex = {
+      id: id,
+      title: card.querySelector('.card-title').textContent.trim(),
+      venue: card.querySelector('.card-venue').textContent.trim(),
+      period: card.querySelector('.card-period').textContent.trim(),
+      mood: card.querySelector('.mood-tag').textContent.trim(),
+      genre: card.dataset.genre,
+      region: card.dataset.region,
+      status: chip ? chip.textContent.trim() : ''
+    };
+    EXLIST.push(ex);
+    EXBYID[id] = ex;
+  });
+  EXLIST.push({ id:'bapsang', title:'우리들의 밥상', venue:'국립중앙박물관 특별전시실', period:'2026.07.01 – 10.25',
+    mood:'이유 없이 배고픈 저녁에', genre:'공예·역사', region:'서울', status:'진행 중' });
+  EXBYID.bapsang = EXLIST[EXLIST.length-1];
+
+  var MOOD_MAP = [
+    { kw:['웃','유쾌','재밌','즐겁'], ids:['botero'] },
+    { kw:['헛헛','쓸쓸','외롭','허전'], ids:['namgyeojinbam'] },
+    { kw:['낯선','새롭','신선'], ids:['hwangyeong','thailand'] },
+    { kw:['조용','천천히','느긋','느리게'], ids:['josukjin'] },
+    { kw:['향','냄새','오감'], ids:['gujeonga'] },
+    { kw:['취향','주말'], ids:['chwihyang'] },
+    { kw:['유명','거장','한번에','익숙한'], ids:['apma','impressionism'] },
+    { kw:['휴가','여행','떠나'], ids:['thailand'] },
+    { kw:['동네','로컬'], ids:['sinsojang'] },
+    { kw:['전통','한국화','서예'], ids:['seohwamujin'] },
+    { kw:['마지막','놓치기','임박'], ids:['choijongtae'] },
+    { kw:['아이','가족'], ids:['gipeunsup'] },
+    { kw:['효율','쓸모없'], ids:['useless'] },
+    { kw:['압도','몰입','말없이'], ids:['bitbunker'] },
+    { kw:['사진','몽환','인생샷'], ids:['artemuseum'] },
+    { kw:['고흐'], ids:['goghgarden','bitbunker','impressionism'] },
+    { kw:['고갱'], ids:['bitbunker'] },
+    { kw:['사실적','헷갈','리얼','극사실'], ids:['hyperrealism'] },
+    { kw:['신진','발견'], ids:['ourSummer'] },
+    { kw:['피카소','도자기','도예'], ids:['picassoCeramics','impressionism'] },
+    { kw:['배고픈','저녁','음식'], ids:['bapsang'] },
+    { kw:['인상주의','모네','르누아르','드가','마티스'], ids:['impressionism'] },
+    { kw:['미디어아트','디지털'], ids:['bitbunker','artemuseum','goghgarden','njpStar','newNature'] },
+    { kw:['데이트','커플','연인'], ids:['bitbunker','artemuseum','goghgarden','chwihyang','apma'] },
+    { kw:['워홀','팝아트'], ids:['warhol'] },
+    { kw:['숯','조각공원','야외조각'], ids:['leebaeMuseumSan','haslla'] },
+    { kw:['고래','바다','심해'], ids:['whaleIsland'] },
+    { kw:['씨앗','사진전'], ids:['seedStories'] },
+    { kw:['그림책','동화'], ids:['rhinoUnicorn'] },
+    { kw:['물방울'], ids:['kimtschangyeul'] },
+    { kw:['빛','한지'], ids:['banghyeja'] },
+    { kw:['공예','도자'], ids:['koreanCraftMasterpiece'] },
+    { kw:['실험미술','아방가르드'], ids:['chungnamAvantgarde'] },
+    { kw:['정원','원예'], ids:['matisseGarden'] },
+    { kw:['생명체','기술'], ids:['piccinini','newNature'] },
+    { kw:['건축','설치'], ids:['nathanColey','leebaeMuseumSan'] }
+  ];
+  var REGION_MAP = { '서울':'서울','경기':'경기','안산':'경기','수원':'경기','용인':'경기','인천':'인천','대구':'대구','대전':'대전','광주':'광주','전북':'전북','완주':'전북','군산':'전북','울산':'울산','제주':'제주','서귀포':'제주','부산':'부산','강원':'강원','원주':'강원','강릉':'강원','경남':'경남','창원':'경남','진주':'경남','경북':'경북','포항':'경북','경주':'경북','충남':'충남','천안':'충남','충북':'충북','청주':'충북','세종':'세종' };
+  var GENRE_MAP = { '인상주의':'인상주의','현대미술':'현대미술','조각':'조각·설치','설치':'조각·설치','미디어아트':'미디어아트','한국화':'한국화·서예','공예':'공예·역사','도자':'공예·역사','회화':'회화' };
+
+  var ARTIST_ALIASES = {
+    vangogh:['반고흐','반 고흐','고흐','빈센트'], renoir:['르누아르'], degas:['드가'], matisse:['마티스'],
+    picasso:['피카소'], botero:['보테로'], baiknamjune:['백남준'], leebul:['이불'], yanghaegue:['양혜규'],
+    leewufan:['이우환'], kikismith:['키키 스미스','키키스미스'], cezanne:['세잔'], kandinsky:['칸딘스키'], gauguin:['고갱'],
+    josukjin:['조숙진'], gujeonga:['구정아'], choijongtae:['최종태'], yangnahee:['양나희'], seoyounggi:['서영기'],
+    samjinks:['샘 징크스','징크스'], robineley:['로빈 일리'], kazuhirotsuji:['카즈 히로'], koyounghoon:['고영훈'],
+    piccinini:['피치니니','패트리샤 피치니니'], warhol:['워홀','앤디 워홀'], leeungno:['이응노'], gangyobae:['강요배'],
+    haejin:['김해진'], suyeon:['백수연'], kimtschangyeul:['김창열'], ardouin:['아르두엥','티에리 아르두엥'],
+    leebae:['이배'], moonshin:['문신'], nathanColey:['네이단 콜리'], jangnamwon:['장남원'], banghyeja:['방혜자']
+  };
+  function findArtistMatch(q){
+    var ids = Object.keys(ARTIST_ALIASES);
+    for(var i=0;i<ids.length;i++){
+      var aliases = ARTIST_ALIASES[ids[i]];
+      for(var j=0;j<aliases.length;j++){ if(q.indexOf(aliases[j]) >= 0) return ids[i]; }
+    }
+    return null;
+  }
+
+  var ART_TERMS = {
+    '인상주의':'빛과 순간의 인상을 빠른 붓터치로 담아낸 19세기 후반 프랑스 사조예요. 모네·르누아르·드가가 대표적이에요.',
+    '입체주의':'사물을 여러 각도에서 본 모습을 한 화면에 동시에 담아낸 20세기 초 사조예요. 피카소와 브라크가 시작했어요.',
+    '야수파':'강렬하고 과감한 색을 그대로 쓴 20세기 초 사조예요. 마티스가 대표적이에요.',
+    '하이퍼리얼리즘':'사진보다 더 사실적으로 표현하는 극사실주의 기법이에요. 붓자국이나 조각의 흔적이 거의 안 보일 정도로 정교해요.',
+    '극사실주의':'사진보다 더 사실적으로 표현하는 기법이에요. 붓자국이나 조각의 흔적이 거의 안 보일 정도로 정교해요.',
+    '미디어아트':'영상·빛·소리 같은 매체를 활용한 현대 예술이에요. 캔버스 대신 공간 전체가 작품이 되기도 해요.',
+    '모노하':'1960~70년대 일본에서 시작된 흐름으로, 재료를 최소한으로 손대고 그 자체와 여백의 관계를 보여줘요. 이우환이 대표적이에요.',
+    '르네상스':'14~16세기 유럽에서 인간과 자연을 사실적으로 그리기 시작한 시기예요. 다만 지금 이 사이트엔 진행 중인 르네상스 단독 전시는 없어요.'
+  };
+  function findTermMatch(q){
+    var hasAsk = q.indexOf('뭐')>=0 || q.indexOf('란')>=0 || q.indexOf('무엇')>=0 || q.indexOf('설명')>=0;
+    if(!hasAsk) return null;
+    var keys = Object.keys(ART_TERMS);
+    for(var i=0;i<keys.length;i++){ if(q.indexOf(keys[i]) >= 0) return keys[i]; }
+    return null;
+  }
+
+  var REGION_COORDS = {
+    '서울':[37.5665,126.9780], '경기':[37.3236,126.8219], '대구':[35.8714,128.6014],
+    '대전':[36.3504,127.3845], '광주':[35.1595,126.8526], '전북':[35.9046,127.1611],
+    '울산':[35.5384,129.3114], '제주':[33.4996,126.5312], '부산':[35.1796,129.0756],
+    '인천':[37.4563,126.7052], '강원':[37.8228,128.1555], '경남':[35.2371,128.6924],
+    '경북':[36.4919,128.8889], '충남':[36.5184,126.8000], '충북':[36.6357,127.4917],
+    '세종':[36.4801,127.2890]
+  };
+  function haversine(lat1,lng1,lat2,lng2){
+    var R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+    var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+    return R*2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+  function nearestRegion(lat,lng){
+    var best=null, bestD=Infinity;
+    Object.keys(REGION_COORDS).forEach(function(r){
+      var c = REGION_COORDS[r], d = haversine(lat,lng,c[0],c[1]);
+      if(d<bestD){ bestD=d; best=r; }
+    });
+    return best;
+  }
+
+  function findMatches(query){
+    var scores = {};
+    function bump(id, n){ if(EXBYID[id]) scores[id] = (scores[id]||0) + n; }
+
+    EXLIST.forEach(function(ex){
+      var t = ex.title.replace(/\s+/g,'');
+      if(t.length>=2 && query.replace(/\s+/g,'').indexOf(t.slice(0,4))>=0){ bump(ex.id, 5); }
+    });
+    MOOD_MAP.forEach(function(entry){
+      entry.kw.forEach(function(k){
+        if(query.indexOf(k) >= 0){ entry.ids.forEach(function(id){ bump(id, 3); }); }
+      });
+    });
+    var hitRegions = [];
+    Object.keys(REGION_MAP).forEach(function(k){ if(query.indexOf(k) >= 0) hitRegions.push(REGION_MAP[k]); });
+    if(hitRegions.length){ EXLIST.forEach(function(ex){ if(hitRegions.indexOf(ex.region) >= 0) bump(ex.id, 2); }); }
+    Object.keys(GENRE_MAP).forEach(function(k){
+      if(query.indexOf(k) >= 0){ var g = GENRE_MAP[k]; EXLIST.forEach(function(ex){ if(ex.genre===g) bump(ex.id, 2); }); }
+    });
+
+    return Object.keys(scores)
+      .map(function(id){ return { ex:EXBYID[id], score:scores[id] }; })
+      .sort(function(a,b){ return b.score - a.score; })
+      .map(function(r){ return r.ex; });
+  }
+
+  var chatPanelEl = document.getElementById('chatPanel');
+  var chatFab = document.getElementById('chatFab');
+  var chatClose = document.getElementById('chatClose');
+  var chatMessages = document.getElementById('chatMessages');
+  var chatQuick = document.getElementById('chatQuick');
+  var chatForm = document.getElementById('chatForm');
+  var chatInput = document.getElementById('chatInput');
+  var chatStarted = false;
+
+  function scrollChatBottom(){ chatMessages.scrollTop = chatMessages.scrollHeight; }
+
+  function addUserMsg(text){
+    var d = document.createElement('div');
+    d.className = 'msg user';
+    d.textContent = text;
+    chatMessages.appendChild(d);
+    scrollChatBottom();
+  }
+
+  function recCard(ex){
+    return '<div class="msg-rec">' +
+      '<div class="t">'+ex.title+'</div>' +
+      '<div class="m">'+ex.venue+' · '+ex.period+'</div>' +
+      '<div class="s">'+ex.status+'</div>' +
+      '<button data-id="'+ex.id+'">더 알아보기 ↗</button>' +
+      '</div>';
+  }
+
+  function addBotMsg(text, recs){
+    if(text){
+      var d = document.createElement('div');
+      d.className = 'msg bot';
+      d.textContent = text;
+      chatMessages.appendChild(d);
+    }
+    if(recs && recs.length){
+      var wrap = document.createElement('div');
+      wrap.className = 'msg-recs';
+      wrap.innerHTML = recs.map(recCard).join('');
+      chatMessages.appendChild(wrap);
+    }
+    scrollChatBottom();
+  }
+
+  var ALL_REGIONS = ['서울','경기','인천','대구','대전','광주','전북','울산','제주','부산','강원','경남','경북','충남','충북','세종'];
+  function addRegionChoiceChips(){
+    var wrap = document.createElement('div');
+    wrap.className = 'chat-quick';
+    wrap.style.padding = '0';
+    wrap.innerHTML = ALL_REGIONS.map(function(r){ return '<button type="button" data-region-choice="'+r+'">'+r+'</button>'; }).join('');
+    chatMessages.appendChild(wrap);
+    scrollChatBottom();
+  }
+
+  chatMessages.addEventListener('click', function(e){
+    var rbtn = e.target.closest('[data-region-choice]');
+    if(rbtn){ handleQuery(rbtn.dataset.regionChoice); return; }
+    var btn = e.target.closest('[data-id]');
+    if(btn) openModal(btn.dataset.id);
+  });
+
+  function addArtistMsg(id){
+    var wrap = document.createElement('div');
+    wrap.className = 'msg-recs';
+    wrap.innerHTML = artistCard(id);
+    chatMessages.appendChild(wrap);
+    scrollChatBottom();
+  }
+
+  function respondArtist(id){
+    var a = A[id];
+    addArtistMsg(id);
+    if(a.note){ addBotMsg(a.note); }
+    var related = [];
+    Object.keys(EX).forEach(function(exid){
+      var e = EX[exid];
+      if(e.artists && e.artists.indexOf(id) >= 0 && EXBYID[exid]){ related.push(EXBYID[exid]); }
+    });
+    if(related.length){ addBotMsg('지금 이 작가를 만날 수 있는 전시예요.', related); }
+  }
+
+  function respondLocation(){
+    addBotMsg('잠시만요, 위치를 확인해볼게요.');
+    if(!navigator.geolocation){
+      addBotMsg('이 브라우저에서는 위치 확인이 어려워요. 지역 이름을 직접 말씀해주시면 찾아드릴게요.');
+      return;
+    }
+    var forDate = (pendingIntent === 'date');
+    pendingIntent = null;
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var r = nearestRegion(pos.coords.latitude, pos.coords.longitude);
+      knownRegion = r;
+      if(forDate){
+        addBotMsg('지금 계신 곳에서 가장 가까운 지역은 ' + r + ' 같아요.');
+        respondDate(r);
+        return;
+      }
+      var pool = EXLIST.filter(function(ex){ return ex.region === r; });
+      if(pool.length){
+        lastMatches = pool; lastOffset = 3;
+        addBotMsg('지금 계신 곳에서 가장 가까운 지역은 ' + r + ' 같아요. 이런 전시가 있어요.', pool.slice(0, 3));
+      } else {
+        addBotMsg(r + ' 근처에는 아직 소개해드릴 전시가 없어요.');
+      }
+    }, function(){
+      addBotMsg('위치 정보를 가져오지 못했어요. 브라우저의 위치 권한을 확인해주시거나, 지역 이름을 직접 말씀해주세요.');
+    }, { timeout: 8000 });
+  }
+
+  function dateCandidates(){
+    var entry = MOOD_MAP.filter(function(e){ return e.kw.indexOf('데이트') >= 0; })[0];
+    return entry ? entry.ids.map(function(id){ return EXBYID[id]; }).filter(Boolean) : [];
+  }
+
+  function respondDate(region){
+    var pool = dateCandidates();
+    var regional = pool.filter(function(ex){ return ex.region === region; });
+    if(regional.length){
+      lastMatches = regional; lastOffset = Math.min(3, regional.length);
+      addBotMsg(region + '에서 데이트로 가기 좋은, 분위기 있는 전시들이에요.', regional.slice(0, 3));
+    } else {
+      var anyInRegion = EXLIST.filter(function(ex){ return ex.region === region; });
+      if(anyInRegion.length){
+        lastMatches = anyInRegion; lastOffset = Math.min(3, anyInRegion.length);
+        addBotMsg(region + '엔 콕 집어 데이트 전시로 소개할 곳은 아직 없지만, 이런 전시들도 분위기 있을 거예요.', anyInRegion.slice(0, 3));
+      } else {
+        addBotMsg(region + ' 근처에는 아직 소개해드릴 전시가 없어요. 다른 지역도 함께 찾아볼까요?');
+      }
+    }
+  }
+
+  var lastMatches = [];
+  var lastOffset = 0;
+  var pendingIntent = null;
+  var knownRegion = null;
+
+  var SEARCH_API_BASE = 'https://art-search-backend.onrender.com';
+  function liveSearch(q){
+    if(!SEARCH_API_BASE) return Promise.resolve(null);
+    return fetch(SEARCH_API_BASE + '/api/search?q=' + encodeURIComponent(q + ' 전시'))
+      .then(function(res){ return res.ok ? res.json() : null; })
+      .then(function(data){ return data ? data.items : null; })
+      .catch(function(){ return null; });
+  }
+  function addLiveResults(items){
+    var wrap = document.createElement('div');
+    wrap.className = 'msg-recs';
+    wrap.innerHTML = items.slice(0, 3).map(function(it){
+      return '<div class="msg-rec"><div class="t">' + it.title + '</div><div class="m">' + it.description + '</div>' +
+        '<a href="' + it.link + '" target="_blank" rel="noopener" style="display:inline-block;margin-top:7px;font-size:.76rem;font-weight:700;color:var(--accent)">더 알아보기 ↗</a></div>';
+    }).join('');
+    chatMessages.appendChild(wrap);
+    scrollChatBottom();
+  }
+
+  var ART_DOMAIN_RE = /전시|미술관|미술|갤러리|뮤지엄|아트|작품|화가|작가|그림|회화|조각|설치|공예|사진전|비엔날레|큐레이터|도슨트|개인전|기획전|특별전|상설전|전람회|화랑|박물관/;
+
+  function regionsIn(q){
+    var hit = [];
+    Object.keys(REGION_MAP).forEach(function(k){ if(q.indexOf(k) >= 0 && hit.indexOf(REGION_MAP[k]) < 0) hit.push(REGION_MAP[k]); });
+    return hit;
+  }
+
+  function handleQuery(query){
+    addUserMsg(query);
+    var q = query.trim();
+    if(!q){ return; }
+
+    if(pendingIntent === 'route'){
+      pendingIntent = null;
+      var chosen = regionsIn(q);
+      if(chosen.length){
+        knownRegion = chosen[0];
+        chosen.forEach(function(r){
+          var pool = EXLIST.filter(function(ex){ return ex.region === r; });
+          addBotMsg(r + '에서는 이렇게 돌아보면 좋아요.', pool.slice(0, 4));
+        });
+        return;
+      }
+      // 지역으로 인식되지 않으면 그냥 이어서 일반 처리로 넘어감
+    }
+
+    if(pendingIntent === 'date'){
+      if(/내\s?위치|근처|가까운|현재\s?위치|지금\s?어디/.test(q)){
+        respondLocation();
+        return;
+      }
+      pendingIntent = null;
+      var chosenDate = regionsIn(q);
+      if(chosenDate.length){
+        knownRegion = chosenDate[0];
+        respondDate(chosenDate[0]);
+        return;
+      }
+      // 지역으로 인식되지 않으면 그냥 이어서 일반 처리로 넘어감
+    }
+
+    if(/^(안녕|하이|헬로|hi|hello)/i.test(q)){
+      addBotMsg('안녕하세요! 오늘 하루는 어떠셨어요? 기분이나 가고 싶은 지역을 말씀해주시면 어울리는 전시를 찾아드릴게요. 화가나 미술 용어가 궁금하면 그것도 편하게 물어보세요.');
+      return;
+    }
+    if(/고마워|감사/.test(q)){
+      addBotMsg('천만에요. 좋은 전시 만나고 오시길 바라요.');
+      return;
+    }
+
+    var term = findTermMatch(q);
+    if(term){
+      addBotMsg(term + ' — ' + ART_TERMS[term]);
+      return;
+    }
+
+    var artistId = findArtistMatch(q);
+    if(artistId){
+      respondArtist(artistId);
+      return;
+    }
+
+    if(/내\s?위치|근처|가까운|현재\s?위치|지금\s?어디/.test(q)){
+      respondLocation();
+      return;
+    }
+
+    if(/^(더|또|다른\s*거|다른\s*전시)/.test(q) && lastMatches.length > lastOffset){
+      var more = lastMatches.slice(lastOffset, lastOffset + 2);
+      lastOffset += more.length;
+      addBotMsg('이런 것도 있어요.', more);
+      return;
+    }
+
+    var wantsDate = /데이트|커플|연인/.test(q);
+    if(wantsDate){
+      var dateMentioned = regionsIn(q);
+      if(dateMentioned.length){ knownRegion = dateMentioned[0]; }
+      var dateRegion = dateMentioned[0] || knownRegion;
+      if(!dateRegion){
+        addBotMsg('어느 지역에서 데이트하기 좋은 전시를 찾을까요? 아래에서 골라주시거나, \'내 위치\'라고 말씀해주시면 가까운 곳으로 찾아드릴게요.');
+        addRegionChoiceChips();
+        pendingIntent = 'date';
+        return;
+      }
+      respondDate(dateRegion);
+      return;
+    }
+
+    var matches = findMatches(q);
+    var mentionedRegions = regionsIn(q);
+    if(mentionedRegions.length){ knownRegion = mentionedRegions[0]; }
+    var wantsSchedule = /언제까지|기간|며칠|끝나|종료|휴관|마감/.test(q);
+    var wantsRoute = /동선|묶어|같이|하루에|코스|여행/.test(q);
+
+    if(matches.length === 0 && !wantsRoute){
+      if(!ART_DOMAIN_RE.test(q)){
+        addBotMsg('저는 미술 전시 이야기만 도와드릴 수 있어요. 전시·화가·작품·미술 용어나, 가고 싶은 지역·기분을 말씀해주시면 어울리는 전시를 찾아드릴게요.');
+        return;
+      }
+      if(SEARCH_API_BASE){
+        addBotMsg('여기 있는 정보로는 못 찾았어요. 실시간으로 한 번 찾아볼게요…');
+        liveSearch(q).then(function(items){
+          if(items && items.length){ addLiveResults(items); }
+          else { addBotMsg('실시간 검색에서도 정확한 정보를 못 찾았어요. 다른 말로 다시 물어봐주시거나 공식 페이지에서 확인해주세요.'); }
+        });
+      } else {
+        addBotMsg('음, 지금 조건에 딱 맞는 전시를 못 찾았어요. "웃고 싶은 날"처럼 기분으로 말씀해주시거나, 지역·작가 이름·전시 이름으로 다시 물어봐주실래요? 정확한 정보가 없는 부분은 제가 지어내지 않고, 공식 페이지 확인을 권해드릴게요.');
+      }
+      return;
+    }
+
+    if(wantsRoute){
+      var routeRegions = regionsIn(q);
+      if(routeRegions.length === 0){
+        addBotMsg('어느 지역 위주로 도실래요? 아래에서 골라주세요.');
+        addRegionChoiceChips();
+        pendingIntent = 'route';
+        return;
+      }
+      knownRegion = routeRegions[0];
+      routeRegions.forEach(function(r){
+        var pool = EXLIST.filter(function(ex){ return ex.region === r; });
+        addBotMsg(r + '에서는 이렇게 돌아보면 좋아요.', pool.slice(0, 4));
+      });
+      return;
+    }
+
+    var top = matches.slice(0, 2);
+    lastMatches = matches; lastOffset = top.length;
+
+    if(wantsSchedule){
+      addBotMsg('확인해드릴게요. 방문 전 공식 페이지에서 한 번 더 확인하시는 걸 추천해요.', top);
+      return;
+    }
+
+    addBotMsg('이런 전시는 어떠세요?', top);
+  }
+
+  chatForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = chatInput.value;
+    if(!v.trim()) return;
+    chatInput.value = '';
+    handleQuery(v);
+  });
+
+  var QUICK = ['웃고 싶은 날', '데이트 코스 추천', '고흐가 누구야?', '내 근처 전시', '인상주의가 뭐야?'];
+  chatQuick.innerHTML = QUICK.map(function(q){ return '<button type="button">'+q+'</button>'; }).join('');
+  chatQuick.addEventListener('click', function(e){
+    var btn = e.target.closest('button');
+    if(btn) handleQuery(btn.textContent);
+  });
+
+  function openChat(){
+    chatPanelEl.classList.add('open');
+    if(!chatStarted){
+      chatStarted = true;
+      addBotMsg('안녕하세요, 저는 이 사이트의 큐레이터예요. 기분이나 가고 싶은 지역을 말씀해주시면 어울리는 전시를 찾아드리고, 화가나 작품·미술 용어가 궁금해도 편하게 물어보세요. 데이트 코스나 근처 전시 추천도 가능해요.');
+    }
+    chatInput.focus();
+  }
+  function closeChat(){ chatPanelEl.classList.remove('open'); }
+  chatFab.addEventListener('click', function(){
+    chatPanelEl.classList.contains('open') ? closeChat() : openChat();
+  });
+  chatClose.addEventListener('click', closeChat);
+})();
+</script>
