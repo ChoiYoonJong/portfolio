@@ -1641,6 +1641,9 @@
   var today = todayMidnight();
   document.getElementById('todayBadge').textContent =
     (today.getMonth()+1) + '월 ' + today.getDate() + '일 기준';
+  var todayWeatherEl = document.createElement('span');
+  todayWeatherEl.id = 'todayWeather';
+  document.getElementById('todayBadge').appendChild(todayWeatherEl);
 
   document.querySelectorAll('.card').forEach(function(card){
     var startStr = card.dataset.start;
@@ -1970,12 +1973,28 @@
   }
 
   function handleGoogleCredential(response){
-    currentIdToken = response.credential;
+    var googleIdToken = response.credential;
+    currentIdToken = googleIdToken;
     try{ sessionStorage.setItem('artdays_idtoken', currentIdToken); }catch(e){}
     var payload = decodeJwtPayload(currentIdToken);
     currentUser = payload ? { name: payload.name || payload.email, email: payload.email } : { name:'회원' };
     renderAuthUI();
     loadFavorites();
+    exchangeForAppSession(googleIdToken);
+  }
+
+  // Google idToken을 백엔드 자체 세션 토큰으로 교환 (매 요청마다 구글에 재검증하지 않기 위함).
+  // 실패하면(기능 미설정 등) 그냥 Google idToken을 계속 쓰면 되므로 조용히 무시함.
+  function exchangeForAppSession(googleIdToken){
+    fetch(API_BASE + '/api/auth/session', { method:'POST', headers: { 'Authorization': 'Bearer ' + googleIdToken } })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(data){
+        if(data && data.token){
+          currentIdToken = data.token;
+          try{ sessionStorage.setItem('artdays_idtoken', currentIdToken); }catch(e){}
+        }
+      })
+      .catch(function(){});
   }
 
   function decodeJwtPayload(token){
@@ -2139,6 +2158,7 @@
 
   window.addEventListener('load', function(){
     setTimeout(initGoogleAuth, 300);
+    loadTodayWeather();
   });
 
   var chatPanelEl = document.getElementById('chatPanel');
@@ -2278,6 +2298,44 @@
   var knownRegion = null;
 
   var SEARCH_API_BASE = 'https://art-search-backend.onrender.com';
+
+  function fetchWeather(region){
+    return fetch(SEARCH_API_BASE + '/api/weather?region=' + encodeURIComponent(region))
+      .then(function(res){ return res.ok ? res.json() : null; })
+      .catch(function(){ return null; });
+  }
+  function respondWeather(region){
+    fetchWeather(region).then(function(data){
+      if(!data || !data.description){
+        addBotMsg('지금은 ' + region + ' 날씨를 가져오지 못했어요. 잠시 후 다시 물어봐주실래요?');
+        return;
+      }
+      var tempText = (typeof data.temp === 'number') ? (data.temp + '°C, ') : '';
+      addBotMsg('오늘 ' + region + '은 ' + tempText + data.description + '예요.');
+    });
+  }
+  // 페이지 상단 오늘 날짜 배지 옆에 오늘의 날씨를 붙여줌 (위치 확인이 되면 그 지역, 안 되면 서울 기본값)
+  function loadTodayWeather(){
+    var el = document.getElementById('todayWeather');
+    if(!el) return;
+    function showFor(region){
+      fetchWeather(region).then(function(data){
+        if(!data || !data.description) return;
+        var tempText = (typeof data.temp === 'number') ? (data.temp + '°C ') : '';
+        el.textContent = ' · ' + region + ' ' + tempText + data.description;
+      });
+    }
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(
+        function(pos){ showFor(nearestRegion(pos.coords.latitude, pos.coords.longitude)); },
+        function(){ showFor('서울'); },
+        { timeout: 3000 }
+      );
+    } else {
+      showFor('서울');
+    }
+  }
+
   function liveSearch(q){
     if(!SEARCH_API_BASE) return Promise.resolve(null);
     return fetch(SEARCH_API_BASE + '/api/search?q=' + encodeURIComponent(q + ' 전시'))
@@ -2344,6 +2402,13 @@
     }
     if(/고마워|감사/.test(q)){
       addBotMsg('천만에요. 좋은 전시 만나고 오시길 바라요.');
+      return;
+    }
+
+    if(/날씨|기온|비\s?와|눈\s?와|우산/.test(q)){
+      var weatherMentioned = regionsIn(q);
+      if(weatherMentioned.length){ knownRegion = weatherMentioned[0]; }
+      respondWeather(weatherMentioned[0] || knownRegion || '서울');
       return;
     }
 

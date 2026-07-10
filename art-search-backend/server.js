@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
+const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
@@ -13,6 +16,17 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const DAILY_CURATOR_LIMIT = Number(process.env.DAILY_CURATOR_LIMIT || 20);
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+
+// 백엔드 자체 세션 토큰(로그인 방식은 그대로 Google, 매 요청마다 Google에 재검증하지 않기 위함)
+const JWT_SECRET = process.env.JWT_SECRET || null;
+// Google Drive 백업용 (Supabase 데이터를 주기적으로 내보내는 안전망)
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || null;
+const GOOGLE_REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN || null;
+// 오늘의 지역 날씨 표시용
+const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY || null;
+// 영구 디스크 경로 (Render 등, 없으면 서버 재시작 시 초기화되는 메모리 저장만 씀)
+const DATA_DIR = process.env.DATA_DIR || null;
+if (DATA_DIR) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 const supabase = (SUPABASE_URL && SUPABASE_SERVICE_KEY)
   ? createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
@@ -38,8 +52,22 @@ async function verifyGoogleToken(idToken) {
 
 async function requireAuth(req, res, next) {
   const header = req.get('authorization') || '';
-  const idToken = header.startsWith('Bearer ') ? header.slice(7) : null;
-  const user = await verifyGoogleToken(idToken);
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  if (!token) {
+    return res.status(401).json({ error: '로그인이 필요해요.' });
+  }
+  // 먼저 우리 백엔드가 발급한 자체 세션 토큰인지 확인 (구글에 매 요청마다 재검증하지 않기 위함).
+  // Google이 서명한 idToken은 JWT_SECRET으로 검증되지 않으므로 실패하면 아래 idToken 검증으로 자연히 폴백됨.
+  if (JWT_SECRET) {
+    try {
+      const payload = jwt.verify(token, JWT_SECRET);
+      req.user = { email: payload.email, name: payload.name, picture: payload.picture };
+      return next();
+    } catch (e) {
+      // 우리 토큰이 아니거나 만료됨 -> 아래에서 Google idToken으로 취급해 재검증
+    }
+  }
+  const user = await verifyGoogleToken(token);
   if (!user) {
     return res.status(401).json({ error: '로그인이 필요해요.' });
   }
@@ -47,8 +75,34 @@ async function requireAuth(req, res, next) {
   next();
 }
 
-// ---------- 하루 사용량 제한 (메모리 기반, 서버 재시작 시 초기화) ----------
+// POST /api/auth/session  { Authorization: Bearer <Google idToken> } -> { token, user }
+// Google idToken을 한 번 검증하고, 이후 요청에 쓸 백엔드 자체 세션 토큰을 발급해줌
+app.post('/api/auth/session', async (req, res) => {
+  if (!JWT_SECRET) {
+    return res.status(503).json({ error: '세션 기능이 아직 설정되어 있지 않아요.' });
+  }
+  const header = req.get('authorization') || '';
+  const idToken = header.startsWith('Bearer ') ? header.slice(7) : null;
+  const user = await verifyGoogleToken(idToken);
+  if (!user) {
+    return res.status(401).json({ error: '로그인이 필요해요.' });
+  }
+  const token = jwt.sign(user, JWT_SECRET, { expiresIn: '7d' });
+  res.json({ token, user });
+});
+
+// ---------- 하루 사용량 제한 (DATA_DIR 있으면 파일로 영속화, 없으면 메모리 전용이라 재시작 시 초기화) ----------
+var USAGE_FILE = DATA_DIR ? path.join(DATA_DIR, 'usage.json') : null;
 var usageByEmail = new Map();
+(function loadUsageFromDisk() {
+  if (!USAGE_FILE) return;
+  try {
+    var saved = JSON.parse(fs.readFileSync(USAGE_FILE, 'utf8'));
+    Object.keys(saved).forEach(function (email) { usageByEmail.set(email, saved[email]); });
+  } catch (e) {
+    // 파일이 없거나 손상됨 -> 빈 상태로 시작
+  }
+})();
 function checkAndBumpUsage(email) {
   var today = new Date().toISOString().slice(0, 10);
   var entry = usageByEmail.get(email);
@@ -57,6 +111,13 @@ function checkAndBumpUsage(email) {
   }
   entry.count += 1;
   usageByEmail.set(email, entry);
+  if (USAGE_FILE) {
+    try {
+      fs.writeFileSync(USAGE_FILE, JSON.stringify(Object.fromEntries(usageByEmail)));
+    } catch (e) {
+      // 저장 실패해도 이번 요청 자체는 그대로 진행
+    }
+  }
   return entry.count <= DAILY_CURATOR_LIMIT;
 }
 
@@ -265,6 +326,132 @@ app.post('/api/visits', requireAuth, requireSupabase, async (req, res) => {
   if (error) return res.status(500).json({ error: '방문기록 저장에 실패했어요.' });
   res.json({ ok: true });
 });
+
+// ---------- 오늘의 지역 날씨 ----------
+var REGION_COORDS = {
+  '서울': [37.5665, 126.9780], '경기': [37.4138, 127.5183], '인천': [37.4563, 126.7052],
+  '대구': [35.8714, 128.6014], '대전': [36.3504, 127.3845], '광주': [35.1595, 126.8526],
+  '전북': [35.7175, 127.1530], '울산': [35.5384, 129.3114], '제주': [33.4996, 126.5312],
+  '부산': [35.1796, 129.0756], '강원': [37.8228, 128.1555], '경남': [35.4606, 128.2132],
+  '경북': [36.4919, 128.8889], '충남': [36.5184, 126.8000], '충북': [36.6357, 127.4917],
+  '세종': [36.4800, 127.2890]
+};
+
+// GET /api/weather?region=서울  -> { region, description, temp }
+app.get('/api/weather', async (req, res) => {
+  if (!OPENWEATHER_API_KEY) {
+    return res.status(503).json({ error: '날씨 기능이 아직 설정되어 있지 않아요.' });
+  }
+  var region = REGION_COORDS[req.query.region] ? req.query.region : '서울';
+  var coords = REGION_COORDS[region];
+  try {
+    var url = 'https://api.openweathermap.org/data/2.5/weather?lat=' + coords[0] + '&lon=' + coords[1] +
+      '&appid=' + OPENWEATHER_API_KEY + '&units=metric&lang=kr';
+    var weatherRes = await fetch(url);
+    if (!weatherRes.ok) {
+      return res.status(502).json({ error: '날씨 정보를 가져오지 못했어요.' });
+    }
+    var data = await weatherRes.json();
+    var description = (data.weather && data.weather[0] && data.weather[0].description) || null;
+    var temp = (data.main && typeof data.main.temp === 'number') ? Math.round(data.main.temp) : null;
+    res.json({ region: region, description: description, temp: temp });
+  } catch (err) {
+    res.status(500).json({ error: '날씨 정보를 가져오는 중 오류가 발생했어요.' });
+  }
+});
+
+// ---------- Supabase -> Google Drive 주기적 백업 (Supabase 자체도 안전하지만, 추가 안전망) ----------
+async function getDriveAccessToken() {
+  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REFRESH_TOKEN) return null;
+  try {
+    var r = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: GOOGLE_CLIENT_ID,
+        client_secret: GOOGLE_CLIENT_SECRET,
+        refresh_token: GOOGLE_REFRESH_TOKEN,
+        grant_type: 'refresh_token'
+      })
+    });
+    if (!r.ok) return null;
+    var data = await r.json();
+    return data.access_token || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+var driveBackupFolderId = null;
+async function ensureDriveBackupFolder(accessToken) {
+  if (driveBackupFolderId) return driveBackupFolderId;
+  var folderName = '미술이 있는 날들 백업';
+  var q = "name='" + folderName + "' and mimeType='application/vnd.google-apps.folder' and trashed=false";
+  var listRes = await fetch('https://www.googleapis.com/drive/v3/files?q=' + encodeURIComponent(q) + '&fields=files(id,name)', {
+    headers: { Authorization: 'Bearer ' + accessToken }
+  });
+  var listData = await listRes.json();
+  var folderId = listData.files && listData.files[0] && listData.files[0].id;
+  if (!folderId) {
+    var createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: folderName, mimeType: 'application/vnd.google-apps.folder' })
+    });
+    var createData = await createRes.json();
+    folderId = createData.id;
+  }
+  driveBackupFolderId = folderId;
+  return folderId;
+}
+
+async function uploadJsonToDrive(accessToken, folderId, filename, jsonText) {
+  var q = "name='" + filename + "' and '" + folderId + "' in parents and trashed=false";
+  var listRes = await fetch('https://www.googleapis.com/drive/v3/files?q=' + encodeURIComponent(q) + '&fields=files(id)', {
+    headers: { Authorization: 'Bearer ' + accessToken }
+  });
+  var listData = await listRes.json();
+  var existingId = listData.files && listData.files[0] && listData.files[0].id;
+
+  var boundary = 'artdays-backup-boundary';
+  var metadata = existingId ? {} : { name: filename, parents: [folderId] };
+  var body = '--' + boundary + '\r\n' +
+    'Content-Type: application/json; charset=UTF-8\r\n\r\n' + JSON.stringify(metadata) + '\r\n' +
+    '--' + boundary + '\r\n' +
+    'Content-Type: application/json\r\n\r\n' + jsonText + '\r\n' +
+    '--' + boundary + '--';
+
+  var uploadUrl = existingId
+    ? 'https://www.googleapis.com/upload/drive/v3/files/' + existingId + '?uploadType=multipart'
+    : 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
+  await fetch(uploadUrl, {
+    method: existingId ? 'PATCH' : 'POST',
+    headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'multipart/related; boundary=' + boundary },
+    body: body
+  });
+}
+
+async function runSupabaseDriveBackup() {
+  if (!supabase || !GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REFRESH_TOKEN) return;
+  try {
+    var accessToken = await getDriveAccessToken();
+    if (!accessToken) return;
+    var { data, error } = await supabase.from('user_activity').select('*');
+    if (error) {
+      console.warn('Drive 백업용 Supabase 조회 실패', error);
+      return;
+    }
+    var folderId = await ensureDriveBackupFolder(accessToken);
+    await uploadJsonToDrive(accessToken, folderId, 'user_activity_backup.json', JSON.stringify(data, null, 2));
+    console.log('Supabase 데이터 Google Drive 백업 완료 (' + data.length + '건)');
+  } catch (e) {
+    console.warn('Google Drive 백업 실패', e);
+  }
+}
+if (supabase && GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && GOOGLE_REFRESH_TOKEN) {
+  runSupabaseDriveBackup();
+  setInterval(runSupabaseDriveBackup, 6 * 60 * 60 * 1000);
+}
 
 app.listen(PORT, () => {
   console.log(`art-search-backend listening on port ${PORT}`);
