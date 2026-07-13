@@ -2948,6 +2948,32 @@
       return;
     }
 
+    var isStudyQuestion = !wantsSchedule && /언제|시대|사조|유래|역사|특징|정의|무엇|뭐(야|예요|니|임)?|란\s|설명|누가\s*(그렸|만들|시작|창시)/.test(q);
+    if(isStudyQuestion){
+      if(currentIdToken){
+        addBotMsg('AI 큐레이터에게 한 번 물어볼게요…');
+        askCurator(q).then(function(result){
+          if(result.unauthorized){
+            addBotMsg('로그인이 만료된 것 같아요. 다시 로그인해주시겠어요?');
+            signOut();
+            return;
+          }
+          if(result.limited){
+            addBotMsg('오늘 AI 큐레이터 사용 한도를 다 쓰셨어요. 내일 다시 이용해주세요.');
+            return;
+          }
+          if(result.failed || !result.answer){
+            addBotMsg(result.errorMsg ? ('AI 큐레이터 오류: ' + result.errorMsg) : 'AI 큐레이터 서버에 연결하지 못했어요. 잠시 후 다시 시도해주실래요?');
+            return;
+          }
+          var recs = (result.ids || []).map(function(id){ return EXBYID[id]; }).filter(Boolean);
+          addBotMsg(result.answer, recs);
+        });
+        return;
+      }
+      addBotMsg('이보다 자세한 미술사 설명은 로그인하면 AI 큐레이터가 답해드려요.');
+    }
+
     var top = matches.slice(0, 2);
     lastMatches = matches; lastOffset = top.length;
 
