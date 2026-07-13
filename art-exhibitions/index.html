@@ -2948,7 +2948,11 @@
       return;
     }
 
-    var isStudyQuestion = !wantsSchedule && /언제|시대|사조|유래|역사|특징|정의|무엇|뭐(야|예요|니|임)?|란\s|설명|누가\s*(그렸|만들|시작|창시)/.test(q);
+    var STUDY_TERMS = Object.keys(ART_TERMS).concat(['표현주의','다다이즘','초현실주의','팝아트','바로크','로코코','미니멀리즘','추상표현주의','포스트모더니즘','고딕','상징주의','아르누보','인상파','후기인상주의','신인상주의']);
+    var mentionsStudyTerm = STUDY_TERMS.some(function(t){ return q.indexOf(t) >= 0; });
+    var isStudyQuestion = !wantsSchedule &&
+      (mentionsStudyTerm || /사조|시대|유래|역사/.test(q)) &&
+      /언제|시대|사조|유래|역사|특징|정의|무엇|뭐(야|예요|니|임)?|란\s|설명|누구|대표|어떤|알려줘|누가/.test(q);
     if(isStudyQuestion){
       if(currentIdToken){
         addBotMsg('AI 큐레이터에게 한 번 물어볼게요…');
