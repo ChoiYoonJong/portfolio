@@ -259,7 +259,11 @@ app.post('/api/curator', requireAuth, async (req, res) => {
     const idsMatch = text.match(/IDS:\s*(.*)$/m);
     const ids = idsMatch ? idsMatch[1].split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
     const answer = text.replace(/IDS:\s*.*/m, '').trim();
-    res.json({ answer: answer || '음, 지금은 답을 정리하지 못했어요. 다시 물어봐주실래요?', ids: ids });
+    res.json({
+      answer: answer || '음, 지금은 답을 정리하지 못했어요. 다시 물어봐주실래요?',
+      ids: ids,
+      debug: { finishReason: finishReason || null, rawTextLength: text.length, partsCount: parts.length }
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'AI 응답을 가져오는 중 오류가 발생했어요.' });
