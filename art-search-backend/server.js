@@ -200,17 +200,17 @@ app.post('/api/curator', requireAuth, async (req, res) => {
     ? '\n\n[이 사용자가 이전에 즐겨찾기하거나 본 전시]\n' + historyList.join(', ') + '\n이 취향을 참고해서 비슷한 결의 전시를 우선 추천해도 좋아요.'
     : '';
 
-  const prompt = '당신은 "미술이 있는 날들"이라는 전시 안내 사이트의 큐레이터입니다. 아래는 지금 사이트에 실제로 등록된 전시 목록입니다. ' +
-    '전시를 추천할 때는 반드시 이 목록 안에서만 추천하고, 목록에 없는 전시를 지어내지 마세요. ' +
-    '사용자가 "이 사이트에 이런 전시 있어?"처럼 특정 작가나 작품의 전시 여부를 물었는데 목록에 없다면, ' +
-    '절대 목록에 없는 전시를 지어내지 말고 "해당 작가/작품은 지금 등록된 전시 목록에 없어요."처럼 한두 문장으로만 짧게 답하세요. ' +
-    '반면 사용자가 미술 사조·시대·화가·미술사 개념 등 "공부"에 가까운 일반적인 미술 지식을 물어보는 경우에는 ' +
-    '전시 목록 제한과 무관하게, 아래 [미술사 참고자료]와 당신이 알고 있는 미술사 지식을 바탕으로 정확하고 친절하게 설명해주세요. ' +
-    '미술/전시와 무관한 질문에는 정중히 미술 이야기만 도와줄 수 있다고 답하세요. 친근하고 따뜻한 존댓말로, 2~4문장 이내로 짧게 답하세요.\n\n' +
+  const prompt = '당신은 "미술이 있는 날들"이라는 전시 안내 사이트의 큐레이터입니다.\n' +
+    '규칙:\n' +
+    '1) 전시를 추천할 때는 반드시 [전시 목록] 안에서만 추천하고, 목록에 없는 전시를 지어내지 마세요.\n' +
+    '2) 사용자가 특정 작가나 작품의 전시 여부를 물었는데 [전시 목록]에 없다면, "해당 작가/작품은 지금 등록된 전시 목록에 없어요."처럼 한두 문장으로만 짧게 답하세요.\n' +
+    '3) 미술 사조·시대·화가 등 일반적인 미술 지식(공부)을 물어보면, [전시 목록] 제한과 무관하게 [미술사 참고자료]와 알고 있는 지식을 바탕으로 답하세요.\n' +
+    '4) 미술/전시와 무관한 질문에는 정중히 미술 이야기만 도와줄 수 있다고 답하세요.\n' +
+    '5) 분석 과정, 영어, 개요나 메모를 출력하지 말고, 친근하고 따뜻한 존댓말의 완성된 한국어 문장만 2~4문장으로 바로 출력하세요.\n\n' +
     '[미술사 참고자료]\n' + ART_HISTORY_REFERENCE +
     '\n\n[전시 목록]\n' + context + historyLine +
     '\n\n[사용자 질문]\n' + query +
-    '\n\n답변 마지막 줄에 추천하는 전시 id들을 "IDS: id1,id2" 형식으로 한 줄 추가하세요 (추천이 없으면 "IDS:" 만 적으세요).';
+    '\n\n위 규칙에 따라 지금 바로 한국어 답변만 작성하세요. 답변 마지막 줄에 추천하는 전시 id들을 "IDS: id1,id2" 형식으로 한 줄 추가하세요 (추천이 없으면 "IDS:" 만 적으세요).';
 
   try {
     let geminiRes = await fetch(
@@ -255,7 +255,7 @@ app.post('/api/curator', requireAuth, async (req, res) => {
       return res.json({ answer: '죄송해요, 답변 분량이 초과되어 내용을 정리하지 못했어요. 조금 더 짧게 다시 물어봐주실래요?', ids: [] });
     }
     const parts = (candidate && candidate.content && candidate.content.parts) || [];
-    const text = parts.map(function (p) { return p.text || ''; }).join('');
+    const text = parts.filter(function (p) { return !p.thought; }).map(function (p) { return p.text || ''; }).join('');
     const idsMatch = text.match(/IDS:\s*(.*)$/m);
     const ids = idsMatch ? idsMatch[1].split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
     const answer = text.replace(/IDS:\s*.*/m, '').trim();
