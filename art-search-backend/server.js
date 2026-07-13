@@ -122,6 +122,38 @@ function checkAndBumpUsage(email) {
   return entry.count <= DAILY_CURATOR_LIMIT;
 }
 
+// ---------- 큐레이터용 경량 검색(retrieval) ----------
+// 전시 목록 전체를 매번 프롬프트에 넣는 대신, 질문과 겹치는 단어가 많은 전시부터 상위 N개만 골라서 넣는다.
+// (벡터DB 없이도 제목/장소/지역/장르/분위기 키워드 매칭만으로 충분히 관련도를 가릴 수 있는 규모라 이 방식을 씀)
+function scoreExhibition(ex, queryTokens) {
+  var haystack = [ex.title, ex.venue, ex.region, ex.genre, ex.mood, ex.status]
+    .join(' ')
+    .toLowerCase();
+  var score = 0;
+  queryTokens.forEach(function (t) {
+    if (haystack.indexOf(t) >= 0) score += 1;
+  });
+  return score;
+}
+
+function retrieveRelevantExhibitions(query, list, topK) {
+  var tokens = String(query || '')
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(function (t) { return t.length >= 2; });
+
+  if (!tokens.length || list.length <= topK) return list.slice(0, topK);
+
+  var scored = list.map(function (ex) {
+    return { ex: ex, score: scoreExhibition(ex, tokens) };
+  });
+  var anyMatch = scored.some(function (s) { return s.score > 0; });
+  if (!anyMatch) return list.slice(0, topK);
+
+  scored.sort(function (a, b) { return b.score - a.score; });
+  return scored.slice(0, topK).map(function (s) { return s.ex; });
+}
+
 function stripTags(s) {
   return String(s || '')
     .replace(/<\/?b>/g, '')
@@ -189,7 +221,8 @@ app.post('/api/curator', requireAuth, async (req, res) => {
     return res.status(400).json({ error: 'query가 필요해요.' });
   }
 
-  const list = Array.isArray(exhibitions) ? exhibitions.slice(0, 80) : [];
+  const fullList = Array.isArray(exhibitions) ? exhibitions.slice(0, 200) : [];
+  const list = retrieveRelevantExhibitions(query, fullList, 24);
   const context = list.map(function (ex) {
     return '- [' + ex.id + '] ' + ex.title + ' · ' + ex.venue + ' (' + ex.region + ') · ' + ex.period +
       ' · ' + ex.genre + ' · ' + (ex.status || '') + ' · 분위기: ' + (ex.mood || '');
@@ -262,7 +295,7 @@ app.post('/api/curator', requireAuth, async (req, res) => {
     res.json({
       answer: answer || '음, 지금은 답을 정리하지 못했어요. 다시 물어봐주실래요?',
       ids: ids,
-      debug: { finishReason: finishReason || null, rawTextLength: text.length, partsCount: parts.length }
+      debug: { finishReason: finishReason || null, rawTextLength: text.length, partsCount: parts.length, retrievedCount: list.length, totalCount: fullList.length }
     });
   } catch (err) {
     console.error(err);
