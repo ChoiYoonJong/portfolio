@@ -452,6 +452,25 @@
     .modal-overlay, .modal-panel, .chat-panel{ transition:none; }
   }
 
+  /* ---------- Favorites view toggle (desktop header; mobile uses the bottom-nav tab instead) ---------- */
+  .fav-view-btn{
+    display:inline-flex; align-items:center; gap:6px; flex:none;
+    padding:8px 14px; border-radius:999px; border:1px solid var(--border-soft);
+    background:var(--bg-panel-alt); color:var(--text); font-weight:700; font-size:.82rem;
+    font-family:inherit; cursor:pointer; box-shadow:var(--shadow); transition:all .15s ease;
+    margin-bottom:4px;
+  }
+  .fav-view-btn:hover{ border-color:var(--accent); }
+  .fav-view-btn .fav-view-icon{ color:var(--accent); }
+  .fav-view-btn.active{ background:var(--accent); color:var(--bg-panel); border-color:var(--accent); }
+  .fav-view-btn.active .fav-view-icon{ color:var(--bg-panel); }
+
+  /* ---------- Empty state (e.g. no favorites yet) ---------- */
+  .empty-state{ display:none; flex-direction:column; align-items:center; gap:10px; padding:64px 20px 40px; text-align:center; color:var(--text-faint); }
+  .empty-state.show{ display:flex; }
+  .empty-state-icon{ font-size:2.4rem; color:var(--accent); line-height:1; }
+  .empty-state p{ max-width:36ch; line-height:1.6; }
+
   /* ---------- Mobile-only layout (compact feed list + bottom nav) ---------- */
   .brand-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
   .mobile-filter-btn{ display:none; }
@@ -463,6 +482,8 @@
   @media (max-width:720px){
     :root{ --bn-h: 60px; }
     body{ padding-bottom: calc(var(--bn-h) + env(safe-area-inset-bottom)); }
+
+    .fav-view-btn{ display:none; }
 
     .mobile-filter-btn{
       display:inline-flex; align-items:center; gap:6px; flex:none;
@@ -551,6 +572,9 @@
       <div class="brand-eyebrow">Days with Art</div>
       <div class="brand-row">
         <h1 class="brand">미술이 있는 <em>날들</em></h1>
+        <button class="fav-view-btn" id="favViewBtn" type="button">
+          <span class="fav-view-icon">♡</span><span class="fav-view-label">즐겨찾기</span>
+        </button>
         <button class="mobile-filter-btn" id="mfbOpenBtn" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           필터
@@ -1458,6 +1482,10 @@
     </article>
 
   </div>
+  <div class="empty-state" id="favEmptyState">
+    <div class="empty-state-icon">♡</div>
+    <p>아직 즐겨찾기한 전시가 없어요.<br>마음에 드는 전시의 하트를 눌러 담아보세요.</p>
+  </div>
   <div class="load-more-row" id="loadMoreRow">
     <button class="load-more-btn" id="loadMoreBtn" type="button">더 많은 전시 보기 ↓</button>
     <span class="load-more-count" id="loadMoreCount"></span>
@@ -1979,6 +2007,7 @@
   var loadMoreBtn = document.getElementById('loadMoreBtn');
   var loadMoreRow = document.getElementById('loadMoreRow');
   var loadMoreCount = document.getElementById('loadMoreCount');
+  var favEmptyState = document.getElementById('favEmptyState');
 
   function applyFilters(){
     var matching = [];
@@ -1998,13 +2027,15 @@
       card.classList.add('in');
     });
     var remaining = matching.length - visibleCount;
+    var showEmpty = favoritesOnly && matching.length === 0;
+    if(favEmptyState){ favEmptyState.classList.toggle('show', showEmpty); }
     if(loadMoreBtn){ loadMoreBtn.hidden = remaining <= 0; }
     if(loadMoreCount){
       loadMoreCount.textContent = matching.length
         ? Math.min(visibleCount, matching.length) + ' / ' + matching.length + '개 보는 중'
         : '';
     }
-    if(loadMoreRow){ loadMoreRow.style.display = matching.length ? '' : 'none'; }
+    if(loadMoreRow){ loadMoreRow.style.display = (matching.length && !showEmpty) ? '' : 'none'; }
   }
 
   if(loadMoreBtn){
@@ -2073,22 +2104,29 @@
     applyFilters();
     window.scrollTo({ top:0, behavior:'smooth' });
   });
-  bnFav.addEventListener('click', function(){
+  var favViewBtn = document.getElementById('favViewBtn');
+  function updateFavViewBtn(){
+    if(!favViewBtn) return;
+    favViewBtn.classList.toggle('active', favoritesOnly);
+    favViewBtn.querySelector('.fav-view-icon').textContent = favoritesOnly ? '♥' : '♡';
+    favViewBtn.querySelector('.fav-view-label').textContent =
+      favoritesOnly ? '즐겨찾기 보기 중 (' + favoriteIds.length + ') · 전체보기' : '즐겨찾기';
+  }
+  function toggleFavoritesView(){
     if(!currentIdToken){
       openChat();
       addBotMsg('즐겨찾기는 로그인 후 이용할 수 있어요. 채팅창 상단에서 로그인해주세요.');
       return;
     }
-    if(!favoritesOnly && !favoriteIds.length){
-      showToast('아직 즐겨찾기한 전시가 없어요.', true);
-      return;
-    }
     favoritesOnly = !favoritesOnly;
     setActiveBnItem(favoritesOnly ? bnFav : bnHome);
+    updateFavViewBtn();
     visibleCount = PAGE_SIZE;
     applyFilters();
     window.scrollTo({ top:0, behavior:'smooth' });
-  });
+  }
+  bnFav.addEventListener('click', toggleFavoritesView);
+  if(favViewBtn){ favViewBtn.addEventListener('click', toggleFavoritesView); }
   document.getElementById('bnChat').addEventListener('click', function(){ openChat(); });
 
   if('IntersectionObserver' in window){
@@ -2370,6 +2408,12 @@
     favoriteIds = [];
     try{ sessionStorage.removeItem('artdays_idtoken'); }catch(e){}
     renderAuthUI();
+    if(favoritesOnly){
+      favoritesOnly = false;
+      setActiveBnItem(bnHome);
+      visibleCount = PAGE_SIZE;
+      applyFilters();
+    }
     updateAllFavButtons();
   }
 
@@ -2436,6 +2480,7 @@
       modalBtn.classList.toggle('active', on2);
       modalBtn.textContent = on2 ? '♥' : '♡';
     }
+    updateFavViewBtn();
     if(favoritesOnly){ applyFilters(); }
   }
 
