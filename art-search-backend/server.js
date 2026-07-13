@@ -207,7 +207,213 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-// POST /api/curator  { query, exhibitions: [...], history: [...] }  (로그인 필요)
+// ---------- 큐레이터 질문 분류 ----------
+// 예전에는 모든 질문에 규칙+예시+미술사자료+전시목록을 통째로 넣은 하나의 긴 프롬프트를 썼다.
+// 이 때문에 (1) 프롬프트가 길어져 503(모델 과부하)이 잦고 (2) 응답이 느리고
+// (3) AI가 프롬프트 속 지시문("Output Format" 등)을 그대로 따라 출력하는 문제가 있었다.
+// 질문을 4가지 유형으로 나눠서 유형별로 꼭 필요한 데이터만 프롬프트에 넣는 방식으로 이를 줄인다.
+// (분류 자체에 별도로 AI를 호출하면 지연시간이 늘고 목적에도 안 맞으므로, 키워드 기반의
+//  간단한 규칙 분류만 사용한다.)
+var EXHIBITION_KEYWORDS = ['전시', '추천', '가볼', '볼만한', '관람', '전시회', '전시장', '어디서', '어디에',
+  '서울', '경기', '인천', '대구', '대전', '광주', '전북', '전남', '울산', '제주', '부산', '강원', '경남', '경북', '충남', '충북', '세종'];
+// 시대/사조 이름은 "화가" 같은 단어와 함께 나와도 history로 분류되어야 하므로 artist보다 먼저 검사한다.
+var HISTORY_KEYWORDS = ['사조', '시대', '유파', '운동', '역사', '언제부터', '몇 세기', '몇세기',
+  '르네상스', '바로크', '로코코', '매너리즘', '고딕', '인상주의', '입체주의', '초현실주의', '야수파',
+  '표현주의', '다다이즘', '미래주의', '아르누보', '팝아트', '팝 아트', '미니멀리즘', '포스트모더니즘',
+  '신고전주의', '낭만주의', '리얼리즘', '상징주의', '아방가르드', '모더니즘'];
+var ARTWORK_KEYWORDS = ['이 그림', '이 작품', '그림 설명', '작품 설명', '이미지 속', '사진 속', '업로드한'];
+var ARTIST_KEYWORDS = ['화가', '작가', '예술가', '화백'];
+
+function containsAny(text, words) {
+  return words.some(function (w) { return text.indexOf(w) >= 0; });
+}
+
+// 질문을 artwork / history / artist / exhibition 중 하나로 분류한다.
+// 검사 순서: artwork(가장 구체적) -> history(사조/시대 키워드) -> artist(일반 "화가/작가" 언급)
+// -> exhibition. 애매하면 사이트 본연의 기능인 exhibition으로 취급한다.
+function classifyQuery(query) {
+  var q = String(query || '');
+  if (containsAny(q, ARTWORK_KEYWORDS)) return 'artwork';
+  if (containsAny(q, HISTORY_KEYWORDS)) return 'history';
+  if (containsAny(q, ARTIST_KEYWORDS)) return 'artist';
+  return 'exhibition';
+}
+
+// ---------- 유형별 프롬프트 생성 ----------
+// 공통 지시문은 한 줄로 짧게 유지한다. 예시 답안이나 "Output Format" 같은 형식 설명을 프롬프트에
+// 넣으면 AI가 그 문구 자체를 따라 출력해버리는 문제가 있었으므로 최소한으로만 남긴다.
+var COMMON_STYLE = '친절하고 따뜻한 존댓말로, 자연스러운 한국어 문장 2~4개로 바로 답해주세요. 분석 과정이나 형식 설명 없이 답변 내용만 출력하세요.';
+
+function buildHistoryPrompt(query, reminder) {
+  return '당신은 미술 전문 큐레이터입니다. 아래 미술사 자료를 참고해서 사용자 질문에 답해주세요.\n\n' +
+    '[미술사 참고자료]\n' + ART_HISTORY_REFERENCE +
+    '\n\n[질문]\n' + query +
+    '\n\n' + COMMON_STYLE + (reminder ? '\n' + reminder : '');
+}
+
+function buildArtistPrompt(query, reminder) {
+  return '당신은 미술 전문 큐레이터입니다. 화가에 대해 알고 있는 지식과 아래 미술사 자료를 참고해서 질문에 답해주세요.\n\n' +
+    '[미술사 참고자료]\n' + ART_HISTORY_REFERENCE +
+    '\n\n[질문]\n' + query +
+    '\n\n' + COMMON_STYLE + (reminder ? '\n' + reminder : '');
+}
+
+// artwork(작품 설명): 전시 목록/미술사 자료 대신 요청에 실려온 작품 정보(또는 이미지 설명)만 사용한다.
+// 프런트가 아직 작품 정보를 보내지 않는 경우도 있으므로, 없으면 그 사실을 프롬프트에 명시해
+// AI가 근거 없는 내용을 지어내지 않도록 한다.
+function buildArtworkPrompt(query, artwork, reminder) {
+  var artworkInfo = artwork ? String(artwork) : '제공된 작품 정보가 없습니다. 질문에 나온 내용만으로 답하세요.';
+  return '당신은 미술 전문 큐레이터입니다. 아래 작품 정보를 참고해서 질문에 답해주세요.\n\n' +
+    '[작품 정보]\n' + artworkInfo +
+    '\n\n[질문]\n' + query +
+    '\n\n' + COMMON_STYLE + (reminder ? '\n' + reminder : '');
+}
+
+function buildExhibitionPrompt(query, context, historyLine, reminder) {
+  return '당신은 "미술이 있는 날들" 사이트의 큐레이터입니다. 아래 [전시 목록]에 있는 전시만 추천하고, ' +
+    '목록에 없는 전시는 지어내지 마세요. 목록에 없으면 없다고 짧게 답하세요.\n\n' +
+    '[전시 목록]\n' + context + historyLine +
+    '\n\n[질문]\n' + query +
+    '\n\n' + COMMON_STYLE + (reminder ? '\n' + reminder : '');
+}
+
+// 답변에 등장한 전시 제목을 찾아 그 전시의 id를 추천 id로 간주한다.
+// 예전에는 AI에게 "답변 마지막 줄에 IDS: id1,id2 를 적어라"라고 시켰는데, 이 형식 지시문
+// 자체가 답변에 새어나오는 원인 중 하나였다. AI에게 형식을 기억시키는 대신 서버가 직접 매칭한다.
+function extractRecommendedIds(answer, list) {
+  if (!answer || !list.length) return [];
+  return list
+    .filter(function (ex) { return ex.title && answer.indexOf(ex.title) >= 0; })
+    .map(function (ex) { return ex.id; });
+}
+
+// ---------- Gemini 호출 ----------
+var GEMINI_RETRY_DELAYS_MS = [1000, 2000, 4000]; // 503(과부하) 시 1초 -> 2초 -> 4초 순으로 최대 3회 재시도
+
+function sleep(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+
+function fetchGemini(prompt) {
+  return fetch(
+    'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + GEMINI_API_KEY,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.4, maxOutputTokens: 800, thinkingConfig: { thinkingBudget: 0 } }
+      })
+    }
+  );
+}
+
+// 구글 쪽 모델 일시 과부하(503 UNAVAILABLE)에 대비해 지수 백오프로 재시도한다.
+// (기존에는 600ms 뒤 1회만 재시도했는데, 그정도로는 부족해 503이 그대로 사용자에게 노출되는 일이 잦았다.)
+async function callGeminiWithRetry(prompt) {
+  var res = await fetchGemini(prompt);
+  for (var i = 0; res.status === 503 && i < GEMINI_RETRY_DELAYS_MS.length; i++) {
+    await sleep(GEMINI_RETRY_DELAYS_MS[i]);
+    res = await fetchGemini(prompt);
+  }
+  return res;
+}
+
+// 프롬프트 속 지시문("Output Format", "Rules:", "분석 과정" 등)이 답변에 그대로 새어나오면
+// 깨진 답으로 간주해 재요청한다.
+function looksBroken(answer) {
+  if (!answer) return true;
+  if (/output format|format\s*:|must end with|example\s*:|rules\s*:|분석 과정|\*\*/i.test(answer)) return true;
+  if (answer.length < 6) return true;
+  if (!/[.!?요다임음함죠]["')\]]?$/.test(answer)) return true;
+  return false;
+}
+
+function extractAnswer(data) {
+  var candidate = (data.candidates && data.candidates[0]) || null;
+  var finishReason = candidate && candidate.finishReason;
+  var parts = (candidate && candidate.content && candidate.content.parts) || [];
+  var text = parts.filter(function (p) { return !p.thought; }).map(function (p) { return p.text || ''; }).join('').trim();
+  return { finishReason: finishReason || null, text: text, partsCount: parts.length };
+}
+
+// buildPromptFn(reminder) 형태의 프롬프트 빌더를 받아 Gemini에 질의하고,
+// 답변이 깨진 것처럼 보이면 형식 리마인더를 붙여 한 번만 더 시도한다.
+// 503 등 호출 자체 실패는 예외로 던져서 라우트 핸들러가 HTTP 에러 응답을 만들도록 한다.
+async function askCuratorGemini(buildPromptFn) {
+  var geminiRes = await callGeminiWithRetry(buildPromptFn());
+  if (!geminiRes.ok) {
+    var errText = await geminiRes.text();
+    console.error('Gemini error', geminiRes.status, errText);
+    var err = new Error('gemini_failed');
+    err.status = geminiRes.status;
+    throw err;
+  }
+
+  var data = await geminiRes.json();
+  var result = extractAnswer(data);
+  if (result.finishReason && result.finishReason !== 'STOP') {
+    console.error('Gemini finished abnormally', result.finishReason);
+    return {
+      answer: '죄송해요, 답변 분량이 초과되어 내용을 정리하지 못했어요. 조금 더 짧게 다시 물어봐주실래요?',
+      finishReason: result.finishReason, text: result.text, partsCount: result.partsCount, retried: false
+    };
+  }
+
+  var retried = false;
+  if (looksBroken(result.text)) {
+    retried = true;
+    var reminder = '(형식 설명이나 마크다운("**") 없이, 완성된 한국어 문장 2~4개만 출력하세요.)';
+    var retryRes = await callGeminiWithRetry(buildPromptFn(reminder));
+    if (retryRes.ok) {
+      var retryData = await retryRes.json();
+      var retryResult = extractAnswer(retryData);
+      if (!retryResult.finishReason || retryResult.finishReason === 'STOP') {
+        result = retryResult;
+      }
+    }
+  }
+
+  return {
+    answer: (!looksBroken(result.text) && result.text) || '음, 지금은 답을 정리하지 못했어요. 다시 물어봐주실래요?',
+    finishReason: result.finishReason,
+    text: result.text,
+    partsCount: result.partsCount,
+    retried: retried
+  };
+}
+
+// 질문 유형에 따라 이번 요청에 실제로 필요한 데이터(전시 목록 vs 미술사 자료 vs 작품 정보)만 준비하고,
+// 그에 맞는 프롬프트 빌더를 고른다. 전시 목록 조회/직렬화는 exhibition 질문일 때만 수행한다.
+function prepareCuratorRequest(category, query, exhibitions, history, artwork) {
+  if (category === 'exhibition') {
+    var fullList = Array.isArray(exhibitions) ? exhibitions.slice(0, 200) : [];
+    var list = retrieveRelevantExhibitions(query, fullList, 24);
+    var context = list.map(function (ex) {
+      return '- [' + ex.id + '] ' + ex.title + ' · ' + ex.venue + ' (' + ex.region + ') · ' + ex.period +
+        ' · ' + ex.genre + ' · ' + (ex.status || '') + ' · 분위기: ' + (ex.mood || '');
+    }).join('\n');
+    var historyList = Array.isArray(history) ? history.slice(0, 20) : [];
+    var historyLine = historyList.length
+      ? '\n\n[이 사용자가 이전에 즐겨찾기하거나 본 전시]\n' + historyList.join(', ') + '\n이 취향을 참고해서 비슷한 결의 전시를 우선 추천해도 좋아요.'
+      : '';
+    return {
+      list: list,
+      totalCount: fullList.length,
+      buildPromptFn: function (reminder) { return buildExhibitionPrompt(query, context, historyLine, reminder); }
+    };
+  }
+  if (category === 'history') {
+    return { list: [], totalCount: 0, buildPromptFn: function (reminder) { return buildHistoryPrompt(query, reminder); } };
+  }
+  if (category === 'artist') {
+    return { list: [], totalCount: 0, buildPromptFn: function (reminder) { return buildArtistPrompt(query, reminder); } };
+  }
+  return { list: [], totalCount: 0, buildPromptFn: function (reminder) { return buildArtworkPrompt(query, artwork, reminder); } };
+}
+
+// POST /api/curator  { query, exhibitions: [...], history: [...], artwork? }  (로그인 필요)
+// artwork는 선택 필드로, 작품에 대한 텍스트 설명(또는 향후 이미지 설명)을 담는다.
 app.post('/api/curator', requireAuth, async (req, res) => {
   if (!GEMINI_API_KEY) {
     return res.status(503).json({ error: 'AI 큐레이터가 아직 설정되어 있지 않아요. GEMINI_API_KEY를 확인해주세요.' });
@@ -216,127 +422,38 @@ app.post('/api/curator', requireAuth, async (req, res) => {
     return res.status(429).json({ error: '오늘 AI 큐레이터 사용 한도를 다 쓰셨어요. 내일 다시 이용해주세요.' });
   }
 
-  const { query, exhibitions, history } = req.body || {};
+  const { query, exhibitions, history, artwork } = req.body || {};
   if (!query || typeof query !== 'string') {
     return res.status(400).json({ error: 'query가 필요해요.' });
   }
 
-  const fullList = Array.isArray(exhibitions) ? exhibitions.slice(0, 200) : [];
-  const list = retrieveRelevantExhibitions(query, fullList, 24);
-  const context = list.map(function (ex) {
-    return '- [' + ex.id + '] ' + ex.title + ' · ' + ex.venue + ' (' + ex.region + ') · ' + ex.period +
-      ' · ' + ex.genre + ' · ' + (ex.status || '') + ' · 분위기: ' + (ex.mood || '');
-  }).join('\n');
-
-  const historyList = Array.isArray(history) ? history.slice(0, 20) : [];
-  const historyLine = historyList.length
-    ? '\n\n[이 사용자가 이전에 즐겨찾기하거나 본 전시]\n' + historyList.join(', ') + '\n이 취향을 참고해서 비슷한 결의 전시를 우선 추천해도 좋아요.'
-    : '';
-
-  function buildPrompt(extraReminder) {
-    return '당신은 "미술이 있는 날들"이라는 전시 안내 사이트의 큐레이터입니다.\n' +
-      '규칙:\n' +
-      '1) 전시를 추천할 때는 반드시 [전시 목록] 안에서만 추천하고, 목록에 없는 전시를 지어내지 마세요.\n' +
-      '2) 사용자가 특정 작가나 작품의 전시 여부를 물었는데 [전시 목록]에 없다면, "해당 작가/작품은 지금 등록된 전시 목록에 없어요."처럼 한두 문장으로만 짧게 답하세요.\n' +
-      '3) 미술 사조·시대·화가 등 일반적인 미술 지식(공부)을 물어보면, [전시 목록] 제한과 무관하게 [미술사 참고자료]와 알고 있는 지식을 바탕으로 답하세요.\n' +
-      '4) 미술/전시와 무관한 질문에는 정중히 미술 이야기만 도와줄 수 있다고 답하세요.\n' +
-      '5) 분석 과정, 영어, 개요, 메모, "Output Format" 같은 형식 설명이나 제목을 절대 출력하지 말고, 친근하고 따뜻한 존댓말의 완성된 한국어 문장만 2~4문장으로 바로 출력하세요.\n\n' +
-      '예시 (사용자가 "모던아트가 뭐야?"라고 물었을 때 출력해야 할 형식):\n' +
-      '모던아트는 19세기 말부터 20세기 중반까지 이어진 근현대 미술 전반을 가리키는 말이에요. 인상주의, 입체주의, 추상표현주의처럼 전통적인 화풍에서 벗어나 새로운 표현을 시도한 흐름들을 포함해요. 대표적인 화가로는 피카소나 마티스를 들 수 있어요.\n' +
-      'IDS:\n\n' +
-      '[미술사 참고자료]\n' + ART_HISTORY_REFERENCE +
-      '\n\n[전시 목록]\n' + context + historyLine +
-      '\n\n[사용자 질문]\n' + query +
-      '\n\n위 규칙과 예시 형식에 따라 지금 바로 한국어 답변만 작성하세요. 답변 마지막 줄에 추천하는 전시 id들을 "IDS: id1,id2" 형식으로 한 줄 추가하세요 (추천이 없으면 "IDS:" 만 적으세요).' +
-      (extraReminder ? '\n\n' + extraReminder : '');
-  }
-
-  async function callGemini(prompt) {
-    let geminiRes = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + GEMINI_API_KEY,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.4, maxOutputTokens: 800, thinkingConfig: { thinkingBudget: 0 } }
-        })
-      }
-    );
-    if (geminiRes.status === 503) {
-      // 구글 쪽 모델 일시 과부하(UNAVAILABLE). 짧게 한 번만 재시도.
-      await new Promise(function (r) { setTimeout(r, 600); });
-      geminiRes = await fetch(
-        'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + GEMINI_API_KEY,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.4, maxOutputTokens: 800, thinkingConfig: { thinkingBudget: 0 } }
-          })
-        }
-      );
-    }
-    return geminiRes;
-  }
-
-  // 형식 설명("Output Format" 등)이 새거나 문장이 안 끝난 채로 잘린 것처럼 보이면 깨진 답으로 간주.
-  function looksBroken(answer) {
-    if (!answer) return true;
-    if (/output format|analyze|analysis|\*\*/i.test(answer)) return true;
-    if (answer.length < 6) return true;
-    if (!/[.!?요다임음함죠]["')\]]?$/.test(answer)) return true;
-    return false;
-  }
-
-  function extractAnswer(data) {
-    const candidate = (data.candidates && data.candidates[0]) || null;
-    const finishReason = candidate && candidate.finishReason;
-    const parts = (candidate && candidate.content && candidate.content.parts) || [];
-    const text = parts.filter(function (p) { return !p.thought; }).map(function (p) { return p.text || ''; }).join('');
-    const idsMatch = text.match(/IDS:\s*(.*)$/m);
-    const ids = idsMatch ? idsMatch[1].split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
-    const answer = text.replace(/IDS:\s*.*/m, '').trim();
-    return { finishReason: finishReason || null, text: text, ids: ids, answer: answer, partsCount: parts.length };
-  }
+  const category = classifyQuery(query);
+  const { list, totalCount, buildPromptFn } = prepareCuratorRequest(category, query, exhibitions, history, artwork);
 
   try {
-    let geminiRes = await callGemini(buildPrompt());
-    if (!geminiRes.ok) {
-      const errText = await geminiRes.text();
-      console.error('Gemini error', geminiRes.status, errText);
-      const msg = geminiRes.status === 503
+    const result = await askCuratorGemini(buildPromptFn);
+    const ids = category === 'exhibition' ? extractRecommendedIds(result.answer, list) : [];
+
+    res.json({
+      answer: result.answer,
+      ids: ids,
+      debug: {
+        category: category,
+        finishReason: result.finishReason,
+        rawTextLength: result.text.length,
+        partsCount: result.partsCount,
+        retrievedCount: list.length,
+        totalCount: totalCount,
+        retried: result.retried
+      }
+    });
+  } catch (err) {
+    if (err && err.status) {
+      const msg = err.status === 503
         ? 'AI가 지금 많이 몰려서 답을 못 가져왔어요. 잠시 후 다시 시도해주실래요?'
         : 'AI 응답을 가져오지 못했어요.';
       return res.status(502).json({ error: msg });
     }
-    let data = await geminiRes.json();
-    let result = extractAnswer(data);
-    if (result.finishReason && result.finishReason !== 'STOP') {
-      console.error('Gemini finished abnormally', result.finishReason);
-      return res.json({ answer: '죄송해요, 답변 분량이 초과되어 내용을 정리하지 못했어요. 조금 더 짧게 다시 물어봐주실래요?', ids: [] });
-    }
-
-    var retried = false;
-    if (looksBroken(result.answer)) {
-      retried = true;
-      geminiRes = await callGemini(buildPrompt('(다시 한번: 형식 설명이나 영어 문구, "**" 같은 마크다운 없이 오직 완성된 한국어 문장 2~4개만 바로 출력하세요.)'));
-      if (geminiRes.ok) {
-        data = await geminiRes.json();
-        const retryResult = extractAnswer(data);
-        if (!retryResult.finishReason || retryResult.finishReason === 'STOP') {
-          result = retryResult;
-        }
-      }
-    }
-
-    res.json({
-      answer: (!looksBroken(result.answer) && result.answer) || '음, 지금은 답을 정리하지 못했어요. 다시 물어봐주실래요?',
-      ids: result.ids,
-      debug: { finishReason: result.finishReason, rawTextLength: result.text.length, partsCount: result.partsCount, retrievedCount: list.length, totalCount: fullList.length, retried: retried }
-    });
-  } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'AI 응답을 가져오는 중 오류가 발생했어요.' });
   }
