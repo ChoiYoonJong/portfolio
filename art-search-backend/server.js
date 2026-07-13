@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
+const { ART_HISTORY_REFERENCE } = require('./data/artHistoryReference');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -200,11 +201,14 @@ app.post('/api/curator', requireAuth, async (req, res) => {
     : '';
 
   const prompt = '당신은 "미술이 있는 날들"이라는 전시 안내 사이트의 큐레이터입니다. 아래는 지금 사이트에 실제로 등록된 전시 목록입니다. ' +
-    '반드시 이 목록 안에서만 추천하고, 목록에 없는 전시를 지어내지 마세요. ' +
-    '사용자가 물어본 작가나 작품이 이 목록에 없다면, 절대 당신이 알고 있는 외부 지식으로 그 작가·작품을 설명하거나 추측하지 마세요. ' +
-    '그런 경우엔 "해당 작가/작품은 지금 등록된 전시 목록에 없어요."처럼 한두 문장으로만 짧게 답하고, 목록 항목을 나열하거나 장황하게 설명하지 마세요. ' +
+    '전시를 추천할 때는 반드시 이 목록 안에서만 추천하고, 목록에 없는 전시를 지어내지 마세요. ' +
+    '사용자가 "이 사이트에 이런 전시 있어?"처럼 특정 작가나 작품의 전시 여부를 물었는데 목록에 없다면, ' +
+    '절대 목록에 없는 전시를 지어내지 말고 "해당 작가/작품은 지금 등록된 전시 목록에 없어요."처럼 한두 문장으로만 짧게 답하세요. ' +
+    '반면 사용자가 미술 사조·시대·화가·미술사 개념 등 "공부"에 가까운 일반적인 미술 지식을 물어보는 경우에는 ' +
+    '전시 목록 제한과 무관하게, 아래 [미술사 참고자료]와 당신이 알고 있는 미술사 지식을 바탕으로 정확하고 친절하게 설명해주세요. ' +
     '미술/전시와 무관한 질문에는 정중히 미술 이야기만 도와줄 수 있다고 답하세요. 친근하고 따뜻한 존댓말로, 2~4문장 이내로 짧게 답하세요.\n\n' +
-    '[전시 목록]\n' + context + historyLine +
+    '[미술사 참고자료]\n' + ART_HISTORY_REFERENCE +
+    '\n\n[전시 목록]\n' + context + historyLine +
     '\n\n[사용자 질문]\n' + query +
     '\n\n답변 마지막 줄에 추천하는 전시 id들을 "IDS: id1,id2" 형식으로 한 줄 추가하세요 (추천이 없으면 "IDS:" 만 적으세요).';
 
