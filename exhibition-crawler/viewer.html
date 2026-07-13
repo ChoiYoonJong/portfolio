@@ -91,11 +91,10 @@
     font-size: 11px;
     padding: 2px 8px;
     border-radius: 999px;
-    color: #fff;
-    font-weight: 600;
+    font-weight: 700;
   }
-  .badge.ongoing { background: var(--ongoing); }
-  .badge.upcoming { background: var(--upcoming); }
+  .badge.ongoing { background: color-mix(in srgb, var(--ongoing) 20%, transparent); color: var(--ongoing); }
+  .badge.upcoming { background: color-mix(in srgb, var(--upcoming) 20%, transparent); color: var(--upcoming); }
   .title { font-size: 16px; font-weight: 700; line-height: 1.35; margin: 2px 0; }
   .venue { font-size: 13px; color: var(--accent); font-weight: 600; }
   .period { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -118,6 +117,30 @@
     display: none;
   }
   #error { color: #c0553f; }
+
+  /* ---------- Mobile-only compact list layout ---------- */
+  @media (max-width: 720px) {
+    body { padding: 20px 0 48px; }
+    header, #statusLine, #empty, #error { padding-left: 16px; padding-right: 16px; }
+    h1 { font-size: 19px; }
+    #grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .card {
+      flex-direction: row;
+      border-radius: 14px;
+      background: var(--card-bg);
+      box-shadow: 0 10px 24px -16px rgba(30,28,22,0.22);
+    }
+    .poster { width: 92px; height: 112px; aspect-ratio: auto; flex: none; }
+    .body { padding: 10px 14px; gap: 3px; }
+    .title { font-size: 14px; }
+    .venue { font-size: 12px; }
+    .period { font-size: 12px; }
+    .desc { font-size: 11.5px; -webkit-line-clamp: 2; }
+    .badge { font-size: 10px; padding: 2px 7px; }
+  }
 </style>
 </head>
 <body>

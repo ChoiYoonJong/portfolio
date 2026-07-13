@@ -38,9 +38,9 @@
     --skin: #e7cba9;
     --shadow: 0 10px 24px -14px rgba(30,28,22,0.16);
     --shadow-lg: 0 22px 46px -20px rgba(30,28,22,0.22);
-    --r-sm: 8px;
-    --r-md: 14px;
-    --r-lg: 18px;
+    --r-sm: 10px;
+    --r-md: 16px;
+    --r-lg: 20px;
     --sans: -apple-system, "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
     --serif: Georgia, "Iowan Old Style", "Times New Roman", ui-serif, serif;
   }
@@ -151,7 +151,7 @@
   .featured-desc{ color:var(--text-muted); font-size:.92rem; }
   .cta-btn{
     align-self:flex-start; margin-top:4px; display:inline-flex; align-items:center; gap:6px;
-    padding:11px 18px; border-radius:var(--r-sm); background:var(--accent); color:var(--bg-panel);
+    padding:11px 18px; border-radius:var(--r-md); background:var(--accent); color:var(--bg-panel);
     text-decoration:none; font-weight:700; font-size:.86rem; border:none; cursor:pointer;
     transition:background .15s ease, transform .12s ease;
   }
@@ -451,13 +451,111 @@
     .card{ transition:none; }
     .modal-overlay, .modal-panel, .chat-panel{ transition:none; }
   }
+
+  /* ---------- Mobile-only layout (compact feed list + bottom nav) ---------- */
+  .brand-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
+  .mobile-filter-btn{ display:none; }
+  .bottom-nav{ display:none; }
+  .filter-scrim{ display:none; }
+  .sheet-close{ display:none; }
+  .status-pill{ display:none; }
+
+  @media (max-width:720px){
+    :root{ --bn-h: 60px; }
+    body{ padding-bottom: calc(var(--bn-h) + env(safe-area-inset-bottom)); }
+
+    .mobile-filter-btn{
+      display:inline-flex; align-items:center; gap:6px; flex:none;
+      padding:8px 13px; border-radius:999px; border:1px solid var(--border-soft);
+      background:var(--bg-panel-alt); color:var(--text); font-weight:700; font-size:.8rem;
+      font-family:inherit; cursor:pointer; margin-bottom:4px; box-shadow:var(--shadow);
+    }
+    .mobile-filter-btn svg{ width:15px; height:15px; }
+
+    /* Filter bar becomes a bottom sheet instead of an inline sticky row */
+    .controls{
+      position:fixed; left:0; right:0; top:auto; bottom:0; z-index:130;
+      max-height:78vh; overflow-y:auto; margin-top:0;
+      border-radius:20px 20px 0 0; border-top:1px solid var(--border-soft); border-bottom:none;
+      box-shadow:var(--shadow-lg); backdrop-filter:none; -webkit-backdrop-filter:none;
+      background:var(--bg-panel); padding-top:10px; padding-bottom:24px;
+      transform:translateY(100%); transition:transform .25s ease;
+    }
+    .controls.sheet-open{ transform:translateY(0); }
+    .controls .scroller{ flex-wrap:wrap; overflow:visible; }
+    .sheet-close{
+      display:block; align-self:flex-start; margin:0 0 4px;
+      border:none; background:none; color:var(--text-faint); font-weight:700; font-size:.78rem;
+      padding:4px 2px; cursor:pointer;
+    }
+
+    .filter-scrim{
+      display:block; position:fixed; inset:0; z-index:125;
+      background:rgba(20,15,8,0.45); opacity:0; pointer-events:none; transition:opacity .2s ease;
+    }
+    .filter-scrim.show{ opacity:1; pointer-events:auto; }
+
+    /* Bottom tab bar */
+    .bottom-nav{
+      display:block; position:fixed; left:0; right:0; bottom:0; z-index:90;
+      background:var(--bg-panel); border-top:1px solid var(--border-soft);
+      padding-bottom:env(safe-area-inset-bottom);
+      box-shadow:0 -8px 24px -16px rgba(0,0,0,0.2);
+    }
+    .bottom-nav-inner{ display:flex; padding:0; }
+    .bn-item{
+      flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+      padding:8px 4px 7px; background:none; border:none; color:var(--text-faint);
+      font-size:.64rem; font-weight:700; cursor:pointer; font-family:inherit;
+    }
+    .bn-item svg{ width:20px; height:20px; }
+    .bn-item.active{ color:var(--accent-strong); }
+
+    /* Chat: fold into bottom nav, keep the panel but drop the floating fab */
+    .chat-fab{ display:none; }
+    .chat-panel{ bottom: calc(var(--bn-h) + 8px); height:min(68vh, 560px); }
+
+    /* Compact feed-row cards instead of a stacked grid */
+    .grid{ grid-template-columns:1fr; gap:14px; padding:14px 0 22px; }
+    .card{
+      flex-direction:row; border-radius:var(--r-md); border:1px solid var(--border);
+      box-shadow:var(--shadow); background:var(--bg-panel);
+    }
+    .card:hover{ transform:none; }
+    .tile{ width:92px; height:92px; flex:none; }
+    .tile .mark{ font-size:2.2rem; right:2px; bottom:-8px; }
+    .tile .region-pin, .tile .status-chip{ display:none; }
+    .card-body{ padding:10px 14px; gap:2px; }
+    .tag-row, .card-hook, .card-desc{ display:none; }
+    .card-title{ font-size:.92rem; line-height:1.3; }
+    .card-venue{ font-size:.72rem; }
+    .status-pill{
+      display:inline-flex; align-items:center; gap:4px; align-self:flex-start;
+      font-size:.66rem; font-weight:700; color:#211b12; padding:2px 7px; border-radius:var(--r-sm);
+      background:rgba(0,0,0,.06); margin-top:1px;
+    }
+    .status-pill i{ width:6px; height:6px; border-radius:50%; }
+    .status-pill.status-ongoing{ background:color-mix(in srgb, var(--ok) 22%, transparent); color:var(--ok); }
+    .status-pill.status-closing{ background:color-mix(in srgb, var(--warn) 22%, transparent); color:var(--warn); }
+    .status-pill.status-upcoming{ background:color-mix(in srgb, var(--soon) 22%, transparent); color:var(--soon); }
+    .status-pill i{ background:currentColor; }
+    .card-foot{ margin-top:3px; }
+    .card-link{ font-size:.74rem; padding:3px 0; }
+    .fav-btn{ font-size:1rem; }
+  }
 </style>
 
 <header class="masthead">
   <div class="shell">
     <div class="masthead-top">
       <div class="brand-eyebrow">Days with Art</div>
-      <h1 class="brand">미술이 있는 <em>날들</em></h1>
+      <div class="brand-row">
+        <h1 class="brand">미술이 있는 <em>날들</em></h1>
+        <button class="mobile-filter-btn" id="mfbOpenBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+          필터
+        </button>
+      </div>
       <div class="today-badge" id="todayBadge">오늘도, 어딘가에서 전시가 열리고 있어요</div>
     </div>
     <p class="lede">미술관은 오래 어렵고 조용하고 먼 곳이었어요. 그런데 어느 날, 그림 한 점 앞에 이유 없이 오래 서 있었던 날이 있었습니다. 이 페이지는 그 기억에서 시작했어요 — 지금 전국에서 열리고 있는, 그리고 곧 열릴 전시 중에서 괜히 마음이 가는 것들만 골라봤어요.</p>
@@ -483,13 +581,14 @@
   </div>
 </section>
 
-<section class="controls">
+<section class="controls" id="controlsSheet">
   <div class="shell" style="display:flex; flex-direction:column; gap:10px;">
+    <button class="sheet-close" id="sheetCloseBtn" type="button">필터 닫기 ✕</button>
     <div class="filter-row">
       <span class="filter-label">지역</span>
     </div>
     <div class="scroller region-tabs" id="regionTabs">
-      <button class="rtab active" data-region="all">전체 55</button>
+      <button class="rtab active" data-region="all">전체 65</button>
       <button class="rtab" data-region="서울">서울</button>
       <button class="rtab" data-region="경기">경기</button>
       <button class="rtab" data-region="인천">인천</button>
@@ -1228,6 +1327,136 @@
       </div>
     </article>
 
+    <article class="card" data-region="대구" data-genre="고전미술" data-attitude="깊은 몰입" data-start="2026-01-27" data-end="2026-08-30">
+      <div class="tile daegu"><div class="region-pin">대구</div><div class="mark">간</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">옛 그림 속 색과 선을 천천히 들여다보고 싶을 때</span><span class="genre-tag">고전미술</span></div>
+        <div class="card-title">대구간송미술관 상설전시</div>
+        <p class="card-hook">간송이 지켜온 우리 옛 그림, 대구에서 상설으로 만난다.</p>
+        <div class="card-venue">대구간송미술관</div>
+        <div class="card-period tabular">2026.01.27 – 08.30</div>
+        <p class="card-desc">전형필이 모으고 지킨 국·보물급 한국 고서화를 상설으로 선보이는 간송미술관의 첫 지역 분관.</p>
+        <div class="card-foot"><button class="fav-btn" data-fav-id="gansongDaegu" aria-label="즐겨찾기">♡</button><button class="card-link" data-id="gansongDaegu">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="부산" data-genre="현대미술" data-attitude="영감이 필요한" data-start="2026-08-29" data-end="2026-11-01">
+      <div class="tile busan"><div class="region-pin">부산</div><div class="mark">불</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">도시가 내는 낯선 소리들에 귀 기울이고 싶을 때</span><span class="genre-tag">현대미술</span></div>
+        <div class="card-title">2026 부산비엔날레: 불협하는 합창</div>
+        <p class="card-hook">차이와 긴장을 하나의 악보로 엮어내는, 2년마다 열리는 부산의 현대미술 축제.</p>
+        <div class="card-venue">부산현대미술관 외 전시장 2곳</div>
+        <div class="card-period tabular">2026.08.29 – 11.01</div>
+        <p class="card-desc">부산현대미술관을 중심으로 도심 곳곳에서 펼쳐지는 국제 현대미술 비엔날레. 사전예매 기간엔 특별할인이 적용돼요.</p>
+        <div class="card-foot"><button class="fav-btn" data-fav-id="busanBiennale2026" aria-label="즐겨찾기">♡</button><button class="card-link" data-id="busanBiennale2026">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="서울" data-genre="그림책·일러스트" data-attitude="가벼운 산책" data-start="2026-04-17" data-end="2026-09-06">
+      <div class="tile seoul"><div class="region-pin">서울</div><div class="mark">그</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">어릴 적 좋아했던 그림책 속으로 다시 들어가고 싶을 때</span><span class="genre-tag">그림책·일러스트</span></div>
+        <div class="card-title">그림책이 살아있다!</div>
+        <p class="card-hook">올리비아, 패딩턴 베어… 그림책 거장 9인의 원화가 살아 움직인다.</p>
+        <div class="card-venue">소마미술관 2관</div>
+        <div class="card-period tabular">2026.04.17 – 09.06</div>
+        <p class="card-desc">모리스 샌닥 등 세계적 그림책 작가 9인의 원화 141점을 국내 최초 공개. 영상·미디어와 결합한 체험형 전시.</p>
+        <div class="card-foot"><button class="fav-btn" data-fav-id="picturebooksAlive" aria-label="즐겨찾기">♡</button><button class="card-link" data-id="picturebooksAlive">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="경기" data-genre="현대미술·건축" data-attitude="가벼운 산책" data-start="2022-07-27" data-end="2026-12-31">
+      <div class="tile gyeonggi"><div class="region-pin">경기</div><div class="mark">구</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">집처럼 편안한 공간에서 예술을 만나고 싶을 때</span><span class="genre-tag">현대미술·건축</span></div>
+        <div class="card-title">구하우스미술관 관람권</div>
+        <p class="card-hook">집을 콘셉트로 한 미술관 — 방마다 다른 세계관의 컬렉션이 펼쳐진다.</p>
+        <div class="card-venue">구하우스미술관</div>
+        <div class="card-period tabular">2022.07.27 – 2026.12.31</div>
+        <p class="card-desc">예술과 디자인이 일상 공간 속에 스며든 걸 보여주는 사립 미술관. 양평 전원 속에 자리해 나들이로도 좋아요.</p>
+        <div class="card-foot"><button class="fav-btn" data-fav-id="koohouse" aria-label="즐겨찾기">♡</button><button class="card-link" data-id="koohouse">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="경기" data-genre="그림책·일러스트" data-attitude="가벼운 산책" data-start="2026-06-06" data-end="2026-10-04">
+      <div class="tile gyeonggi"><div class="region-pin">경기</div><div class="mark">전</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">누군가에게 위로를 건네고 싶은 날</span><span class="genre-tag">그림책·일러스트</span></div>
+        <div class="card-title">소중한 사람에게: 전이수 특별전 in 고양</div>
+        <p class="card-hook">여덟 살에 작가가 된 전이수가 그려온, 소중한 사람을 향한 마음.</p>
+        <div class="card-venue">고양어울림누리 어울림미술관</div>
+        <div class="card-period tabular">2026.06.06 – 10.04</div>
+        <p class="card-desc">동물을 의인화한 그림과 다정한 글귀로 잘 알려진 전이수 작가의 원화 60여 점과 육필 글 20여 점을 소개하는 특별전.</p>
+        <div class="card-foot"><button class="fav-btn" data-fav-id="jeonyisuGoyang" aria-label="즐겨찾기">♡</button><button class="card-link" data-id="jeonyisuGoyang">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="제주" data-genre="건축·설치" data-attitude="깊은 몰입" data-start="2025-11-01" data-end="2026-07-31">
+      <div class="tile jeju"><div class="region-pin">제주</div><div class="mark">이</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">경계에 선 사람의 시선으로 세상을 다시 보고 싶을 때</span><span class="genre-tag">건축·설치</span></div>
+        <div class="card-title">미묘하게 열린 어둠 안에서: 이타미 준</div>
+        <p class="card-hook">한국과 일본, 건축과 예술 사이 — 경계인 이타미 준이 평생 찾아온 '오리지널리티'.</p>
+        <div class="card-venue">유동룡미술관(이타미준뮤지엄)</div>
+        <div class="card-period tabular">2025.11.01 – 2026.07.31</div>
+        <p class="card-desc">건축 모형, 회화, 드로잉, 유품 등으로 이타미 준의 세계를 조명하는 유동룡미술관 세 번째 기획전.</p>
+        <div class="card-foot"><button class="fav-btn" data-fav-id="itamiJun" aria-label="즐겨찾기">♡</button><button class="card-link" data-id="itamiJun">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="강원" data-genre="미디어아트" data-attitude="가벼운 산책" data-start="2026-04-18" data-end="2026-10-25">
+      <div class="tile gangwon"><div class="region-pin">강원</div><div class="mark">빙</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">더위를 피해 시원한 감각으로 채워지고 싶은 날</span><span class="genre-tag">미디어아트</span></div>
+        <div class="card-title">빙하미술관</div>
+        <p class="card-hook">빙하를 닮은 건축 속, 빛과 시간을 소재로 한 몰입형 전시.</p>
+        <div class="card-venue">빙하미술관</div>
+        <div class="card-period tabular">2026.04.18 – 10.25</div>
+        <p class="card-desc">기후변화를 예술로 풀어낸 원주의 복합 문화공간. 전시장 옆 카페빙하에서 쉬어가기도 좋아요.</p>
+        <div class="card-foot"><button class="fav-btn" data-fav-id="bingha" aria-label="즐겨찾기">♡</button><button class="card-link" data-id="bingha">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="서울" data-genre="이슬람미술·공예" data-attitude="배움이 있는" data-start="2026-01-23" data-end="2026-12-31">
+      <div class="tile seoul"><div class="region-pin">서울</div><div class="mark">이</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">낯선 문화권의 미의식을 새롭게 배우고 싶을 때</span><span class="genre-tag">이슬람미술·공예</span></div>
+        <div class="card-title">국립중앙박물관 이슬람 미술 특별전</div>
+        <p class="card-hook">돔형 전시실에 들어서면, 모스크 같은 공간이 펼쳐진다.</p>
+        <div class="card-venue">국립중앙박물관</div>
+        <div class="card-period tabular">2026.01.23 – 12.31</div>
+        <p class="card-desc">카타르 도하 이슬람예술박물관과 공동 기획한 이슬람실 특별전. 7~19세기 이슬람 미술품 80여 건을 종교·궁정·문화교류 세 갈래로 소개.</p>
+        <div class="card-foot"><button class="fav-btn" data-fav-id="islamicArt" aria-label="즐겨찾기">♡</button><button class="card-link" data-id="islamicArt">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="울산" data-genre="그림책·일러스트" data-attitude="가벼운 산책" data-start="2026-06-30" data-end="2026-08-30">
+      <div class="tile ulsan"><div class="region-pin">울산</div><div class="mark">앤</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">아이와 함께 웃으며 그림책 속으로 들어가고 싶을 때</span><span class="genre-tag">그림책·일러스트</span></div>
+        <div class="card-title">앤서니브라운展 '우리 아빠가 최고야'</div>
+        <p class="card-hook">고릴라, 우리 아빠… 앤서니 브라운의 그림 100여 점이 영상과 만난다.</p>
+        <div class="card-venue">HD아트센터 미술관</div>
+        <div class="card-period tabular">2026.06.30 – 08.30</div>
+        <p class="card-desc">케이트 그리너웨이상·안데르센상을 수상한 그림책 거장 앤서니 브라운의 원화와 미디어아트를 함께 즐기는 가족형 전시.</p>
+        <div class="card-foot"><button class="fav-btn" data-fav-id="anthonyBrowneDad" aria-label="즐겨찾기">♡</button><button class="card-link" data-id="anthonyBrowneDad">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
+    <article class="card" data-region="제주" data-genre="한국화·풍경화" data-attitude="깊은 몰입" data-start="2026-01-19" data-end="2026-12-31">
+      <div class="tile jeju"><div class="region-pin">제주</div><div class="mark">김</div><span class="status-chip"></span></div>
+      <div class="card-body">
+        <div class="tag-row"><span class="mood-tag">한 사람이 평생 바라본 고향의 풍경을 따라가 보고 싶을 때</span><span class="genre-tag">한국화·풍경화</span></div>
+        <div class="card-title">김택화: 제주의 풍경展</div>
+        <p class="card-hook">제주를 평생 그린 화가가 남긴, 섬의 사계.</p>
+        <div class="card-venue">김택화미술관</div>
+        <div class="card-period tabular">2026.01.19 – 12.31</div>
+        <p class="card-desc">화가 김택화(1940–2006)가 그린 제주 풍경 유화 122점을 상설로 선보이는 개인 미술관. 한라산소주 원화 등 제주 대중문화 자료도 함께 볼 수 있어요.</p>
+        <div class="card-foot"><button class="fav-btn" data-fav-id="kimtaekhwa" aria-label="즐겨찾기">♡</button><button class="card-link" data-id="kimtaekhwa">더 알아보기 ↗</button></div>
+      </div>
+    </article>
+
   </div>
   <div class="load-more-row" id="loadMoreRow">
     <button class="load-more-btn" id="loadMoreBtn" type="button">더 많은 전시 보기 ↓</button>
@@ -1280,6 +1509,29 @@
     <button type="submit" class="chat-send" aria-label="보내기">→</button>
   </form>
 </div>
+
+<div class="filter-scrim" id="filterScrim"></div>
+
+<nav class="bottom-nav" id="bottomNav">
+  <div class="shell bottom-nav-inner">
+    <button class="bn-item active" id="bnHome" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+      <span>홈</span>
+    </button>
+    <button class="bn-item" id="bnFilter" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+      <span>지역</span>
+    </button>
+    <button class="bn-item" id="bnFav" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.35-9.5-8.8C.8 8 2 4.5 5.5 4c2-.3 3.7.8 4.5 2.2C10.8 4.8 12.5 3.7 14.5 4 18 4.5 19.2 8 17.5 11.2 15 15.65 12 20 12 20z"/></svg>
+      <span>즐겨찾기</span>
+    </button>
+    <button class="bn-item" id="bnChat" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      <span>AI 큐레이터</span>
+    </button>
+  </div>
+</nav>
 
 <script>
 (function(){
@@ -1375,11 +1627,17 @@
       lk:{hairH:6,hairC:'#cfc8ba',glasses:true} },
     leeseungtaek: { name:'이승택', years:'1932– · 한국', blurb:'바람·불·연기 같은 비정형 재료로 조각의 경계를 넓혀온 한국 아방가르드의 선구자.', works:['바람 연작','고드름 연작'],
       lk:{hairH:6,hairC:'#cfc8ba'} },
-    goya: { name:'프란시스코 고야', years:'1746–1828 · 스페인', blurb:'궁정화가에서 출발해 인간의 광기와 어둠을 그린 근대 회화의 선구자.', works:['1808년 5월 3일','로스 카프리초스 판화 연작'],
-      note:'\'이성이 잠들면 괴물이 태어난다\'는 고야가 남긴 판화 연작의 제목이자, 그의 후기 작업 전체를 관통하는 문장이에요.',
+    goya: { name:'프란시스코 고야', years:'1746–1828 · 스페인', blurb:'화사한 궁정화가로 출발했지만, 청력을 잃은 뒤 인간의 광기와 어둠을 그린 \'검은 그림\' 연작으로 근대 회화의 문을 연 화가.', works:['마드리드, 1808년 5월 3일 (1814)','옷을 벗은 마하','아들을 먹어치우는 사투르누스'],
+      note:'\'이성이 잠들면 괴물이 눈을 뜬다\'는 고야가 남긴 판화 연작 「로스 카프리초스」의 제목이자, 그의 후기 작업 전체를 관통하는 문장이에요. 원인 모를 병으로 청력을 잃은 뒤 은둔하며 그린 저택 벽화들이 훗날 \'검은 그림\'이라 불리게 됐어요.',
       lk:{hairH:14,hairC:'#a89e8f',beardH:30,beardC:'#a89e8f'} },
     catherinebernhard: { name:'캐서린 번하드', years:'미국 · 현재 활동', blurb:'대중문화 이미지를 강렬한 색채의 대형 캔버스로 재해석하는 현대미술 작가.', works:['이번 전시: 슈퍼모델·피카츄·심슨 연작'],
-      lk:{hairH:32,hairC:'#8a6a45'} }
+      lk:{hairH:32,hairC:'#8a6a45'} },
+    itamijun: { name:'이타미 준 (유동룡)', years:'1937–2011 · 일본 도쿄 출생, 한국 국적', blurb:'한국 이름을 지키며 평생 한국 국적으로 살아온 재일 건축가. 땅의 지형과 지역성을 존중하는 건축으로 프랑스·일본·한국에서 두루 인정받았다.', works:['제주 방주교회 (2009)','포도호텔 (2001)'],
+      note:'구약성경의 노아의 방주를 모티브로 지은 제주 방주교회가 대표작으로 꼽혀요. 2003년 프랑스 기메 박물관에서 건축가 최초로 개인전을 열었고, 이를 계기로 프랑스 예술훈장과 한국 김수근 건축상 등을 받았어요.',
+      lk:{hairH:8,hairC:'#a89e8f',glasses:true} },
+    kimtaekhwa: { name:'김택화', years:'1940–2006 · 한국(제주)', blurb:'일평생 제주의 풍경을 고집스레 그린 화가. 섬의 산과 바다, 일상을 담은 유화로 제주 사람들에게 가장 친숙한 이미지를 남겼다.', works:['제주 풍경 유화 연작 (10~300호)','한라산소주 패키지 원화'],
+      note:'2019년 개관한 김택화미술관은 화백이 남긴 유화 122점을 상설로 소장하고 있어요. 도민에게 친숙한 한라산소주(하얀색) 패키지 원화와, 1990년대 한라일보에 연재했던 4·3항쟁 소설 \'한라산\' 삽화 등 제주 대중문화 자료도 함께 볼 수 있어요.',
+      lk:{hairH:12,hairC:'#4a4640',glasses:true} }
   };
 
   var EX = {
@@ -1548,7 +1806,37 @@
       artists:['catherinebernhard'] },
     sweetWonderland: { title:'달콤한 상상 Sweet Wonderland', venue:'고양시립 아람미술관', period:'2026.06.02 – 09.19', url:'https://www.artgy.or.kr/EH/EH0201L.ASPX',
       addr:'경기 고양시 일산동구 중앙로 1286 (고양아람누리 내)', price:'정확한 금액이 확인되지 않았어요. 고양시민 할인이 있을 것으로 보이나 공식 페이지 확인이 필요해요.', discount:'고양시민 할인이 있는 것으로 추정되나 정확한 조건은 확인이 필요해요.',
-      note:'달콤함을 주제로 한 상상의 세계를 다룬 기획전이에요. 세부 구성 정보가 제한적이라 방문 전 공식 페이지 확인을 권해요.' }
+      note:'달콤함을 주제로 한 상상의 세계를 다룬 기획전이에요. 세부 구성 정보가 제한적이라 방문 전 공식 페이지 확인을 권해요.' },
+    gansongDaegu: { title:'대구간송미술관 상설전시', venue:'대구간송미술관', period:'2026.01.27 – 08.30', url:'https://kansong.org/daegu/',
+      addr:'대구광역시 수성구 미술관로 70(삼덕동)', price:'성인 6,000원 · 어린이·청소년(7~19세) 3,000원 (예매처마다 표기가 조금씩 달라요)', discount:'청년문화패스로 이용할 수 있어요. 인터파크를 통한 단독 예매예요.',
+      note:'전형필이 모으고 지킨 국·보물급 한국 고서화를 상설으로 선보이는 간송미술관의 첫 지역 분관이에요. 신윤복·김홍도 등 조선 대표 작가들의 산수화·풍속화와 도자·서예 작품을 순차적으로 공개해요.' },
+    busanBiennale2026: { title:'2026부산비엔날레: 불협하는 합창(Dissident Chorus)', venue:'부산현대미술관 외 전시장 2곳', period:'2026.08.29 – 11.01', url:'https://busanbiennale2026.com/',
+      addr:'부산 사하구 낙동남로 1191 (부산현대미술관)', price:'대한민국 미술축제 특별할인 일반 입장권 16,000원 → 50% 8,000원', discount:'사전예매 기간엔 50% 특별할인이 적용돼요.',
+      note:'부산현대미술관을 중심으로 도심 곳곳에서 65일간 열리는 국제 현대미술 비엔날레예요. \'차이와 긴장\'을 인정하며 여러 목소리가 뒤섞이는 \'다성적 악보\'를 주제로 삼았어요.' },
+    picturebooksAlive: { title:'그림책이 살아있다!', venue:'소마미술관 2관', period:'2026.04.17 – 09.06', url:'https://soma.kspo.or.kr/dspy/display/236',
+      addr:'서울 송파구 올림픽로 424 (올림픽공원 내, 소마미술관)', price:'성인 18,000원 · 청소년·어린이 16,000원', discount:'20명 이상 단체는 1인당 2,000원 할인돼요.',
+      note:'모리스 샌닥, 이언 포크너 등 세계적인 그림책 거장 9인의 오리지널 원화 약 141점을 국내 최초로 공개해요. 올리비아, 패딩턴 베어 같은 인기 캐릭터의 원화도 만날 수 있어요.' },
+    koohouse: { title:'구하우스미술관 관람권', venue:'구하우스미술관', period:'2022.07.27 – 2026.12.31', url:'https://koohouse.org/',
+      addr:'경기 양평군 서종면 무내미길 49-12', price:'성인 15,000원 · 어린이~청소년 8,000원', discount:'확인된 별도 할인 정보는 없어요.',
+      note:'집을 콘셉트로 한 사립 미술관이에요. 방마다 다른 컬렉션이 전개돼 예술과 디자인이 일상 공간에 스며든 모습을 보여줘요.' },
+    jeonyisuGoyang: { title:'소중한 사람에게: 전이수 특별전 in 고양', venue:'고양어울림누리 어울림미술관', period:'2026.06.06 – 10.04', url:'https://www.artgy.or.kr/EH/EH0201L.ASPX',
+      addr:'경기 고양시 덕양구 성사동 777 (어울림로 33, 고양어울림누리)', price:'어린이·청소년 13,000원 · 성인 15,000원', discount:'확인된 별도 할인 정보는 없어요.',
+      note:'2008년생 작가 전이수의 원화 60여 점과 육필 글 20여 점을 소개해요. 동물을 의인화한 그림으로 인간과 사회를 향한 따뜻한 메시지를 담아왔어요.' },
+    itamiJun: { title:'미묘하게 열린 어둠 안에서: 이타미 준', venue:'유동룡미술관(이타미준뮤지엄)', period:'2025.11.01 – 2026.07.31', url:'https://itamijunmuseum.com/',
+      addr:'제주 제주시 한림읍 용금로 906-10', price:'뮤지엄 입장패스권 26,000원', discount:'확인된 별도 할인 정보는 없어요.',
+      artists:['itamijun'] },
+    bingha: { title:'빙하미술관', venue:'빙하미술관', period:'2026.04.18 – 10.25', url:'https://www.gmoa.kr/',
+      addr:'강원 원주시 지정면 구재로 70', price:'일반 입장권 15,000원', discount:'확인된 별도 할인 정보는 없어요.',
+      note:'기후변화를 예술로 풀어낸 원주의 복합 문화공간이에요. 빙하를 닮은 건축 속에서 빛과 시간을 소재로 한 전시를 만나고, 옆 카페빙하에서 쉬어갈 수 있어요.' },
+    islamicArt: { title:'국립중앙박물관 이슬람 미술 특별전', venue:'국립중앙박물관', period:'2026.01.23 – 12.31', url:'https://www.museum.go.kr/site/main/exhiSpecialTheme/view/current?exhiSpThemId=3438',
+      addr:'서울 용산구 서빙고로 137', price:'일반 체험권 29,900원', discount:'확인된 별도 할인 정보는 없어요.',
+      note:'카타르 도하 이슬람예술박물관과 공동 기획한 이슬람실 특별전이에요. 7~19세기 이슬람 미술품 80여 건을 종교미술·문화의 포용과 확장·궁정문화 세 갈래로 소개하고, 돔 지붕과 팔각 구조로 모스크에 들어온 듯한 공간감을 살렸어요.' },
+    anthonyBrowneDad: { title:'앤서니브라운展 \'우리 아빠가 최고야\'', venue:'HD아트센터 미술관', period:'2026.06.30 – 08.30', url:'https://www.hd-artscenter.co.kr/',
+      addr:'울산 동구 명덕로 10 (HD아트센터)', price:'예매 특가 할인 입장권 11,000원 → 18% 9,000원', discount:'예매 특가로 18% 할인이 적용돼요.',
+      note:'케이트 그리너웨이상(1983·1992)과 안데르센상(2000)을 수상한 그림책 거장 앤서니 브라운의 원화 100여 점을, 국내 작가와 협업한 영상·미디어아트와 함께 선보여요.' },
+    kimtaekhwa: { title:'김택화: 제주의 풍경展', venue:'김택화미술관', period:'2026.01.19 – 12.31', url:'https://kimtekhwa.com/exhibition',
+      addr:'제주 제주시 조천읍 신흥로 1', price:'성인 15,000원', discount:'확인된 별도 할인 정보는 없어요.',
+      artists:['kimtaekhwa'] }
   };
 
   function avatarHTML(lk){
@@ -1665,6 +1953,14 @@
     }
     chip.classList.add(cls);
     chip.innerHTML = '<i></i>' + label;
+
+    var venueEl = card.querySelector('.card-venue');
+    if(venueEl){
+      var pill = document.createElement('span');
+      pill.className = 'status-pill ' + cls;
+      pill.innerHTML = '<i></i>' + label;
+      venueEl.insertAdjacentElement('afterend', pill);
+    }
   });
 
   var rtabs = document.querySelectorAll('.rtab');
@@ -1672,6 +1968,7 @@
   var cards = document.querySelectorAll('.card');
   var activeRegion = 'all';
   var activeAttitude = 'all';
+  var favoritesOnly = false;
 
   /* 카드 수가 많아져도(수백~수천 개) 한 번에 다 렌더링하지 않고,
      '더보기' 버튼으로 PAGE_SIZE개씩 점진적으로 노출한다.
@@ -1688,7 +1985,12 @@
     cards.forEach(function(card){
       var regionOk = activeRegion === 'all' || card.dataset.region === activeRegion;
       var attitudeOk = activeAttitude === 'all' || card.dataset.attitude === activeAttitude;
-      if(regionOk && attitudeOk){ matching.push(card); }
+      var favOk = true;
+      if(favoritesOnly){
+        var favBtn = card.querySelector('.fav-btn');
+        favOk = !!favBtn && isFavorite(favBtn.dataset.favId);
+      }
+      if(regionOk && attitudeOk && favOk){ matching.push(card); }
     });
     cards.forEach(function(card){ card.hidden = true; });
     matching.slice(0, visibleCount).forEach(function(card){
@@ -1719,6 +2021,7 @@
       activeRegion = tab.dataset.region;
       visibleCount = PAGE_SIZE;
       applyFilters();
+      closeFilterSheet();
     });
   });
 
@@ -1729,8 +2032,64 @@
       activeAttitude = tab.dataset.attitude;
       visibleCount = PAGE_SIZE;
       applyFilters();
+      closeFilterSheet();
     });
   });
+
+  /* ---------- Mobile bottom nav + filter bottom sheet ---------- */
+  var controlsSheet = document.getElementById('controlsSheet');
+  var filterScrim = document.getElementById('filterScrim');
+  function isMobileLayout(){ return window.matchMedia('(max-width:720px)').matches; }
+  function openFilterSheet(){
+    controlsSheet.classList.add('sheet-open');
+    filterScrim.classList.add('show');
+  }
+  function closeFilterSheet(){
+    if(!isMobileLayout()) return;
+    controlsSheet.classList.remove('sheet-open');
+    filterScrim.classList.remove('show');
+  }
+  document.getElementById('mfbOpenBtn').addEventListener('click', openFilterSheet);
+  document.getElementById('bnFilter').addEventListener('click', function(){
+    setActiveBnItem(this);
+    openFilterSheet();
+  });
+  document.getElementById('sheetCloseBtn').addEventListener('click', closeFilterSheet);
+  filterScrim.addEventListener('click', closeFilterSheet);
+
+  var bnHome = document.getElementById('bnHome');
+  var bnFav = document.getElementById('bnFav');
+  function setActiveBnItem(el){
+    document.querySelectorAll('.bn-item').forEach(function(b){ b.classList.remove('active'); });
+    if(el){ el.classList.add('active'); }
+  }
+  bnHome.addEventListener('click', function(){
+    setActiveBnItem(bnHome);
+    favoritesOnly = false;
+    activeRegion = 'all'; activeAttitude = 'all';
+    rtabs.forEach(function(t){ t.classList.toggle('active', t.dataset.region === 'all'); });
+    atabs.forEach(function(t){ t.classList.toggle('active', t.dataset.attitude === 'all'); });
+    visibleCount = PAGE_SIZE;
+    applyFilters();
+    window.scrollTo({ top:0, behavior:'smooth' });
+  });
+  bnFav.addEventListener('click', function(){
+    if(!currentIdToken){
+      openChat();
+      addBotMsg('즐겨찾기는 로그인 후 이용할 수 있어요. 채팅창 상단에서 로그인해주세요.');
+      return;
+    }
+    if(!favoritesOnly && !favoriteIds.length){
+      showToast('아직 즐겨찾기한 전시가 없어요.', true);
+      return;
+    }
+    favoritesOnly = !favoritesOnly;
+    setActiveBnItem(favoritesOnly ? bnFav : bnHome);
+    visibleCount = PAGE_SIZE;
+    applyFilters();
+    window.scrollTo({ top:0, behavior:'smooth' });
+  });
+  document.getElementById('bnChat').addEventListener('click', function(){ openChat(); });
 
   if('IntersectionObserver' in window){
     var io = new IntersectionObserver(function(entries){
@@ -1806,7 +2165,7 @@
     { kw:['실험미술','아방가르드'], ids:['chungnamAvantgarde'] },
     { kw:['정원','원예'], ids:['matisseGarden'] },
     { kw:['생명체','기술'], ids:['piccinini','newNature'] },
-    { kw:['건축','설치'], ids:['nathanColey','leebaeMuseumSan'] }
+    { kw:['건축','설치'], ids:['nathanColey','leebaeMuseumSan','itamiJun'] }
   ];
   var REGION_MAP = { '서울':'서울','경기':'경기','안산':'경기','수원':'경기','용인':'경기','인천':'인천','대구':'대구','대전':'대전','광주':'광주','전북':'전북','완주':'전북','군산':'전북','울산':'울산','제주':'제주','서귀포':'제주','부산':'부산','강원':'강원','원주':'강원','강릉':'강원','경남':'경남','창원':'경남','진주':'경남','경북':'경북','포항':'경북','경주':'경북','충남':'충남','천안':'충남','충북':'충북','청주':'충북','세종':'세종' };
   var GENRE_MAP = { '인상주의':'인상주의','현대미술':'현대미술','조각':'조각·설치','설치':'조각·설치','미디어아트':'미디어아트','한국화':'한국화·서예','공예':'공예·역사','도자':'공예·역사','회화':'회화' };
@@ -1819,7 +2178,8 @@
     samjinks:['샘 징크스','징크스'], robineley:['로빈 일리'], kazuhirotsuji:['카즈 히로'], koyounghoon:['고영훈'],
     piccinini:['피치니니','패트리샤 피치니니'], warhol:['워홀','앤디 워홀'], leeungno:['이응노'], gangyobae:['강요배'],
     haejin:['김해진'], suyeon:['백수연'], kimtschangyeul:['김창열'], ardouin:['아르두엥','티에리 아르두엥'],
-    leebae:['이배'], moonshin:['문신'], nathanColey:['네이단 콜리'], jangnamwon:['장남원'], banghyeja:['방혜자']
+    leebae:['이배'], moonshin:['문신'], nathanColey:['네이단 콜리'], jangnamwon:['장남원'], banghyeja:['방혜자'],
+    itamijun:['이타미 준','이타미준','유동룡'], kimtaekhwa:['김택화']
   };
   function findArtistMatch(q){
     var ids = Object.keys(ARTIST_ALIASES);
@@ -2076,6 +2436,7 @@
       modalBtn.classList.toggle('active', on2);
       modalBtn.textContent = on2 ? '♥' : '♡';
     }
+    if(favoritesOnly){ applyFilters(); }
   }
 
   function toggleFavorite(id){
