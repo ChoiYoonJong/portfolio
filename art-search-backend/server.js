@@ -233,19 +233,25 @@ app.post('/api/curator', requireAuth, async (req, res) => {
     ? '\n\n[이 사용자가 이전에 즐겨찾기하거나 본 전시]\n' + historyList.join(', ') + '\n이 취향을 참고해서 비슷한 결의 전시를 우선 추천해도 좋아요.'
     : '';
 
-  const prompt = '당신은 "미술이 있는 날들"이라는 전시 안내 사이트의 큐레이터입니다.\n' +
-    '규칙:\n' +
-    '1) 전시를 추천할 때는 반드시 [전시 목록] 안에서만 추천하고, 목록에 없는 전시를 지어내지 마세요.\n' +
-    '2) 사용자가 특정 작가나 작품의 전시 여부를 물었는데 [전시 목록]에 없다면, "해당 작가/작품은 지금 등록된 전시 목록에 없어요."처럼 한두 문장으로만 짧게 답하세요.\n' +
-    '3) 미술 사조·시대·화가 등 일반적인 미술 지식(공부)을 물어보면, [전시 목록] 제한과 무관하게 [미술사 참고자료]와 알고 있는 지식을 바탕으로 답하세요.\n' +
-    '4) 미술/전시와 무관한 질문에는 정중히 미술 이야기만 도와줄 수 있다고 답하세요.\n' +
-    '5) 분석 과정, 영어, 개요나 메모를 출력하지 말고, 친근하고 따뜻한 존댓말의 완성된 한국어 문장만 2~4문장으로 바로 출력하세요.\n\n' +
-    '[미술사 참고자료]\n' + ART_HISTORY_REFERENCE +
-    '\n\n[전시 목록]\n' + context + historyLine +
-    '\n\n[사용자 질문]\n' + query +
-    '\n\n위 규칙에 따라 지금 바로 한국어 답변만 작성하세요. 답변 마지막 줄에 추천하는 전시 id들을 "IDS: id1,id2" 형식으로 한 줄 추가하세요 (추천이 없으면 "IDS:" 만 적으세요).';
+  function buildPrompt(extraReminder) {
+    return '당신은 "미술이 있는 날들"이라는 전시 안내 사이트의 큐레이터입니다.\n' +
+      '규칙:\n' +
+      '1) 전시를 추천할 때는 반드시 [전시 목록] 안에서만 추천하고, 목록에 없는 전시를 지어내지 마세요.\n' +
+      '2) 사용자가 특정 작가나 작품의 전시 여부를 물었는데 [전시 목록]에 없다면, "해당 작가/작품은 지금 등록된 전시 목록에 없어요."처럼 한두 문장으로만 짧게 답하세요.\n' +
+      '3) 미술 사조·시대·화가 등 일반적인 미술 지식(공부)을 물어보면, [전시 목록] 제한과 무관하게 [미술사 참고자료]와 알고 있는 지식을 바탕으로 답하세요.\n' +
+      '4) 미술/전시와 무관한 질문에는 정중히 미술 이야기만 도와줄 수 있다고 답하세요.\n' +
+      '5) 분석 과정, 영어, 개요, 메모, "Output Format" 같은 형식 설명이나 제목을 절대 출력하지 말고, 친근하고 따뜻한 존댓말의 완성된 한국어 문장만 2~4문장으로 바로 출력하세요.\n\n' +
+      '예시 (사용자가 "모던아트가 뭐야?"라고 물었을 때 출력해야 할 형식):\n' +
+      '모던아트는 19세기 말부터 20세기 중반까지 이어진 근현대 미술 전반을 가리키는 말이에요. 인상주의, 입체주의, 추상표현주의처럼 전통적인 화풍에서 벗어나 새로운 표현을 시도한 흐름들을 포함해요. 대표적인 화가로는 피카소나 마티스를 들 수 있어요.\n' +
+      'IDS:\n\n' +
+      '[미술사 참고자료]\n' + ART_HISTORY_REFERENCE +
+      '\n\n[전시 목록]\n' + context + historyLine +
+      '\n\n[사용자 질문]\n' + query +
+      '\n\n위 규칙과 예시 형식에 따라 지금 바로 한국어 답변만 작성하세요. 답변 마지막 줄에 추천하는 전시 id들을 "IDS: id1,id2" 형식으로 한 줄 추가하세요 (추천이 없으면 "IDS:" 만 적으세요).' +
+      (extraReminder ? '\n\n' + extraReminder : '');
+  }
 
-  try {
+  async function callGemini(prompt) {
     let geminiRes = await fetch(
       'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + GEMINI_API_KEY,
       {
@@ -272,6 +278,31 @@ app.post('/api/curator', requireAuth, async (req, res) => {
         }
       );
     }
+    return geminiRes;
+  }
+
+  // 형식 설명("Output Format" 등)이 새거나 문장이 안 끝난 채로 잘린 것처럼 보이면 깨진 답으로 간주.
+  function looksBroken(answer) {
+    if (!answer) return true;
+    if (/output format|analyze|analysis|\*\*/i.test(answer)) return true;
+    if (answer.length < 6) return true;
+    if (!/[.!?요다임음함죠]["')\]]?$/.test(answer)) return true;
+    return false;
+  }
+
+  function extractAnswer(data) {
+    const candidate = (data.candidates && data.candidates[0]) || null;
+    const finishReason = candidate && candidate.finishReason;
+    const parts = (candidate && candidate.content && candidate.content.parts) || [];
+    const text = parts.filter(function (p) { return !p.thought; }).map(function (p) { return p.text || ''; }).join('');
+    const idsMatch = text.match(/IDS:\s*(.*)$/m);
+    const ids = idsMatch ? idsMatch[1].split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
+    const answer = text.replace(/IDS:\s*.*/m, '').trim();
+    return { finishReason: finishReason || null, text: text, ids: ids, answer: answer, partsCount: parts.length };
+  }
+
+  try {
+    let geminiRes = await callGemini(buildPrompt());
     if (!geminiRes.ok) {
       const errText = await geminiRes.text();
       console.error('Gemini error', geminiRes.status, errText);
@@ -280,22 +311,30 @@ app.post('/api/curator', requireAuth, async (req, res) => {
         : 'AI 응답을 가져오지 못했어요.';
       return res.status(502).json({ error: msg });
     }
-    const data = await geminiRes.json();
-    const candidate = (data.candidates && data.candidates[0]) || null;
-    const finishReason = candidate && candidate.finishReason;
-    if (finishReason && finishReason !== 'STOP') {
-      console.error('Gemini finished abnormally', finishReason);
+    let data = await geminiRes.json();
+    let result = extractAnswer(data);
+    if (result.finishReason && result.finishReason !== 'STOP') {
+      console.error('Gemini finished abnormally', result.finishReason);
       return res.json({ answer: '죄송해요, 답변 분량이 초과되어 내용을 정리하지 못했어요. 조금 더 짧게 다시 물어봐주실래요?', ids: [] });
     }
-    const parts = (candidate && candidate.content && candidate.content.parts) || [];
-    const text = parts.filter(function (p) { return !p.thought; }).map(function (p) { return p.text || ''; }).join('');
-    const idsMatch = text.match(/IDS:\s*(.*)$/m);
-    const ids = idsMatch ? idsMatch[1].split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
-    const answer = text.replace(/IDS:\s*.*/m, '').trim();
+
+    var retried = false;
+    if (looksBroken(result.answer)) {
+      retried = true;
+      geminiRes = await callGemini(buildPrompt('(다시 한번: 형식 설명이나 영어 문구, "**" 같은 마크다운 없이 오직 완성된 한국어 문장 2~4개만 바로 출력하세요.)'));
+      if (geminiRes.ok) {
+        data = await geminiRes.json();
+        const retryResult = extractAnswer(data);
+        if (!retryResult.finishReason || retryResult.finishReason === 'STOP') {
+          result = retryResult;
+        }
+      }
+    }
+
     res.json({
-      answer: answer || '음, 지금은 답을 정리하지 못했어요. 다시 물어봐주실래요?',
-      ids: ids,
-      debug: { finishReason: finishReason || null, rawTextLength: text.length, partsCount: parts.length, retrievedCount: list.length, totalCount: fullList.length }
+      answer: (!looksBroken(result.answer) && result.answer) || '음, 지금은 답을 정리하지 못했어요. 다시 물어봐주실래요?',
+      ids: result.ids,
+      debug: { finishReason: result.finishReason, rawTextLength: result.text.length, partsCount: result.partsCount, retrievedCount: list.length, totalCount: fullList.length, retried: retried }
     });
   } catch (err) {
     console.error(err);
